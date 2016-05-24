@@ -1,6 +1,6 @@
 The MIT License (MIT)
 
-Copyright (c) 2015 Iman Bilal, Michael Hansen, Ruben Piatnitsky, Chance Snow,
+Copyright (c) 2016 Iman Bilal, Michael Hansen, Ruben Piatnitsky, Chance Snow,
 Kathleen Tran, Ricky Valencia, Marcus Week
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
