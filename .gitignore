@@ -23,9 +23,15 @@ coverage
 # Compiled binary addons (http://nodejs.org/api/addons.html)
 build/Release
 
+# DotEnv configuration
+.env
+
 # Dependency directory
 # https://www.npmjs.org/doc/misc/npm-faq.html#should-i-check-my-node_modules-folder-into-git-
 node_modules
+
+# Session store db
+sessions.db
 
 # Debug log from npm
 npm-debug.log
