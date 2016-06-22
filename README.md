@@ -3,7 +3,12 @@
 ## Developing
 
 After cloning the repo run `npm install` to install the app's dependencies.
-Then, to run the app use `npm run debug`.
+
+If it doesn't already exist in your environment, create a new `.env` file in
+the project root directory, copying `.env.example` and modifying as necessary
+for the environment. (**Change the `SESSION_SECRET`!**)
+
+Then, to run and debug the app use `npm run debug`.
 
 ## Copyright and license
 
