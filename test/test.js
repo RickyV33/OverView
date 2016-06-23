@@ -1,5 +1,6 @@
 // Mocha test example code
-//var chaijq = require('chai-jquery');
+// To use the script, make sure to --> npm install -g mocha
+// To run tests, run command 'mocha test' or 'mocha <your script name>'
 
 var chai = require('chai');
 var assert = chai.assert;
@@ -8,19 +9,15 @@ var expect = chai.expect;
 var chaiHttp = require('chai-http');
 var server = require('../app.js');
 
-// http://mherman.org/blog/2015/09/10/testing-node-js-with-mocha-and-chai/
 chai.use(chaiHttp);
-//chai.use(chaijq);
-
 
 describe('Index Page', function () {
     it('should contain a property called text', function(done) {
-        var ti = 'Jama Software Capstone';
 
+        // This makes a server request to the route location '/'
         chai.request(server)
             .get('/')
             .end(function(err, res){
-                console.log(res.body);
                 expect(res).to.have.property('text');
                 done();
             });
