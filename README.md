@@ -10,7 +10,9 @@ for the environment. (**Change the `SESSION_SECRET`!**)
 
 Implement features and corresponding unit tests.
 
-Lint your code and run unit tests using `npm test`.
+Lint and run all tests using `npm test`.
+
+To simply lint your code, use `npm run lint`.
 
 Then, to run and debug the app use `npm run debug`.
 
