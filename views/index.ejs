@@ -6,6 +6,17 @@
   </head>
   <body>
     <h1><%= title %></h1>
-    <p>Welcome to <%= title %></p>
+    <form id="logIn">
+      <div>
+        <label for="username">Username:</label>
+        <input id="username" type="text" name="username" autofocus required maxlength="200" />
+      </div>
+      <div>
+        <label for="password">Password:</label>
+        <input id="password" type="password" name="username" required maxlength="200" minlength="6" />
+      </div>
+      <input type="submit" value="Submit" />
+    </form>
+  <script src="js/index.js"></script>
   </body>
 </html>
