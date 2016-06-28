@@ -3,8 +3,14 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www",
-    "debug": "DEBUG=Jama-Software:* npm start"
+    "start": "node --harmony ./bin/www",
+    "debug": "DEBUG=Jama-Software:* npm start",
+    "test": "semistandard | snazzy && mocha --check-leaks",
+    "build": "npm run build:index",
+    "build:index": "browserify src/index.js -o public/js/index.js -t [ babelify --presets [ es2015 ] ]",
+    "build:app": "browserify src/app.js -o public/js/app.js -t [ babelify --presets [ es2015 ] ]",
+    "watch": "watchify src/app.js --debug -v -o public/js/app.js -t [ babelify --presets [ es2015 ] ]",
+    "lint": "semistandard | snazzy"
   },
   "dependencies": {
     "body-parser": "~1.13.2",
@@ -18,8 +24,14 @@
     "serve-favicon": "~2.3.0"
   },
   "devDependencies": {
+    "babel-preset-es2015": "^6.9.0",
+    "babelify": "^7.3.0",
+    "browserify": "^13.0.1",
     "chai": "^3.5.0",
     "chai-http": "^3.0.0",
-    "mocha": "^2.5.3"
+    "mocha": "^2.5.3",
+    "semistandard": "^8.0.0",
+    "snazzy": "^4.0.0",
+    "watchify": "^3.7.0"
   }
 }
