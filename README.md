@@ -8,6 +8,10 @@ If it doesn't already exist in your environment, create a new `.env` file in
 the project root directory, copying `.env.example` and modifying as necessary
 for the environment. (**Change the `SESSION_SECRET`!**)
 
+Implement features and corresponding unit tests.
+
+Lint your code and run unit tests using `npm test`.
+
 Then, to run and debug the app use `npm run debug`.
 
 ## Testing
