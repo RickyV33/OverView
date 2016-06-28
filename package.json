@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www",
+    "start": "node --harmony ./bin/www",
     "debug": "DEBUG=Jama-Software:* npm start",
     "build": "npm run build:index",
     "build:index": "browserify src/index.js -o public/js/index.js -t [ babelify --presets [ es2015 ] ]",
