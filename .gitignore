@@ -33,6 +33,9 @@ node_modules
 # Session store db
 sessions.db
 
+# Built client side scripts
+public/js/*.js
+
 # Debug log from npm
 npm-debug.log
 
