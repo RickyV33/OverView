@@ -41,3 +41,6 @@ npm-debug.log
 
 #MAC
 .DS_Store
+
+#Intellij
+.idea/
