@@ -21,7 +21,6 @@
     "express": "~4.13.1",
     "express-session": "^1.13.0",
     "morgan": "~1.6.1",
-    "proxyquire": "^1.7.10",
     "request": "^2.72.0",
     "serve-favicon": "~2.3.0"
   },
@@ -34,6 +33,7 @@
     "chai-http": "^3.0.0",
     "dirty-chai": "^1.2.2",
     "mocha": "^2.5.3",
+    "proxyquire": "^1.7.10",
     "semistandard": "^8.0.0",
     "snazzy": "^4.0.0",
     "watchify": "^3.7.0"
