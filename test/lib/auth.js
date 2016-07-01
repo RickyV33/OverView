@@ -2,8 +2,11 @@
 
 var chai = require('chai');
 var expect = chai.expect;
+var dirtyChai = require('dirty-chai');
 
 var auth = require('../../lib/auth');
+
+chai.use(dirtyChai);
 
 describe('Auth module', function () {
   describe('validate function', function () {
