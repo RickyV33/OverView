@@ -3,7 +3,6 @@
 var chai = require('chai');
 var expect = chai.expect;
 var dirtyChai = require('dirty-chai');
-var 
 
 var auth = require('../../lib/auth');
 
