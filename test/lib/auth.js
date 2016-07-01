@@ -3,10 +3,13 @@
 var chai = require('chai');
 var expect = chai.expect;
 var dirtyChai = require('dirty-chai');
+var proxyquire = require('proxyquire');
+var chaiAsPromised = require('chai-as-promised');
 
 var auth = require('../../lib/auth');
 
 chai.use(dirtyChai);
+chai.use(chaiAsPromised);
 
 describe('Auth module', function () {
   'use strict';
@@ -132,6 +135,28 @@ describe('Auth module', function () {
   });
 
   describe('authenticate function', function () {
+    'use strict';
+    let username = 'dummy';
+    let password = 'abcdefghij';
+    let teamName = 'Snorkel';
+    let resolvedPromise = function () {
+      return new Promise(function (resolve, reject) {
+        let payload = ['something'];
+        resolve(payload);
+      });
+    };
+    let rejectedPromise = function () {
+      return new Promise(function (resolve, reject) {
+        let payload = ['error'];
+        reject(payload);
+      });
+    };
+    let stubs = { resolvedPromise: resolvedPromise, rejectPromise: rejectedPromise };
+    let auth;
 
+    it('should return true when all credentials are valid', function () {
+      auth = proxyquire('../../lib/auth', { './pagination': stubs.resolvedPromise });
+      expect(auth.authenticate(username, password, teamName)).to.be.fulfilled();
+    });
   });
 });
