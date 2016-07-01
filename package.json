@@ -5,7 +5,7 @@
   "scripts": {
     "start": "node --harmony ./bin/www",
     "debug": "DEBUG=Jama-Software:* npm start",
-    "test": "semistandard | snazzy && mocha --check-leaks",
+    "test": "semistandard | snazzy && mocha --check-leaks --recursive",
     "build": "npm run build:index",
     "build:index": "browserify src/index.js -o public/js/index.js -t [ babelify --presets [ es2015 ] ]",
     "build:app": "browserify src/app.js -o public/js/app.js -t [ babelify --presets [ es2015 ] ]",
