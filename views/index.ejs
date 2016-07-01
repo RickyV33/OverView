@@ -8,14 +8,16 @@
     <h1><%= title %></h1>
     <form id="logIn" method="post">
       <div>
+        <label for="teamName">Team Name:</label>
+        <input id="teamName" type="text" name="teamName" autofocus required maxlength="200" />
+      </div>
+      <div>
         <label for="username">Username:</label>
-        <input id="username" type="text" name="username" autofocus required maxlength="200" />
-        <span class="error">*</span>
+        <input id="username" type="text" name="username" required maxlength="200" />
       </div>
       <div>
         <label for="password">Password:</label>
         <input id="password" type="password" name="password" required maxlength="200" minlength="6" />
-        <span class="error">*</span>
       </div>
       <input type="submit" value="Submit" />
     </form>
