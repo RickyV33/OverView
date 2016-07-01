@@ -52,7 +52,6 @@ describe('Auth module', function () {
       teamName: 'sevensource'
     }
   ];
-  
   describe('validate function', function () {
     'use strict';
     let credentialsFixture = {
