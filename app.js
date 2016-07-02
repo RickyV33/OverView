@@ -1,13 +1,13 @@
-var express = require('express');
-var path = require('path');
-var logger = require('morgan');
-var session = require('express-session');
-var SQLiteStore = require('connect-sqlite3')(session);
-var bodyParser = require('body-parser');
+let express = require('express');
+let path = require('path');
+let logger = require('morgan');
+let session = require('express-session');
+let SQLiteStore = require('connect-sqlite3')(session);
+let bodyParser = require('body-parser');
 
-var routes = require('./routes/index');
+let routes = require('./routes/index');
 
-var app = express();
+let app = express();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -29,7 +29,7 @@ app.use('/', routes);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
-  var err = new Error('Not Found');
+  let err = new Error('Not Found');
   err.status = 404;
   next(err);
 });
