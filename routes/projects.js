@@ -5,3 +5,5 @@ var router = express.Router();
 router.get('/', function (req, res, next) {
   res.render('projects', { title: 'Jama Software Capstone', projects: req.session.projects });
 });
+
+module.exports = router;
