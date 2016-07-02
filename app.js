@@ -5,7 +5,9 @@ var session = require('express-session');
 var SQLiteStore = require('connect-sqlite3')(session);
 var bodyParser = require('body-parser');
 
+// TODO: Refactor these into a single routes module
 var routes = require('./routes/index');
+var projects = require('./routes/projects');
 
 var app = express();
 
@@ -26,6 +28,7 @@ app.use(session({
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
+app.use('/projects', projects);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
