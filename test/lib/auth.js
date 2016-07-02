@@ -1,12 +1,12 @@
 /* eslint-env mocha */
 
-var chai = require('chai');
-var expect = chai.expect;
-var dirtyChai = require('dirty-chai');
-var proxyquire = require('proxyquire');
-var chaiAsPromised = require('chai-as-promised');
+let chai = require('chai');
+let expect = chai.expect;
+let dirtyChai = require('dirty-chai');
+let proxyquire = require('proxyquire');
+let chaiAsPromised = require('chai-as-promised');
 
-var auth = require('../../lib/auth');
+let auth = require('../../lib/auth');
 
 chai.use(dirtyChai);
 chai.use(chaiAsPromised);
