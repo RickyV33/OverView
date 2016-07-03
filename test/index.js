@@ -1,10 +1,10 @@
 /* eslint-env mocha */
 
-var chai = require('chai');
-var should = chai.should;
-var expect = chai.expect;
-var chaiHttp = require('chai-http');
-var server = require('../app.js');
+let chai = require('chai');
+let should = chai.should;
+let expect = chai.expect;
+let chaiHttp = require('chai-http');
+let server = require('../app.js');
 
 chai.use(chaiHttp);
 
