@@ -166,25 +166,27 @@ describe('Pagination Module', function () {
       let maxResults = 25;
       let resultCount = 0;
       let totalResults = 25;
-      let resolvedObjects = [{meta: {startIndex: 0, resultCount: 0}, data: []}];
+      let resolvedObjects = [{data: [], meta: {startIndex: 0, resultCount: 0}}];
       resolvedObjects = arrayOfSizeN(2);
 
       //  Set up a page with the appropriate meta and data according to processed results, startAt, maxResults
       function setUpPage (item) {
-        item.meta.startIndex = processedResults || startAt;
-        let size = maxResults || 20;
-        let remaining = processedResults - totalResults;
-        if (remaining > 0) {
-          if (remaining < 20) {
-            size = remaining;
-          } else {
-            size = maxResults || 20;
+        if (item) {
+          item.meta.startIndex = processedResults || startAt;
+          let size = maxResults || 20;
+          let remaining = processedResults - totalResults;
+          if (remaining > 0) {
+            if (remaining < 20) {
+              size = remaining;
+            } else {
+              size = maxResults || 20;
+            }
           }
-        }
-        item.data = arrayOfSizeN(size);
-        item.meta.resultCount = size;
-        if (resultCount > 0) {
-          processedResults = resultCount;
+          item.data = arrayOfSizeN(size);
+          item.meta.resultCount = size;
+          if (resultCount > 0) {
+            processedResults = resultCount;
+          }
         }
       }
       resolvedObjects.map(setUpPage);
@@ -199,5 +201,7 @@ describe('Pagination Module', function () {
       pagination = proxyquire('../../lib/pagination', { 'request': requestStub });
       expect(pagination('http://dummy:password@sevensource.jamacloud.com/rest/latest/projects', 0, 20)).to.eventually.equal(resolvedObjects);
     });
+    //  Test #12: Valid URL, startAt, maxResults and there are over million pages to retrieve.
+    //  returned promise from pagination should be valid and equal to resolvedObject
   });
 });
