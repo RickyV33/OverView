@@ -3,11 +3,11 @@
 // To use the script, make sure to --> npm install -g mocha
 // To run tests, run command 'mocha test' or 'mocha <your script name>'
 
-var chai = require('chai');
-var should = chai.should;
-var expect = chai.expect;
-var chaiHttp = require('chai-http');
-var server = require('../app.js');
+let chai = require('chai');
+let should = chai.should;
+let expect = chai.expect;
+let chaiHttp = require('chai-http');
+let server = require('../app.js');
 
 chai.use(chaiHttp);
 
