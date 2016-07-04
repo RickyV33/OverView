@@ -85,8 +85,8 @@ describe('in index/routes ', function () {
             .send({ username: fixture.username, password: fixture.password, teamName: fixture.teamName })).to.redirect();
         });
       } else {
-        it('should return false when any form field is invalid username is: <' + fixture.username + '> password is: <' +
-          fixture.password + '> team name is: <' + fixture.teamName + '>.', function () {
+        it('should return false when any form field is invalid username is, "' + fixture.username + '" password is, "' +
+          fixture.password + '" team name is, "' + fixture.teamName + '".', function () {
           chai.request('http://localhost:3000')
             .post('/')
             .send({ username: fixture.username, password: fixture.password, teamName: fixture.teamName }).end(function (res) {
