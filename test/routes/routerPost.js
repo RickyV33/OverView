@@ -99,13 +99,14 @@ describe('in index/routes ', function () {
             });
         });
       }
-    });
+
     // This request sends in the username, password, and teamName variables to index. Which are referenced in valStub
     // Without this block all tests will return 'valid'
-    chai.request(index)
+      chai.request(index)
       .post('/')
       .field('username', fixture.username)
       .field('password', fixture.password)
       .field('teamName', fixture.teamName);
+    });
   });
 });
