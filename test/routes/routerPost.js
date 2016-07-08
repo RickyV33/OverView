@@ -11,6 +11,7 @@ chai.use(dirtyChai);
 chai.use(chaiHttp);
 chai.use(chaiPromise);
 
+// This is a set of cases we wanted to test against for username, password, and teamName
 describe('in index/routes ', function () {
   let credentialFixtureCases = [
     {
@@ -70,11 +71,14 @@ describe('in index/routes ', function () {
           } });
       });
     };
+    // Checks the local username, password, and teamName parameters
     let valStub = function (req) {
       return (req.body.username && req.body.password && req.body.teamName);
     };
 
+    // sets up our stubs for testing with authenticate and validate in the lib/auth module
     let stubs = { 'authenticate': authStub, 'validate': valStub };
+    // creates a proxy for calls to 'stubs' in the lib/auth module
     let index = proxyquire('../../routes/index', {'../lib/auth': stubs});
 
     credentialFixtureCases.forEach(function (fixture) {
@@ -95,11 +99,13 @@ describe('in index/routes ', function () {
             });
         });
       }
-      chai.request(index)
-        .post('/')
-        .field('username', fixture.username)
-        .field('password', fixture.password)
-        .field('teamName', fixture.teamName);
     });
+    // This request sends in the username, password, and teamName variables to index. Which are referenced in valStub
+    // Without this block all tests will return 'valid'
+    chai.request(index)
+      .post('/')
+      .field('username', fixture.username)
+      .field('password', fixture.password)
+      .field('teamName', fixture.teamName);
   });
 });
