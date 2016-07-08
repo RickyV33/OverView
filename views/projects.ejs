@@ -9,8 +9,9 @@
 <form id="projects" method="post">
     <input type="submit" value="Submit" />
 </form>
-<% projects.forEach( function(pItem) { %>
-    <%- pItem.id + ' - ' + pItem.name %><br>
+<h4><%= projects.title %></h4>
+<% projects.items.forEach( function(pItem) { %>
+    <li><a href="#" data-id="<%- pItem.id %>"><%- pItem.id + ' - ' + pItem.name %></a></li>
 <% }); %>
 <!--TODO: add error messages -->
 <!-- TODO: On a post to this page, don't change the title of the page to the error message -->
