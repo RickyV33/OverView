@@ -69,6 +69,12 @@ function setUpPage (item) {
   return item;
 }
 
+let rejectedRequestStub = function (options, callback) {
+  process.nextTick(function () {
+    callback('this is an error');
+  });
+};
+
 describe('Pagination Module', function () {
   'use strict';
 
@@ -79,12 +85,7 @@ describe('Pagination Module', function () {
     //  returned promise from pagination should be rejected
     it('should reject if the username is invalid', function () {
       setStartAtAndMaxResults(0, 20);
-      let requestStub = function (options, callback) {
-        process.nextTick(function () {
-          callback('this is an error');
-        });
-      };
-      pagination = proxyquire('../../lib/pagination', { 'request': requestStub });
+      pagination = proxyquire('../../lib/pagination', { 'request': rejectedRequestStub });
       expect(pagination('http://notdummy:password@sevensource.jamacloud.com/rest/latest/projects', startAt, maxResults)).to.eventually.be.rejected();
     });
     //  Test #2: password is invalid
