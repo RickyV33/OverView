@@ -1,12 +1,11 @@
 /* eslint-env mocha */
 'use strict';
-
 let chai = require('chai');
 let expect = chai.expect;
 let chaiHttp = require('chai-http');
 // let server = require('../../app.js');
 
-let tv4 = require('tv4');
+let Ajv = require('ajv');
 let projListSchema = require('../../schema/projectList');
 
 chai.use(chaiHttp);
@@ -19,8 +18,11 @@ let sampleProjList = [
 
 describe('Schema Validation for project.js', function () {
   it('JSON schema object is valid', function (done) {
-    let valid = tv4.validate(sampleProjList, projListSchema);
-    expect(valid).to.be.true();
+    let ajv = new Ajv();
+    let validate = ajv.compile(projListSchema);
+    let result = validate(sampleProjList);
+
+    expect(result).to.be.true();
     done();
   });
 
