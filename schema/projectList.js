@@ -1,0 +1,17 @@
+/* eslint-env mocha */
+
+let projectList = {
+  '$schema': 'http://json-schema.org/draft-04/schema#',
+  'title': 'Project Array',
+  'type': 'array',
+  'items': {
+    'type': 'object',
+    'properties': {
+      'id': { 'type': 'integer' },
+      'name': {'type': 'string'}
+    },
+    'required': ['id', 'name']
+  }
+};
+
+module.exports = projectList;

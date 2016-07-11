@@ -7,38 +7,21 @@ let chaiHttp = require('chai-http');
 // let server = require('../../app.js');
 
 let tv4 = require('tv4');
+let projListSchema = require('../../schema/projectList');
 
 chai.use(chaiHttp);
 
-let projSchema = {
-  '$schema': 'http://json-schema.org/draft-04/schema#',
-  'title': 'Project Array',
-  'type': 'array',
-  'items': {
-    'type': 'object',
-    'properties': {
-      'id': {
-        'type': 'integer'
-      },
-      'name': {'type': 'string'}
-    },
-    'required': ['id', 'name']
-  }
-};
+let sampleProjList = [
+  {'id': 1337, 'name': 'Hank'},
+  {'id': 456, 'name': 'John'},
+  {'id': 673, 'name': 'Frank'}
+];
 
 describe('Schema Validation for project.js', function () {
-  it('JSON schema object is valid', function () {
-    let projectsList = {
-      title: 'Project Array',
-      items: [
-        {id: 1337, name: 'Hank'}
-      ]
-    };
-    let projectsListTest = JSON.stringify(projectsList);
-    let valid = tv4.validate(projectsListTest, projSchema);
-    console.log('Error Code: ' + tv4.error.code);
-
-    expect(valid).to.be.value(0);
+  it('JSON schema object is valid', function (done) {
+    let valid = tv4.validate(sampleProjList, projListSchema);
+    expect(valid).to.be.true();
+    done();
   });
 
   /* it('JSON from rest api data structure is valid', function (done) {
