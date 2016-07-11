@@ -32,6 +32,8 @@
     "chai-as-promised": "^5.3.0",
     "chai-http": "^3.0.0",
     "dirty-chai": "^1.2.2",
+    "json-schema-assert": "^0.2.1",
+    "json-schema-test": "^1.2.1",
     "mocha": "^2.5.3",
     "proxyquire": "^1.7.10",
     "semistandard": "^8.0.0",
