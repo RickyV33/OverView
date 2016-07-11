@@ -1,9 +1,15 @@
-/**
- * Created by ruben on 7/8/16.
- */
 /* eslint-env mocha */
 'use strict';
-let JsonSchemaAssert = require('../../node_modules/json-schema-assert/index.js');
+
+let chai = require('chai');
+let expect = chai.expect;
+let chaiHttp = require('chai-http');
+// let server = require('../../app.js');
+
+let tv4 = require('tv4');
+
+chai.use(chaiHttp);
+
 let projSchema = {
   '$schema': 'http://json-schema.org/draft-04/schema#',
   'title': 'Project Array',
@@ -19,47 +25,29 @@ let projSchema = {
     'required': ['id', 'name']
   }
 };
-let jsonAssert = new JsonSchemaAssert(projSchema);
 
 describe('Schema Validation for project.js', function () {
-  it('should work if the JSON is in the correct format', function () {
-    /* let projectsList = {
+  it('JSON schema object is valid', function () {
+    let projectsList = {
       title: 'Project Array',
-      items: []
+      items: [
+        {id: 1337, name: 'Hank'}
+      ]
     };
-    let item = {id: '1337', name: 'Hank'};
-    projectsList.items.push(item); // Push the current project
-    console.log(JSON.stringify(projectsList));
-    */
+    let projectsListTest = JSON.stringify(projectsList);
+    let valid = tv4.validate(projectsListTest, projSchema);
+    console.log('Error Code: ' + tv4.error.code);
 
-    before(function (done) {
-      jsonAssert.before(done);
-    });
-    it('does valid assertion', function (done) {
-      jsonAssert.isValid({
-        title: 'Project Array',
-        items: {
-          id: '173',
-          name: 'Frank'
-        }
-      },
-      projSchema, done);
-    });
-  });
-});
-
-describe('a specific geolocation', function () {
-  var jsonAssert = new JsonSchemaAssert('http://json-schema.org/geo');
-
-  before(function (done) {
-    jsonAssert.before(done);
+    expect(valid).to.be.value(0);
   });
 
-  it('conforms the schema', function (done) {
-    jsonAssert.isValid(
-      {latitude: 54.8587913, longitude: 83.1052262},
-      'http://json-schema.org/geo',
-      done
-    );
-  });
+  /* it('JSON from rest api data structure is valid', function (done) {
+    chai.request(server)
+      .get('/projects')
+      .end(function (err, res) {
+        expect(err).to.be.null;
+        expect(res).to.have.status(200);
+        done();
+      });
+  });*/
 });

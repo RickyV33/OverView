@@ -38,6 +38,7 @@
     "proxyquire": "^1.7.10",
     "semistandard": "^8.0.0",
     "snazzy": "^4.0.0",
+    "tv4": "^1.2.7",
     "watchify": "^3.7.0"
   }
 }
