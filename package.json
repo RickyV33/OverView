@@ -5,7 +5,7 @@
   "scripts": {
     "start": "node --harmony ./bin/www",
     "debug": "DEBUG=Jama-Software:* npm start",
-    "test": "semistandard | snazzy && mocha --check-leaks",
+    "test": "semistandard | snazzy && mocha --check-leaks --recursive",
     "build": "npm run build:index",
     "build:index": "browserify src/index.js -o public/js/index.js -t [ babelify --presets [ es2015 ] ]",
     "build:app": "browserify src/app.js -o public/js/app.js -t [ babelify --presets [ es2015 ] ]",
@@ -21,6 +21,7 @@
     "express": "~4.13.1",
     "express-session": "^1.13.0",
     "morgan": "~1.6.1",
+    "request": "^2.72.0",
     "serve-favicon": "~2.3.0"
   },
   "devDependencies": {
@@ -32,6 +33,7 @@
     "chai-http": "^3.0.0",
     "dirty-chai": "^1.2.2",
     "mocha": "^2.5.3",
+    "proxyquire": "^1.7.10",
     "semistandard": "^8.0.0",
     "snazzy": "^4.0.0",
     "watchify": "^3.7.0"
