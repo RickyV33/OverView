@@ -13,6 +13,7 @@
     "lint": "semistandard | snazzy"
   },
   "dependencies": {
+    "ajv": "^4.1.7",
     "body-parser": "~1.13.2",
     "connect-sqlite3": "^0.9.8",
     "debug": "~2.2.0",
