@@ -1,3 +1,4 @@
+let rawJSON =
 [ { id: 234,
   projectKey: 'Chatty',
   isFolder: false,
@@ -45,3 +46,7 @@
       description: '',
       projectGroup: 296 },
     type: 'projects' }];
+
+module.exports = {
+  rawJSON: rawJSON
+};
