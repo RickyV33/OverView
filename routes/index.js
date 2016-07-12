@@ -14,7 +14,6 @@ router.post('/', function (req, res, next) {
       req.session.username = req.body.username;
       req.session.password = req.body.password;
       req.session.teamName = req.body.teamName;
-      console.log(projects);
       req.session.projects = proj.parseProjectList(projects);
       res.redirect('/projects');
     }, function () {
