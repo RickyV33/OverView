@@ -1,5 +1,6 @@
 let express = require('express');
 let auth = require('../lib/auth');
+let proj = require('../lib/projects');
 let router = express.Router();
 
 /* GET home page. */
@@ -13,7 +14,8 @@ router.post('/', function (req, res, next) {
       req.session.username = req.body.username;
       req.session.password = req.body.password;
       req.session.teamName = req.body.teamName;
-      req.session.projects = projects;
+      console.log(projects);
+      req.session.projects = proj.parseProjectList(projects);
       res.redirect('/projects');
     }, function () {
       res.render('index', { title: 'Error: Incorrect credentials, please try again.' });
