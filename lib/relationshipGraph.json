@@ -18,7 +18,8 @@
             "type": "integer"
           }
         },
-        "required": ["id", "name", "type"]
+        "required": ["id", "name", "type"],
+        "additionalProperties": false
       }
     },
     "relationships": {
@@ -40,14 +41,11 @@
             "type": "integer"
           }
         },
-        "required": [
-          "id",
-          "fromItem",
-          "toItem",
-          "type"
-        ]
+        "required": ["id", "fromItem", "toItem", "type"],
+        "additionalProperties": false
       }
     }
   },
-  "required": ["items", "relationships"]
+  "required": ["items", "relationships"],
+  "additionalProperties": false
 }
