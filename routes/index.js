@@ -15,7 +15,11 @@ router.post('/', function (req, res, next) {
       req.session.teamName = req.body.teamName;
       req.session.projects = projects;
       req.session.save(function (err) {
-          res.redirect('/projects');
+        if (err) {
+          // TODO Session save Error message
+          res.render('index', { title: err });
+        }
+        res.redirect('/projects');
       });
     }, function () {
       res.render('index', { title: 'Error: Incorrect credentials, please try again.' });
