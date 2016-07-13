@@ -6,11 +6,12 @@
 </head>
 <body>
 <h1><%= title %></h1>
-<form id="projects" method="post">
-    <input type="submit" value="Submit" />
-</form>
-<!--TODO: add error messages -->
-<!-- TODO: On a post to this page, don't change the title of the page to the error message -->
+<h3>Click on a project below to view it's traceability graph:</h3>
+<ul id="projectList">
+    <% projects.forEach(function(project){ %>
+        <li><a href="/graph?id=<%= project.id %>" data-id="<%= project.id %>"><%= project.name %></a></li>
+    <% }); %>
+</ul>
 <script src="js/project.js"></script>
 </body>
 </html>
