@@ -7,11 +7,9 @@ let server = require('../../app');
 let ejs = require('ejs');
 let read = require('fs').readFileSync;
 let join = require('path').join;
-
 chai.use(chaiHttp);
 
 describe('projects GET', function () {
-
   // Test #1: verify projects list view is rendered successfully as is documented in views/projects.ejs
   it('should render successfully with status 200', function (done) {
     let path, data, renderedView;
@@ -27,7 +25,7 @@ describe('projects GET', function () {
           expect(res).to.have.property('text');
           expect(res.charset).to.equal('utf-8');
           path = join(__dirname, '../../views/projects.ejs');
-          data = { title: 'Projects', projects: null};
+          data = {title: 'Projects', projects: null};
           renderedView = ejs.compile(read(path, 'utf8'), {filename: path})(data);
           expect(res.text).to.equal(renderedView);
           expect(res.text).contains('</ul>');
@@ -37,11 +35,3 @@ describe('projects GET', function () {
         });
   });
 });
-
-
-
-
-
-
-
-
