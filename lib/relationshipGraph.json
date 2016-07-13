@@ -17,9 +17,9 @@
           "type": {
             "type": "integer"
           }
-        }
-      },
-      "required": ["id", "name", "type"]
+        },
+        "required": ["id", "name", "type"]
+      }
     },
     "relationships": {
       "type": "array",
@@ -39,9 +39,14 @@
           "type": {
             "type": "integer"
           }
-        }
-      },
-      "required": ["id", "fromItem", "toItem", "type"]
+        },
+        "required": [
+          "id",
+          "fromItem",
+          "toItem",
+          "type"
+        ]
+      }
     }
   },
   "required": ["items", "relationships"]

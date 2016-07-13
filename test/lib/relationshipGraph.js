@@ -19,24 +19,24 @@ describe('Relatinship Graph JSON', function () {
   // Failing test cases for relationship graph JSON
   let failingTestCases = [
       {},
-      {},
-      {},
-      {},
-      {}
+      {items: [{name: 'story', type: 35}, {id: 35, name: 'req', type: 35}], relationships: [{id: 1, fromItem: 34, toItem: 35, type: 35}]},
+      {items: [{id: 34, type: 35}, {id: 35, name: 'req', type: 35}], relationships: [{id: 1, fromItem: 34, toItem: 35, type: 35}]},
+      {items: [{id: 34, name: 'story'}, {id: 35, name: 'req', type: 35}], relationships: [{id: 1, fromItem: 34, toItem: 35, type: 35}]},
+      {items: [{id: 34, name: 'story'}, {id: 35, name: 'req', type: 35}], relationships: [{fromItem: 34, toItem: 35, type: 35}]},
+      {items: [{id: 34, name: 'story'}, {id: 35, name: 'req', type: 35}], relationships: [{id: 1, toItem: 35, type: 35}]},
+      {items: [{id: 34, name: 'story', type: 35}, {id: 35, name: 'req', type: 35}], relationships: [{id: 1, fromItem: 34, type: 35}]},
+      {items: [{id: 34, name: 'story', type: 35}, {id: 35, name: 'req', type: 35}], relationships: [{id: 1, fromItem: 34, toItem: 35}]}
+      // {items: [{id: 34, name: 'story', type: 35}, {id: 35, name: 'req', type: 35}], relationships: [{id: 1, fromItem: 35, toItem: 35, type: 35}]}
   ];
 
   // Passing test cases for relationship graph JSON
   let passingTestCases = [
-      {},
-      {},
-      {},
-      {},
-      {}
+      {items: [{id: 34, name: 'story', type: 35}, {id: 35, name: 'req', type: 35}], relationships: [{id: 1, fromItem: 34, toItem: 35, type: 35}]}
   ];
 
   // Validating all incorrect JSON are rejected
   failingTestCases.forEach(function (item) {
-    it('should return true when all required fields are valid', function () {
+    it('should return false when all required fields are valid', function () {
       validJSON = validate(item);
       expect(validJSON).to.be.false();
     });
