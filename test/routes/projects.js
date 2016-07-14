@@ -9,8 +9,7 @@ let Ajv = require('ajv');
 let projectListSchema = require('../../schema/projectList');
 let projects = require('../../lib/projects');
 chai.use(chaiHttp);
-let mockJSON = require('./mockProjectJSON');
-let rawJSON = mockJSON.rawJSON;
+let mockProjects = require('./mockProjects.json');
 
 let credentialFixtureCases = [
   [
@@ -104,7 +103,7 @@ describe('Validation for parseProjectsList in lib/project.js', function () {
 
   it('Should return a valid JSON with all three projects', function () {
     // When all projects have valid ids and names
-    let parsed = projects.parseProjectList(rawJSON);
+    let parsed = projects.parseProjectList(mockProjects);
     let result = validate(parsed);
     expect(parsed).to.deep.equal(filterJSON[0]);
     expect(result).to.be.true();
@@ -112,8 +111,8 @@ describe('Validation for parseProjectsList in lib/project.js', function () {
 
   it('Should return a valid JSON with two of three projects when name is null in the first project', function () {
     // When id is valid and name is invalid
-    rawJSON[0].fields.name = null;
-    let parsed = projects.parseProjectList(rawJSON);
+    mockProjects[0].fields.name = null;
+    let parsed = projects.parseProjectList(mockProjects);
     let result = validate(parsed);
     expect(parsed).to.deep.equal(filterJSON[1]);
     expect(result).to.be.true();
@@ -121,9 +120,9 @@ describe('Validation for parseProjectsList in lib/project.js', function () {
 
   it('Should return a valid JSON with two of three projects when id is null in the first project', function () {
     // When id is invalid and name is valid
-    rawJSON[0].id = null;
-    rawJSON[0].fields.name = 'Chatty';
-    let parsed = projects.parseProjectList(rawJSON);
+    mockProjects[0].id = null;
+    mockProjects[0].fields.name = 'Chatty';
+    let parsed = projects.parseProjectList(mockProjects);
     let result = validate(parsed);
     expect(parsed).to.deep.equal(filterJSON[1]);
     expect(result).to.be.true();
@@ -131,9 +130,9 @@ describe('Validation for parseProjectsList in lib/project.js', function () {
 
   it('Should return a valid JSON with two of three projects when name and id are null in the first project', function () {
     // When id and name are invalid
-    rawJSON[0].id = null;
-    rawJSON[0].fields.name = null;
-    let parsed = projects.parseProjectList(rawJSON);
+    mockProjects[0].id = null;
+    mockProjects[0].fields.name = null;
+    let parsed = projects.parseProjectList(mockProjects);
     let result = validate(parsed);
     expect(parsed).to.deep.equal(filterJSON[1]);
     expect(result).to.be.true();
