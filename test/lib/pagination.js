@@ -10,10 +10,11 @@ chai.use(dirtyChai);
 chai.use(chaiAsPromised);
 
 //  function to create an array of size N
-function arrayOfSizeN (n, start) {
+function arrayOfSizeN (n, counter) {
   let array = [];
-  for (let i = start; i < n; i += 1) {
-    array.push(i);
+  for (let i = 0; i < n; i += 1) {
+    array.push(counter);
+    counter += 1;
   }
   return array;
 }
@@ -30,6 +31,7 @@ function pageArrayOfSizeN (n) {
   //  function to create an array with all returned data items from all pages
 function arrayOfPageData (resolvedObjects) {
   let array = [];
+  let numOfPages = resolvedObjects.length;
   for (let i = 0; i < numOfPages; i += 1) {
     let dataSize = resolvedObjects[i].body.data.length;
     for (let j = 0; j < dataSize; j += 1) {
@@ -39,37 +41,12 @@ function arrayOfPageData (resolvedObjects) {
   return array;
 }
 
-//  function to set the startAt, maxResults values
-function setStartAtAndMaxResults (newstartAt, newmaxResults) {
-  startAt = newstartAt;
-  maxResults = newmaxResults;
-}
-
-//  variables to be used for testing more than a single page of results
-let page = 0;
-let numOfPages = 0;
-let processedResults = 0;
+//  variables to be used for testing within all rejected request stubs
 let startAt = 0;
-let maxResults = 20;
-let totalResults = 45;
-let counter = 0;
 
-//  Set up a page with the appropriate meta and data according to processed results, startAt, maxResults
-function setUpPage (item) {
-  item.body.meta.pageInfo.startIndex = processedResults || startAt;
-  let size = maxResults < 20 ? maxResults : 20;
-  let remaining = totalResults - processedResults;
-  if (remaining < 20) {
-    size = remaining;
-  } else {
-    size = maxResults || 20;
-  }
-  item.body.data = arrayOfSizeN(size, counter);
-  counter = startAt;
-  item.body.meta.pageInfo.resultCount = size;
-  processedResults += size;
-  return item;
-}
+// variables to be used for testing within all resolved request stubs
+let page = 0;
+let maxPossible = Number.MAX_SAFE_INTEGER;
 
 let rejectedRequestStub = function (options, callback) {
   process.nextTick(function () {
@@ -81,6 +58,36 @@ function createResolvedObject (startingIndex, resultingCount, dataSupplied) {
   return {body: {meta: {pageInfo: {startIndex: startingIndex, resultCount: resultingCount}}, data: dataSupplied}};
 }
 
+function resolvedRequest (totalResults, maxResults) {
+  let startAt = 0;
+  let resolvedObjects = [];
+  // let page = 0;
+  let remaining = totalResults;
+  let processedResults = 0;
+  let pageSize = 0;
+  let counter = 0;
+  let maxItemsPerPage = maxResults < 20 ? maxResults : 20;
+
+  let pageCount = Math.ceil(totalResults / maxItemsPerPage) + 1;
+  resolvedObjects = pageArrayOfSizeN(pageCount);
+
+  for (let i = 0; i < pageCount - 1; i += 1) {
+    if (remaining === 0) {
+      resolvedObjects.push(createResolvedObject(startAt, 0, []));
+    } else {
+      pageSize = remaining < maxItemsPerPage ? remaining : maxItemsPerPage;
+      resolvedObjects[i].body.meta.pageInfo.resultCount = pageSize;
+      resolvedObjects[i].body.meta.pageInfo.startIndex = startAt;
+      resolvedObjects[i].body.data = arrayOfSizeN(pageSize, counter);
+      processedResults += pageSize;
+      remaining = totalResults - processedResults;
+      startAt += pageSize;
+      counter = processedResults;
+    }
+  }
+  return resolvedObjects;
+}
+
 describe('Pagination Module', function () {
   'use strict';
 
@@ -90,111 +97,106 @@ describe('Pagination Module', function () {
     //  Test #1: username is invalid
     //  returned promise from pagination should be rejected
     it('should reject if the username is invalid', function () {
-      setStartAtAndMaxResults(0, 20);
       pagination = proxyquire('../../lib/pagination', { 'request': rejectedRequestStub });
-      expect(pagination('http://notdummy:password@sevensource.jamacloud.com/rest/latest/projects', startAt, maxResults)).to.eventually.be.rejected();
+      expect(pagination('http://notdummy:password@sevensource.jamacloud.com/rest/latest/projects', startAt, maxPossible)).to.eventually.be.rejected();
     });
     //  Test #2: password is invalid
     //  returned promise from pagination should be rejected
     it('should reject if the password is invalid', function () {
-      setStartAtAndMaxResults(0, 20);
       pagination = proxyquire('../../lib/pagination', { 'request': rejectedRequestStub });
-      expect(pagination('http://dummy:invalidPassword@sevensource.jamacloud.com/rest/latest/projects', startAt, maxResults)).to.eventually.be.fulfilled();
+      expect(pagination('http://dummy:invalidPassword@sevensource.jamacloud.com/rest/latest/projects', startAt, maxPossible)).to.eventually.be.fulfilled();
     });
     //  Test #3: URL contains a typo (is invalid)
     //  returned promise from pagination should be rejected
     it('should reject if the URL is invalid', function () {
-      setStartAtAndMaxResults(0, 20);
       pagination = proxyquire('../../lib/pagination', { 'request': rejectedRequestStub });
-      expect(pagination('http://dummy:password@sevensourcejamacloud.com/rest/latest/projects', startAt, maxResults)).to.eventually.be.rejected();
+      expect(pagination('http://dummy:password@sevensourcejamacloud.com/rest/latest/projects', startAt, maxPossible)).to.eventually.be.rejected();
     });
     //  Test #4: startAt value is invalid (less than zero)
     //  returned promise from pagination should be rejected
     it('should reject if the startAt value is invalid (less than zero)', function () {
-      setStartAtAndMaxResults(-1, 20);
       pagination = proxyquire('../../lib/pagination', { 'request': rejectedRequestStub });
-      expect(pagination('http://dummy:password@sevensourcejamacloud.com/rest/latest/projects', startAt, maxResults)).to.eventually.be.rejected();
+      expect(pagination('http://dummy:password@sevensourcejamacloud.com/rest/latest/projects', -1, maxPossible)).to.eventually.be.rejected();
     });
-    //  Test #5: maxResults value is invalid (less than 0)
-    //  returned promise from pagination should be rejected
-    it('should reject if the maxResults value is invalid (less than 0)', function () {
-      setStartAtAndMaxResults(0, -1);
-      pagination = proxyquire('../../lib/pagination', { 'request': rejectedRequestStub });
-      expect(pagination('http://dummy:password@sevensourcejamacloud.com/rest/latest/projects', startAt, maxResults)).to.eventually.be.rejected();
-    });
-    //  Test #6: valid URL, startAt, and maxResults is 0
+    //  Test #5: valid URL, startAt, and maxResultsAllowed is 0
     //  returned promise from pagination should be resolved with no data
-    it('should return an empty page when URL is valid, startAt is valid, and maxResults is 0 ', function () {
-      setStartAtAndMaxResults(0, 0);
-      let resolvedObject = createResolvedObject(startAt, maxResults, []);
+    it('should return an empty page when URL is valid, startAt is valid, and maxResultsAllowed is 0 ', function () {
+      // total results: 0, maximum results per page: 3
+      let pages = resolvedRequest(0, 20);
+      page = 0;
       let requestStub = function (options, callback) {
         process.nextTick(function () {
-          callback(null, resolvedObject);
-        });
-      };
-      pagination = proxyquire('../../lib/pagination', { 'request': requestStub });
-      expect(pagination('http://dummy:password@sevensource.jamacloud.com/rest/latest/projects', startAt, maxResults)).to.eventually.be.fulfilled().and.to.equal({});
-    });
-    //  Test #7: valid URL, startAt, and maxResults is less than maximum allowed (20)
-    //  returned promise from pagination should be valid and equal to resolvedObject
-    it('should return page(s) of less than 20 items when URL is valid, startAt is valid, maxResults is less than 20, and there are results to retrieve', function () {
-      setStartAtAndMaxResults(0, 3);
-      let resolvedObject = createResolvedObject(startAt, maxResults, arrayOfSizeN(3, 1));
-      let requestStub = function (options, callback) {
-        process.nextTick(function () {
-          callback(null, resolvedObject);
-        });
-      };
-      pagination = proxyquire('../../lib/pagination', { 'request': requestStub });
-      expect(pagination('http://dummy:password@sevensource.jamacloud.com/rest/latest/projects', startAt, maxResults)).to.eventually.be.fulfilled().and.to.equal(resolvedObject);
-    });
-    //  Test #8: valid URL, startAt, and maxResults is greater than maximum allowed (20)
-    //  returned promise from pagination should be valid and equal to resolvedObject
-    it('should return page(s) when URL is valid, startAt is valid, and maxResults is greater than maximum allowed (20), and there are 20 results to retrieve ', function () {
-      setStartAtAndMaxResults(0, 50);
-      let resolvedObject = createResolvedObject(startAt, 20, arrayOfSizeN(20, 1));
-      let requestStub = function (options, callback) {
-        process.nextTick(function () {
-          callback(null, resolvedObject);
-        });
-      };
-      pagination = proxyquire('../../lib/pagination', { 'request': requestStub });
-      expect(pagination('http://dummy:password@sevensource.jamacloud.com/rest/latest/projects', startAt, maxResults)).to.eventually.be.fulfilled().and.to.equal(resolvedObject);
-    });
-    //  Test #9: valid URL, startAt, maxResults is <= 20, and there are less than maxResults results
-    //  returned promise from pagination should be valid and equal to resolvedObject
-    it('should return a page of results when URL is valid, startAt is valid, maxResults <= 20, and there are < 20 results to retrieve ', function () {
-      setStartAtAndMaxResults(0, 20);
-      let resolvedObject = createResolvedObject(startAt, 3, arrayOfSizeN(3, 1));
-      let requestStub = function (options, callback) {
-        process.nextTick(function () {
-          callback(null, resolvedObject);
-        });
-      };
-      pagination = proxyquire('../../lib/pagination', { 'request': requestStub });
-      expect(pagination('http://dummy:password@sevensource.jamacloud.com/rest/latest/projects', startAt, maxResults)).to.eventually.be.fulfilled().and.to.equal(resolvedObject);
-    });
-    //  Test #11: valid URL, startAt, maxResults, retrieving more than a single page of results
-    //  returned promise from pagination should be valid and equal to resolvedObject
-    setStartAtAndMaxResults(0, 20);
-    it('should return 2 full page(s), and another half page of results when URL, startAt, and maxResults are valid, and there are' +
-        '45 total results to retrieve', function () {
-      setStartAtAndMaxResults(0, 20);
-      numOfPages = Math.floor(totalResults / maxResults);
-      numOfPages += totalResults % maxResults === 0 ? 0 : 1;
-      let resolvedObjects = pageArrayOfSizeN(numOfPages + 1);
-      //  map the resolvedObjects array to reflect 45 total results, with maximum of 20 results per page.
-      resolvedObjects.map(setUpPage);
-      resolvedObjects.push(createResolvedObject(processedResults, 0, []));
-      let requestStub = function (options, callback) {
-        process.nextTick(function () {
-          let callBackObject = resolvedObjects[page].body;
+          let callBackObject = pages[page].body;
           callback(null, {body: callBackObject});
           page += 1;
         });
       };
       pagination = proxyquire('../../lib/pagination', { 'request': requestStub });
-      return expect(pagination('http://dummy:password@sevensource.jamacloud.com/rest/latest/projects', startAt, maxResults)).to.eventually.be.fulfilled().and.to.equal(arrayOfPageData(resolvedObjects));
+      expect(pagination('http://dummy:password@sevensource.jamacloud.com/rest/latest/projects', startAt, maxPossible)).to.eventually.be.fulfilled().and.to.equal(arrayOfPageData(pages));
+    });
+    //  Test #6: valid URL, startAt, and maxResultsAllowed is less than maximum allowed (20)
+    //  returned promise from pagination should be valid and equal to pages' data
+    it('should return page(s) of less than 20 items when URL is valid, startAt is valid, maxResultsAllowed is less than 20, and there are results to retrieve', function () {
+      // total results: 10, maximum results per page: 3
+      let pages = resolvedRequest(10, 3);
+      page = 0;
+      let requestStub = function (options, callback) {
+        process.nextTick(function () {
+          let callBackObject = pages[page].body;
+          callback(null, {body: callBackObject});
+          page += 1;
+        });
+      };
+      pagination = proxyquire('../../lib/pagination', { 'request': requestStub });
+      expect(pagination('http://dummy:password@sevensource.jamacloud.com/rest/latest/projects', startAt, maxPossible)).to.eventually.be.fulfilled().and.to.equal(arrayOfPageData(pages));
+    });
+    //  Test #7: valid URL, startAt, and maxResultsAllowed is greater than maximum allowed (20)
+    //  returned promise from pagination should be valid and equal to pages' data
+    it('should return page(s) when URL is valid, startAt is valid, and maxResultsAllowed is greater than maximum allowed (20), and there are 20 results to retrieve ', function () {
+      // total results: 50, maximum results per page: 50
+      let pages = resolvedRequest(50, 50);
+      page = 0;
+      let requestStub = function (options, callback) {
+        process.nextTick(function () {
+          let callBackObject = pages[page].body;
+          callback(null, {body: callBackObject});
+          page += 1;
+        });
+      };
+      pagination = proxyquire('../../lib/pagination', { 'request': requestStub });
+      expect(pagination('http://dummy:password@sevensource.jamacloud.com/rest/latest/projects', startAt, maxPossible)).to.eventually.be.fulfilled().and.to.equal(arrayOfPageData(pages));
+    });
+    //  Test #8: valid URL, startAt, maxResultsAllowed is <= 20, and there are less than maxResultsAllowed results (testing single page result)
+    //  returned promise from pagination should be valid and equal to pages' data
+    it('should return a single page of results when URL is valid, startAt is valid, maxResultsAllowed <= 20, and there are < 20 results to retrieve ', function () {
+      // total results: 10, maximum results per page: 20
+      let pages = resolvedRequest(10, 20);
+      page = 0;
+      let requestStub = function (options, callback) {
+        process.nextTick(function () {
+          let callBackObject = pages[page].body;
+          callback(null, {body: callBackObject});
+          page += 1;
+        });
+      };
+      pagination = proxyquire('../../lib/pagination', { 'request': requestStub });
+      expect(pagination('http://dummy:password@sevensource.jamacloud.com/rest/latest/projects', startAt, maxPossible)).to.eventually.be.fulfilled().and.to.equal(arrayOfPageData(pages));
+    });
+    //  Test #9: valid URL, startAt, maxResultsAllowed, retrieving more than a single page of results
+    //  returned promise from pagination should be valid and equal to pages' data
+    it('should return multiple page(s) of results when URL, startAt, and maxResultsAllowed are valid', function () {
+      // total results: 130, maximum results per page: 20
+      let pages = resolvedRequest(130, 20);
+      page = 0;
+      let requestStub = function (options, callback) {
+        process.nextTick(function () {
+          let callBackObject = pages[page].body;
+          callback(null, {body: callBackObject});
+          page += 1;
+        });
+      };
+      pagination = proxyquire('../../lib/pagination', { 'request': requestStub });
+      expect(pagination('http://dummy:password@sevensource.jamacloud.com/rest/latest/projects', startAt, maxPossible)).to.eventually.be.fulfilled().and.to.equal(arrayOfPageData(pages));
     });
   });
 });
