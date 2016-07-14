@@ -4,184 +4,159 @@
     <title><%= title %></title>
     <link rel='stylesheet' href='/stylesheets/style.css' />
     <style> /* set the CSS */
-        .node {
-            cursor: pointer;
-        }
-        .node circle {
-            fill: #fff;
-            stroke: steelblue;
-            stroke-width: 1.5px;
-        }
-        .node text {
-            font: 10px sans-serif;
-        }
-        .link {
+        path.link {
             fill: none;
-            stroke: #eee;
+            stroke: #efefef;
             stroke-width: 1.5px;
+        }
+
+        path.arrow {
+            fill: #afafaf;
+            stroke: #afafaf;
+            stroke-width: 1.5px;
+        }
+
+        circle {
+            fill: #fff;
+            stroke: #F2622B;
+            stroke-width: 1.5px;
+        }
+
+        text {
+            fill: #000;
+            font: 10px sans-serif;
+            pointer-events: none;
+        }
+
+        .node {
+            fill: 'steelblue';
         }
     </style>
 </head>
 <body>
-<script src="http://d3js.org/d3.v3.min.js"></script>
+<script src='http://d3js.org/d3.v3.min.js'></script>
 <h1><%= title %></h1>
 <h3><%= subtitle + ' ' + projectId %></h3>
 <script>
-    var margin = {top: 20, right: 120, bottom: 20, left: 120},
-        width = 960 - margin.right - margin.left,
-        height = 800 - margin.top - margin.bottom;
+    // get the data
+    d3.json('../js/sampleGraphData.json', function(error, links) {
 
-    var i = 0;
-    var duration = 750;  // Duration of animation
-    var root;
+        // let nodes = {};
+        let nodes = links.items;
 
-    // ====== Colors
-    var withChildrenNodeColor = 'steelblue';
-    var nodeColor = '#fff';
+    // Compute the distinct nodes from the links.
+        links.relationships.forEach(function(node) {
+            node.source = nodes[node.fromItem] || (nodes[node.fromItem] = {name: node.fromItem});
+            node.target = nodes[node.toItem] || (nodes[node.toItem] = {name: node.toItem});
+            node.value = +node.type;
+        });
 
-    // ======= Offsets
-    var horizNodeOffset = 150;
+        let width = 960;
+        let height = 800;
 
-    var tree = d3.layout.tree()
-        .size([height, width]);
+        let force = d3.layout.force()
+            .nodes(d3.values(nodes))
+            .links(links.relationships)
+            .size([width, height])
+            .linkDistance(60)
+            .charge(-500)
+            .on('tick', tick)
+            .start();
 
-    var diagonal = d3.svg.diagonal()
-        .projection(function(d) { return [d.y, d.x]; });
+        let svg = d3.select('body').append('svg')
+            .attr('width', width)
+            .attr('height', height);
 
-    var svg = d3.select("body").append("svg")
-        .attr("width", width + margin.right + margin.left)
-        .attr("height", height + margin.top + margin.bottom)
-        .append("g")
-        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+        // ============ build the arrow ================
+        svg.append('svg:defs').selectAll('marker')
+            .data(['end'])      // Different link/path types can be defined here
+            .enter().append('svg:marker')    // This section adds in the arrows
+            .attr('id', String)
+            .attr('viewBox', '0 -5 10 10')
+            .attr('refX', 15)
+            .attr('refY', -1.5)
+            .attr('markerWidth', 6)
+            .attr('markerHeight', 6)
+            .attr('orient', 'auto')
+            .append('svg:path')
+            .attr('d', 'M0,-5L10,0L0,5')
+            .attr('class', 'arrow');
 
-    d3.json("../js/testNodeData.json", function(error, flare) {
-        if (error) throw error;
+        // ============ links combined with the arrows ===========
+        let path = svg.append('svg:g').selectAll('path')
+            .data(force.links())
+            .enter().append('svg:path')
+            .attr('class', function(d) { return 'link ' + d.type; })
+            .attr('class', 'link')
+            .attr('marker-end', 'url(#end)');
 
-        root = flare;
-        root.x0 = height / 2;
-        root.y0 = 0;
+        // define the nodes
+        let node = svg.selectAll('.node')
+            .data(force.nodes())
+            .enter().append('g')
+            .attr('class', 'node')
+            .call(force.drag);
 
-        function collapse(d) {
-            if (d.children) {
-                d._children = d.children;
-                d._children.forEach(collapse);
-                d.children = null;
-            }
-        }
+        // add the nodes
+        node.append('circle')
+            .attr('r', 5);
 
-        root.children.forEach(collapse);
-        update(root);
-    });
+        // add the text
+        node.append('text')
+            .attr('x', 12)
+            .attr('dy', '.35em')
+            .attr('class', 'nodeText')
+            .text(function(d) { return d.name; });
 
-    d3.select(self.frameElement).style("height", "800px");
-
-    function update(source) {
-
-        // Compute the new tree layout.
-        var nodes = tree.nodes(root).reverse(),
-            links = tree.links(nodes);
-
-        // Normalize for fixed-depth.
-        nodes.forEach(function(d) { d.y = d.depth * horizNodeOffset; }); // offset of children from root
-
-        // Update the nodes…
-        var node = svg.selectAll("g.node")
-            .data(nodes, function(d) { return d.id || (d.id = ++i); });
-
-        // Enter any new nodes at the parent's previous position.
-        // ================ Node Enter Section ================
-        var nodeEnter = node.enter().append("g")
-            .attr("class", "node")
-            .attr("transform", function(d) { return "translate(" + source.y0 + "," + source.x0 + ")"; })
-            .on("click", click);
-
-        // Configure Node shape
-        nodeEnter.append("circle")
-            .attr("r", 1e-6)
-            .style("fill", function(d) { return d._children ? "lightsteelblue" : "#fff"; });
-
-        // Configure the text of the Nodes
-        nodeEnter.append("text")
-            .attr("x", function(d) { return d.children || d._children ? -10 : 10; }) // The child node test offset
-            .attr("dy", ".37em")
-            .attr("text-anchor", function(d) { return d.children || d._children ? "end" : "start"; })
-            .text(function(d) { return d.name; })
-            .style("fill-opacity", 1e-6);
-
-        // Transition nodes to their new position.
-        // =============== Update the Nodes ====================
-        var nodeUpdate = node.transition()
-            .duration(duration)
-            .attr("transform", function(d) { return "translate(" + d.y + "," + d.x + ")"; });
-
-        nodeUpdate.select("circle")
-            .attr("r", 4.5)
-            .style("fill", function(d) { return d._children ? withChildrenNodeColor : nodeColor; });
-            //.style("stroke", function(d) { return d._children ? withChildrenNodeColor : nodeColor; });
-
-        nodeUpdate.select("text")
-            .style("fill-opacity", 1);
-
-        // Transition exiting nodes to the parent's new position.
-        // ================== Node Exit Section ==================
-        var nodeExit = node.exit().transition()
-            .duration(duration)
-            .attr("transform", function(d) { return "translate(" + source.y + "," + source.x + ")"; })
-            .remove();
-
-        nodeExit.select("circle")
-            .attr("r", 1e-6);
-
-        nodeExit.select("text")
-            .style("fill-opacity", 1e-6);
-
-        // Update the links…
-        // ================== Links section =======================
-        var link = svg.selectAll("path.link")
-                .data(links, function(d) { return d.target.id; });
-
-        // Enter any new links at the parent's previous position.
-        link.enter().insert("path", "g")
-            .attr("class", "link")
-            .attr("d", function(d) {
-                var o = {x: source.x0, y: source.y0};
-                return diagonal({source: o, target: o});
+        // ============= add the curvy lines ==============
+        function tick() {
+            path.attr('d', function(d) {
+                let dx = d.target.x - d.source.x,
+                        dy = d.target.y - d.source.y,
+                        dr = Math.sqrt(dx * dx + dy * dy);
+                return 'M' +
+                        d.source.x + ',' +
+                        d.source.y + 'A' +
+                        dr + ',' + dr + ' 0 0,1 ' +
+                        d.target.x + ',' +
+                        d.target.y;
             });
 
-        // Transition links to their new position.
-        link.transition()
-            .duration(duration)
-            .attr("d", diagonal);
-
-        // Transition exiting nodes to the parent's new position.
-        // ==================== Link Exit Section ======================
-        link.exit().transition()
-            .duration(duration)
-            .attr("d", function(d) {
-                var o = {x: source.x, y: source.y};
-                return diagonal({source: o, target: o});
-            })
-            .remove();
-
-        // Stash the old positions for transition.
-        nodes.forEach(function(d) {
-            d.x0 = d.x;
-            d.y0 = d.y;
-        });
-    }
-
-    // Toggle children on click.
-    function click(d) {
-        if (d.children) {
-            d._children = d.children;
-            d.children = null;
-        } else {
-            d.children = d._children;
-            d._children = null;
+            node.attr('transform', function(d) {
+                return 'translate(' + d.x + ',' + d.y + ')';
+            });
         }
-        update(d);
-    }
+
+        // ============ Toggle children on click ===========
+        /* function nodeClick(d) {
+            if (!d3.event.defaultPrevented) {
+                //check if link is from this node, and if so, collapse
+                root.links.forEach(function(l) {
+                    if(l.source.id == d.id) {
+                        if(d.collapsed){
+                            l.target.collapsing--;
+                        } else {
+                            l.target.collapsing++;
+                        }
+                    }
+                });
+                d.collapsed = !d.collapsed;
+            }
+            update();
+        }*/
+
+        function getToItemValues(array, value) {
+            let result = [];
+
+            array.forEach (function (item) {
+                if (item.fromItem === value) {
+                    result.push(item.toItem);
+                }
+            });
+            return result;
+        }
+    });
 </script>
-<script src="js/project.js"></script>
+<script src='js/project.js'></script>
 </body>
 </html>

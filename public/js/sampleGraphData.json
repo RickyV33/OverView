@@ -1,0 +1,138 @@
+{
+  "items": [
+    {
+      "id": 1, "name": "A", "type": 5
+    },
+    {
+      "id": 2, "name": "B", "type": 5
+    },
+    {
+      "id": 3, "name": "C", "type": 5
+    },
+    {
+      "id": 4, "name": "D", "type": 5
+    },
+    {
+      "id": 5, "name": "E", "type": 5
+    },
+    {
+      "id": 6, "name": "F", "type": 5
+    },
+    {
+      "id": 7, "name": "G", "type": 5
+    },
+    {
+      "id": 8, "name": "H", "type": 5
+    },
+    {
+      "id": 9, "name": "I", "type": 5
+    },
+    {
+      "id": 10, "name": "J", "type": 5
+    },
+    {
+      "id": 11, "name": "K", "type": 5
+    },
+    {
+      "id": 12, "name": "L", "type": 5
+    },
+    {
+      "id": 13, "name": "M", "type": 5
+    },
+    {
+      "id": 14, "name": "N", "type": 5
+    },
+    {
+      "id": 15, "name": "O", "type": 5
+    },
+    {
+      "id": 16, "name": "P", "type": 5
+    }
+  ],
+  "relationships": [
+    {
+      "id": 100,
+      "fromItem": 1,
+      "toItem": 2,
+      "type": 9
+    },
+    {
+      "id": 101,
+      "fromItem": 1,
+      "toItem": 3,
+      "type": 9
+    },
+    {
+      "id": 102,
+      "fromItem": 1,
+      "toItem": 4,
+      "type": 9
+    },
+    {
+      "id": 103,
+      "fromItem": 1,
+      "toItem": 5,
+      "type": 9
+    },
+    {
+      "id": 104,
+      "fromItem": 2,
+      "toItem": 6,
+      "type": 9
+    },
+    {
+      "id": 105,
+      "fromItem": 2,
+      "toItem": 7,
+      "type": 9
+    },
+    {
+      "id": 106,
+      "fromItem": 3,
+      "toItem": 8,
+      "type": 9
+    },
+    {
+      "id": 107,
+      "fromItem": 3,
+      "toItem": 9,
+      "type": 9
+    },
+    {
+      "id": 108,
+      "fromItem": 9,
+      "toItem": 11,
+      "type": 9
+    },
+    {
+      "id": 109,
+      "fromItem": 11,
+      "toItem": 12,
+      "type": 9
+    },
+    {
+      "id": 110,
+      "fromItem": 12,
+      "toItem": 13,
+      "type": 9
+    },
+    {
+      "id": 111,
+      "fromItem": 13,
+      "toItem": 14,
+      "type": 9
+    },
+    {
+      "id": 111,
+      "fromItem": 13,
+      "toItem": 15,
+      "type": 9
+    },
+    {
+      "id": 111,
+      "fromItem": 13,
+      "toItem": 16,
+      "type": 9
+    }
+  ]
+}
