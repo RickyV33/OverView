@@ -91,6 +91,105 @@ describe('Graph module', function () {
       }
     ]
   };
+
+  let itemAndRelationshipFixtureCases = [
+    {
+      'items': [ {} ], 'relationships': [ {} ]
+    },
+    {
+      'items': [
+        {
+          'id': 1,
+          'name': 'Item One',
+          'type': 10
+        }
+      ],
+      'relationships': [ {} ]
+    },
+    {
+      'items': [ {} ],
+      'relationships': [
+        {
+          'id': 2,
+          'fromItem': 1,
+          'toItem': 1,
+          'type': 20
+        }
+      ]
+    },
+    {
+      'items': [
+        {
+          'id': 1,
+          'name': 'Item One',
+          'type': 10
+        }
+      ],
+      'relationships': [
+        {
+          'id': 2,
+          'fromItem': 1,
+          'toItem': 1,
+          'type': 20
+        }
+      ]
+    }
+  ];
+
+  describe('helper functions', function () {
+    let projectId = 1;
+    let url = 'url';
+
+    let resolvedProjectNamePromise = function() {
+      return new Promise(function (resolve, reject) {
+        let projectName = 'project name';
+        resolve(projectName);
+      })
+    };
+    let rejectedProjectNamePromise = function () {
+      return new Promise(function (resolve, reject) {
+        let projectName = '';
+        reject(projectName);
+      })
+    };
+
+    it('should return a resolved promise when there exists a project name.', function () {
+      let graph = proxyquire('../../lib/graph', { './getProjectName': resolvedProjectNamePromise });
+      expect(graph.getProjectName(projectId, url)).to.be.fulfilled();
+    });
+
+    it('should return a rejected promise when no project name exists.', function () {
+
+    });
+
+    it('should return a resolved promise when there exists at least one item.', function () {
+
+    });
+
+    it('should return a rejected promise when no items exist.', function () {
+
+    });
+
+    it('should return a resolved promise when there exists at least one item relationship.', function () {
+
+    });
+
+    it('should return a rejected promise when no item relationships exist.', function () {
+
+    });
+  });
+
+  describe('constructor', function () {
+    'use strict';
+
+    it('should return a graph with nonempty data members when project ID and url are valid.', function () {
+      
+    });
+
+    it('should return nothing when either project ID or url are invalid.', function () {
+
+    });
+  });
   
   describe('graph Constructor', function () {
     let valid = tv4.valdiate(mock, spec);
