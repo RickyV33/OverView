@@ -21,7 +21,7 @@ describe('projects GET', function () {
             console.log(err);
           }
           expect(res).to.have.status(200);
-          expect(res).to.redirect;
+          expect(res).to.redirect();
           expect(res).to.have.property('text');
           expect(res.charset).to.equal('utf-8');
           path = join(__dirname, '../../views/projects.ejs');
