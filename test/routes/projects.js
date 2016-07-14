@@ -25,6 +25,7 @@ describe('projects GET', function () {
           expect(res).to.have.property('text');
           expect(res.charset).to.equal('utf-8');
           path = join(__dirname, '../../views/projects.ejs');
+            // TODO need to test with actuall data once "Gather projects" story is completed
           data = {title: 'Projects', projects: null};
           renderedView = ejs.compile(read(path, 'utf8'), {filename: path})(data);
           expect(res.text).to.equal(renderedView);
