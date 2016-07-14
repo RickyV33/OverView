@@ -30,7 +30,9 @@ describe('Relatinship Graph JSON', function () {
       {title: 'should return false when type is missing from a relationship', body: {items: [{id: 1, name: 'story', type: 35}, {id: 2, name: 'story', type: 35}], relationships: [{id: 1, fromItem: 1, toItem: 2}]}},
       // test cases for JSON that do not contain required properties [items, relationships]
       {title: 'should return false when items property is missing from JSON blob', body: {relationships: [{id: 1, fromItem: 1, toItem: 2, type: 36}]}},
-      {title: 'should return false when relationships property is missing from JSON blob', body: {items: [{id: 1, name: 'story', type: 35}, {id: 2, name: 'story', type: 35}]}}
+      {title: 'should return false when relationships property is missing from JSON blob', body: {items: [{id: 1, name: 'story', type: 35}, {id: 2, name: 'story', type: 35}]}},
+      // test case for duplicate items
+      {title: 'should return false when JSON contains duplicate items', body: {items: [{id: 1, name: 'story', type: 35}, {id: 1, name: 'story', type: 35}]}}
   ];
   // Passing test cases for relationship graph JSON
   let passingTestCases = [

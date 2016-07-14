@@ -19,7 +19,8 @@
           }
         },
         "required": ["id", "name", "type"],
-        "additionalProperties": false
+        "additionalProperties": false,
+        "uniqueItems": true
       }
     },
     "relationships": {
