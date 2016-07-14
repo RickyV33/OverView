@@ -7,7 +7,7 @@ let proxyquire = require('proxyquire');
 
 chai.use(dirtyChai);
 
-describe('Graph module', function () {
+describe('Graph class module', function () {
   // let spec = {
   //   '$schema': 'http://json-schema.org/draft-04/schema#',
   //   'title': 'Graph',
@@ -89,59 +89,79 @@ describe('Graph module', function () {
   //   ]
   // };
 
-  // let itemAndRelationshipFixtureCases = [
-  //   {
-  //     'items': [ {} ], 'relationships': [ {} ]
-  //   },
-  //   {
-  //     'items': [
-  //       {
-  //         'id': 1,
-  //         'name': 'Item One',
-  //         'type': 10
-  //       }
-  //     ],
-  //     'relationships': [ {} ]
-  //   },
-  //   {
-  //     'items': [ {} ],
-  //     'relationships': [
-  //       {
-  //         'id': 2,
-  //         'fromItem': 1,
-  //         'toItem': 1,
-  //         'type': 20
-  //       }
-  //     ]
-  //   },
-  //   {
-  //     'items': [
-  //       {
-  //         'id': 1,
-  //         'name': 'Item One',
-  //         'type': 10
-  //       }
-  //     ],
-  //     'relationships': [
-  //       {
-  //         'id': 2,
-  //         'fromItem': 1,
-  //         'toItem': 1,
-  //         'type': 20
-  //       }
-  //     ]
-  //   }
-  // ];
-
   describe('constructor', function () {
-    'use strict';
+    let projectId = 1;
+    let url = 'url';
+    let stubs = {};
+    let data = [];
+    let Graph;
+    let resolvedNamePromise = () => {
+      return new Promise(function (resolve, reject) {
+        data = 'mocked project name';
+        resolve(data);
+      });
+    };
+    let resolvedItemsPromise = () => {
+      return new Promise(function (resolve, reject) {
+        data = [{'id': 10, 'name': 'item name', 'type': 99}];
+        resolve(data);
+      });
+    };
+    let resolvedRelationshipsPromise = () => {
+      return new Promise(function (resolve, reject) {
+        data = [{'id': 10, 'fromItem': 1, 'toItem': 2, 'type': 99}];
+        resolve(data);
+      });
+    };
+    let rejectedPromise = () => {
+      return new Promise(function (resolve, reject) {
+        reject('rejected promise');
+      });
+    };
 
     it('should return a graph with nonempty data members when project ID and url are valid.', function () {
+      Graph = proxyquire('../../lib/graph', {'./projectquire': stubs});
+      stubs.getProjectName = () => {
+        console.log('IN PROJECT NAME STUB');
+        return resolvedNamePromise();
+      };
+      stubs.getProjectItems = () => {
+        console.log('IN PROJECT ITEMS STUB');
+        return resolvedItemsPromise();
+      };
+      stubs.getProjectRelationships = () => {
+        console.log('IN PROJECT REL STUB');
 
+        return resolvedRelationshipsPromise();
+      };
+      let newGraph = new Graph(projectId, url);
+      setTimeout(function () {
+        expect(newGraph.name).to.equal('mocked project name');
+        expect(newGraph.nodes[0].id).to.equal(10);
+        expect(newGraph.nodes[0].name).to.equal('item name');
+        expect(newGraph.nodes[0].type).to.equal(99);
+        expect(newGraph.edges[0].id).to.equal(10);
+        expect(newGraph.edges[0].fromItem).to.equal(1);
+        expect(newGraph.edges[0].toItem).to.equal(2);
+        expect(newGraph.edges[0].type).to.equal(99);
+      }, 2000);
     });
 
     it('should return nothing when either project ID or url are invalid.', function () {
-
+      Graph = proxyquire('../../lib/graph', {'./projectquire': stubs});
+      stubs.getProjectName = () => {
+        return rejectedPromise();
+      };
+      stubs.getProjectItems = () => {
+        return rejectedPromise();
+      };
+      stubs.getProjectRelationships = () => {
+        return rejectedPromise();
+      };
+      let newGraph = new Graph(projectId, url);
+      expect(newGraph.name).to.be.empty();
+      expect(newGraph.nodes).to.be.empty();
+      expect(newGraph.edges).to.be.empty();
     });
   });
 });
