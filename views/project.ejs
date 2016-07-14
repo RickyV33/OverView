@@ -10,10 +10,10 @@
             stroke-width: 1.5px;
         }
 
-        path.arrow {
-            fill: #afafaf;
+        .arrow {
+            fill: #bfbfbf;
             stroke: #afafaf;
-            stroke-width: 1.5px;
+            stroke-width: 1.5px !important;
         }
 
         circle {
@@ -42,12 +42,12 @@
     d3.json('../js/sampleGraphData.json', function(error, links) {
 
         // let nodes = {};
-        let nodes = links.items;
+        let items = links.items;
 
     // Compute the distinct nodes from the links.
         links.relationships.forEach(function(node) {
-            node.source = nodes[node.fromItem] || (nodes[node.fromItem] = {name: node.fromItem});
-            node.target = nodes[node.toItem] || (nodes[node.toItem] = {name: node.toItem});
+            node.source = getItemWithId(items, node.fromItem);
+            node.target = getItemWithId(items, node.toItem);
             node.value = +node.type;
         });
 
@@ -55,7 +55,7 @@
         let height = 800;
 
         let force = d3.layout.force()
-            .nodes(d3.values(nodes))
+            .nodes(d3.values(items))
             .links(links.relationships)
             .size([width, height])
             .linkDistance(60)
@@ -153,6 +153,19 @@
                     result.push(item.toItem);
                 }
             });
+            return result;
+        }
+
+        function getItemWithId(itemArray, id) {
+            let result = null;
+
+            itemArray.forEach (function (item) {
+                if (item.id === id) {
+                    result = item;
+                    return;
+                }
+            });
+
             return result;
         }
     });
