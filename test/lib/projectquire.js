@@ -34,8 +34,6 @@ describe('Projectquire module', () => {
     it('should return a rejected promise when no project name exists.', function () {
       data = [{'name': 'mocked project name'}];
       graph = proxyquire('../../lib/graph', {'./pagination': rejectedProjectPromise});
-      let app2 = rewire(graph);
-      let getProjectName = app2.__get__('getProjectName');
       expect(getProjectName(projectId, url)).to.be.rejected();
     });
 
