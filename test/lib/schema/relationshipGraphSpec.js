@@ -20,19 +20,37 @@ describe('Relatinship Graph JSON', function () {
   let failingTestCases = [
       // test cases for items missing a field [id, name, type]
       {title: 'should return false for empty json', body: {}},
-      {title: 'should return false when id field is missing from an item', body: {items: [{name: 'story', type: 35}, {id: 2, name: 'req', type: 35}], relationships: [{id: 1, fromItem: 1, toItem: 2, type: 36}]}},
-      {title: 'should return false when name field is missing from an item', body: {items: [{id: 1, type: 35}, {id: 2, name: 'req', type: 35}], relationships: [{id: 1, fromItem: 1, toItem: 2, type: 36}]}},
-      {title: 'should return false when type field is missing from an item', body: {items: [{id: 1, name: 'story'}, {id: 2, name: 'req', type: 35}], relationships: [{id: 1, fromItem: 1, toItem: 2, type: 36}]}},
+      {title: 'should return false when id field is missing from an item',
+          body: {items: [{name: 'story', type: 35}, {id: 2, name: 'req', type: 35}],
+              relationships: [{id: 1, fromItem: 1, toItem: 2, type: 36}]}},
+      {title: 'should return false when name field is missing from an item',
+          body: {items: [{id: 1, type: 35}, {id: 2, name: 'req', type: 35}],
+              relationships: [{id: 1, fromItem: 1, toItem: 2, type: 36}]}},
+      {title: 'should return false when type field is missing from an item',
+          body: {items: [{id: 1, name: 'story'}, {id: 2, name: 'req', type: 35}],
+              relationships: [{id: 1, fromItem: 1, toItem: 2, type: 36}]}},
       // test cases for relationships missing a field [id, fromItem, toItem, type]
-      {title: 'should return false when id field is missing from a relationship', body: {items: [{id: 1, name: 'story', type: 35}, {id: 2, name: 'req', type: 35}], relationships: [{fromItem: 1, toItem: 2, type: 36}]}},
-      {title: 'should return false when fromItem is missing from a relationship', body: {items: [{id: 1, name: 'story', type: 35}, {id: 2, name: 'story', type: 35}], relationships: [{id: 1, toItem: 2, type: 36}]}},
-      {title: 'should return false when toItem is missing from a relationship', body: {items: [{id: 1, name: 'story', type: 35}, {id: 2, name: 'story', type: 35}], relationships: [{id: 1, fromItem: 1, type: 36}]}},
-      {title: 'should return false when type is missing from a relationship', body: {items: [{id: 1, name: 'story', type: 35}, {id: 2, name: 'story', type: 35}], relationships: [{id: 1, fromItem: 1, toItem: 2}]}},
+      {title: 'should return false when id field is missing from a relationship',
+          body: {items: [{id: 1, name: 'story', type: 35}, {id: 2, name: 'req', type: 35}],
+              relationships: [{fromItem: 1, toItem: 2, type: 36}]}},
+      {title: 'should return false when fromItem is missing from a relationship',
+          body: {items: [{id: 1, name: 'story', type: 35}, {id: 2, name: 'story', type: 35}],
+              relationships: [{id: 1, toItem: 2, type: 36}]}},
+      {title: 'should return false when toItem is missing from a relationship',
+          body: {items: [{id: 1, name: 'story', type: 35}, {id: 2, name: 'story', type: 35}],
+              relationships: [{id: 1, fromItem: 1, type: 36}]}},
+      {title: 'should return false when type is missing from a relationship',
+          body: {items: [{id: 1, name: 'story', type: 35}, {id: 2, name: 'story', type: 35}],
+              relationships: [{id: 1, fromItem: 1, toItem: 2}]}},
       // test cases for JSON that do not contain required properties [items, relationships]
-      {title: 'should return false when items property is missing from JSON blob', body: {relationships: [{id: 1, fromItem: 1, toItem: 2, type: 36}]}},
-      {title: 'should return false when relationships property is missing from JSON blob', body: {items: [{id: 1, name: 'story', type: 35}, {id: 2, name: 'story', type: 35}]}},
+      {title: 'should return false when items property is missing from JSON blob',
+          body: {relationships: [{id: 1, fromItem: 1, toItem: 2, type: 36}]}},
+      {title: 'should return false when relationships property is missing from JSON blob',
+          body: {items: [{id: 1, name: 'story', type: 35}, {id: 2, name: 'story', type: 35}]}},
       // test case for duplicate items
-      {title: 'should return false when JSON contains duplicate items', body: {items: [{id: 1, name: 'story', type: 35}, {id: 1, name: 'story', type: 35}]}}
+      {title: 'should return false when JSON contains duplicate items',
+          body: {items: [{id: 1, name: 'story', type: 35}, {id: 1, name: 'story', type: 35}],
+              relationships: [{id: 1, fromItem: 1, toItem: 2, type: 36}]}}
   ];
   // Passing test cases for relationship graph JSON
   let passingTestCases = [

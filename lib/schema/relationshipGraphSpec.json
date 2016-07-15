@@ -4,6 +4,7 @@
   "properties": {
     "items": {
       "type": "array",
+      "uniqueItems": true,
       "items": {
         "title": "Item",
         "type": "object",
@@ -19,9 +20,9 @@
           }
         },
         "required": ["id", "name", "type"],
-        "additionalProperties": false,
-        "uniqueItems": true
+        "additionalProperties": false
       }
+
     },
     "relationships": {
       "type": "array",
