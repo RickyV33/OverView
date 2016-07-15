@@ -2,7 +2,6 @@
 
 let chai = require('chai');
 let expect = chai.expect;
-let should = chai.should;
 let dirtyChai = require('dirty-chai');
 let proxyquire = require('proxyquire');
 let chaiHttp = require('chai-http');
@@ -68,7 +67,7 @@ describe('index', function () {
             .get('/')
             .end(function (err, res) {
               if (err) {
-                should.fail('Index Page Failed.');
+                expect.fail(); // ('Index Page Failed.');
               }
               // Render the view using ejs
               let path = join(__dirname, '../../views/index.ejs');
