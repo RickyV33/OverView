@@ -14,12 +14,12 @@ describe('Projectquire module', () => {
   let projectquire;
 
   let resolvedPromise = () => {
-    return new Promise(function (resolve, reject) {
+    return new Promise((resolve, reject) => {
       resolve(data);
     });
   };
   let rejectedPromise = () => {
-    return new Promise(function (resolve, reject) {
+    return new Promise((resolve, reject) => {
       reject(data);
     });
   };
@@ -36,7 +36,7 @@ describe('Projectquire module', () => {
         expect(name).to.equal('mocked project name');
       });
     });
-    it('should return a rejected promise when no project name exists.', function () {
+    it('should return a rejected promise when no project name exists.', () => {
       projectquire = proxyquire('../../lib/projectquire', {'./pagination': rejectedPromise});
       expect(projectquire.getProjectName(projectId, url)).to.be.rejected();
     });

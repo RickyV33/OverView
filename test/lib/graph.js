@@ -9,40 +9,41 @@ let Graph = require('../../lib/graph');
 
 chai.use(dirtyChai);
 
-describe('Graph class module', function () {
+describe('Graph class module', () => {
   // Removes console printing for our modules
-  console.error = () => {};
-  describe('constructor', function () {
+  console.error = () => {
+  };
+  describe('constructor', () => {
     let projectId = 1;
     let url = 'url';
     let stubs = {};
     let data = [];
     let Graph;
     let resolvedNamePromise = () => {
-      return new Promise(function (resolve, reject) {
+      return new Promise((resolve, reject) => {
         data = 'mocked project name';
         resolve(data);
       });
     };
     let resolvedItemsPromise = () => {
-      return new Promise(function (resolve, reject) {
+      return new Promise((resolve, reject) => {
         data = [{'id': 10, 'name': 'item name', 'type': 99}];
         resolve(data);
       });
     };
     let resolvedRelationshipsPromise = () => {
-      return new Promise(function (resolve, reject) {
+      return new Promise((resolve, reject) => {
         data = [{'id': 10, 'fromItem': 1, 'toItem': 2, 'type': 99}];
         resolve(data);
       });
     };
     let rejectedPromise = () => {
-      return new Promise(function (resolve, reject) {
+      return new Promise((resolve, reject) => {
         reject('rejected promise');
       });
     };
 
-    it('should return a graph with nonempty data members when project ID and url are valid.', function () {
+    it('should return a graph with nonempty data members when project ID and url are valid.', () => {
       Graph = proxyquire('../../lib/graph', {'./projectquire': stubs});
       stubs.getProjectName = () => {
         return resolvedNamePromise();
@@ -66,7 +67,7 @@ describe('Graph class module', function () {
       }, 2000);
     });
 
-    it('should return nothing when either project ID or url are invalid.', function () {
+    it('should return nothing when either project ID or url are invalid.', () => {
       Graph = proxyquire('../../lib/graph', {'./projectquire': stubs});
       stubs.getProjectName = () => {
         return rejectedPromise();
@@ -104,7 +105,7 @@ describe('Graph class module', function () {
       expect(graph.toJson()).to.be.empty();
     });
   });
-
+  
   describe('fromJson function', () => {
     let badNodes = [{'id': '10', 'name': 'item name', 'type': '99'}];
     let badEdges = [{'id': '10', 'fromItem': '1', 'toItem': '2', 'type': '99'}];
