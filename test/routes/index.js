@@ -66,7 +66,7 @@ describe('index', function () {
       // This makes a server request to the route location '/'
       chai.request(server)
             .get('/')
-            .end(function (err, res, body) {
+            .end(function (err, res) {
               if (err) {
                 should.fail('Index Page Failed.');
               }
