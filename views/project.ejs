@@ -95,7 +95,8 @@
             .data(force.nodes())
             .enter().append('g')
             .attr('class', 'node')
-            .call(force.drag);
+            .call(force.drag)
+            .on("click", nodeClick);
 
         // add the nodes
         node.append('circle')
@@ -107,6 +108,8 @@
             .attr('dy', '.35em')
             .attr('class', 'nodeText')
             .text(function(d) { return d.name; });
+
+        // ------------ Node Enter Section ----------------
 
         // ============= add the curvy lines ==============
         function tick() {
@@ -128,7 +131,8 @@
         }
 
         // ============ Toggle children on click ===========
-        /* function nodeClick(d) {
+        function nodeClick(d) {
+            console.log('Node Click event fired!!!!');
             if (!d3.event.defaultPrevented) {
                 //check if link is from this node, and if so, collapse
                 root.links.forEach(function(l) {
@@ -143,8 +147,7 @@
                 d.collapsed = !d.collapsed;
             }
             update();
-        }*/
-
+        }
         function getToItemValues(array, value) {
             let result = [];
 
