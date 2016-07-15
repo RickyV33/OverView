@@ -5,90 +5,13 @@ let expect = chai.expect;
 let dirtyChai = require('dirty-chai');
 let proxyquire = require('proxyquire');
 
+let Graph = require('../../lib/graph');
+
 chai.use(dirtyChai);
 
 describe('Graph class module', function () {
-  // let spec = {
-  //   '$schema': 'http://json-schema.org/draft-04/schema#',
-  //   'title': 'Graph',
-  //   'type': 'object',
-  //   'properties': {
-  //     'items': {
-  //       'type': 'array',
-  //       'items': {
-  //         'title': 'Item',
-  //         'type': 'object',
-  //         'properties': {
-  //           'id': { 'type': 'integer' },
-  //           'name': { 'type': 'string' },
-  //           'type': { 'type': 'integer' }
-  //         }
-  //       },
-  //       'required': ['id', 'name', 'type']
-  //     },
-  //     'relationships': {
-  //       'type': 'array',
-  //       'items': {
-  //         'title': 'Relationship',
-  //         'type': 'object',
-  //         'properties': {
-  //           'id': { 'type': 'integer' },
-  //           'fromItem': { 'type': 'integer' },
-  //           'toItem': { 'type': 'integer' },
-  //           'type': { 'type': 'integer' }
-  //         }
-  //       },
-  //       'required': ['id', 'fromItem', 'toItem', 'type']
-  //     }
-  //   },
-  //   'required': ['items', 'relationships']
-  // };
-  //
-  // let mock = {
-  //   'items': [
-  //     {
-  //       'id': 10,
-  //       'name': 'User Login Home Page',
-  //       'type': 99
-  //     },
-  //     {
-  //       'id': 11,
-  //       'name': 'Input a Username',
-  //       'type': 24
-  //     },
-  //     {
-  //       'id': 12,
-  //       'name': 'Input a Password',
-  //       'type': 24
-  //     },
-  //     {
-  //       'id': 13,
-  //       'name': 'Input a TeamName',
-  //       'type': 24
-  //     }
-  //   ],
-  //   'relationships': [
-  //     {
-  //       'id': 1,
-  //       'fromItem': 11,
-  //       'toItem': 10,
-  //       'type': 6 // derived from
-  //     },
-  //     {
-  //       'id': 2,
-  //       'fromItem': 12,
-  //       'toItem': 10,
-  //       'type': 6 // derived from
-  //     },
-  //     {
-  //       'id': 3,
-  //       'fromItem': 13,
-  //       'toItem': 10,
-  //       'type': 6 // derived from
-  //     }
-  //   ]
-  // };
-
+  // Removes console printing for our modules
+  console.error = () => {};
   describe('constructor', function () {
     let projectId = 1;
     let url = 'url';
@@ -122,20 +45,16 @@ describe('Graph class module', function () {
     it('should return a graph with nonempty data members when project ID and url are valid.', function () {
       Graph = proxyquire('../../lib/graph', {'./projectquire': stubs});
       stubs.getProjectName = () => {
-        console.log('IN PROJECT NAME STUB');
         return resolvedNamePromise();
       };
       stubs.getProjectItems = () => {
-        console.log('IN PROJECT ITEMS STUB');
         return resolvedItemsPromise();
       };
       stubs.getProjectRelationships = () => {
-        console.log('IN PROJECT REL STUB');
-
         return resolvedRelationshipsPromise();
       };
       let newGraph = new Graph(projectId, url);
-      setTimeout(function () {
+      setTimeout(() => {
         expect(newGraph.name).to.equal('mocked project name');
         expect(newGraph.nodes[0].id).to.equal(10);
         expect(newGraph.nodes[0].name).to.equal('item name');
@@ -162,6 +81,49 @@ describe('Graph class module', function () {
       expect(newGraph.name).to.be.empty();
       expect(newGraph.nodes).to.be.empty();
       expect(newGraph.edges).to.be.empty();
+    });
+  });
+
+  describe('toJson function', () => {
+    let badNodes = [{'id': '10', 'name': 'item name', 'type': '99'}];
+    let badEdges = [{'id': '10', 'fromItem': '1', 'toItem': '2', 'type': '99'}];
+    let nodes = [{'id': 10, 'name': 'item name', 'type': 99}];
+    let edges = [{'id': 10, 'fromItem': 1, 'toItem': 2, 'type': 99}];
+
+    it('should print an error message if the data Graph contains is invalid', () => {
+      let graph = new Graph();
+      graph.nodes = badNodes;
+      graph.edges = badEdges;
+      expect(graph.toJson()).to.be.null;
+    });
+
+    it('should return a valid relationship graph json object if Graph contains valid data', () => {
+      let graph = new Graph();
+      graph.nodes = nodes;
+      graph.edges = edges;
+      expect(graph.toJson()).to.be.empty();
+    });
+  });
+
+  describe('fromJson function', () => {
+    let badNodes = [{'id': '10', 'name': 'item name', 'type': '99'}];
+    let badEdges = [{'id': '10', 'fromItem': '1', 'toItem': '2', 'type': '99'}];
+    let nodes = [{'id': 10, 'name': 'item name', 'type': 99}];
+    let edges = [{'id': 10, 'fromItem': 1, 'toItem': 2, 'type': 99}];
+
+    it('should print an error message if the data Graph contains is invalid', () => {
+      let relGraphObj = {'items': badNodes, 'relationships': badEdges};
+      expect(Graph.fromJson(relGraphObj)).to.be.null;
+    });
+
+    it('should return a valid relationship graph json object if graph contains valid data', () => {
+      let graph = new Graph();
+      graph.nodes = nodes;
+      graph.edges = edges;
+      let relGraphBlob = {'items': nodes, 'relationships': edges};
+      let newGraph = Graph.fromJson(relGraphBlob);
+      expect(newGraph.nodes).to.deep.equal(nodes);
+      expect(newGraph.edges).to.deep.equal(edges);
     });
   });
 });
