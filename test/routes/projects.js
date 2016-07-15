@@ -8,7 +8,7 @@ let server = require('../../app');
 
 // For the schema validation test
 let Ajv = require('ajv');
-let projectListSchema = require('../../schema/projectList');
+let projectListSchema = require('../../schema/projectList.json');
 let projects = require('../../lib/projects');
 
 // For routes test
@@ -19,7 +19,7 @@ let join = require('path').join;
 chai.use(chaiHttp);
 let mockProjects = require('./mockProjects.json');
 
-let credentialFixtureCases = [
+let projectFixtureCases = [
   [
     // Valid ID Valid Name
     {'id': 1337, 'name': 'Hank'},
@@ -79,7 +79,7 @@ let ajv = new Ajv();
 let validate = ajv.compile(projectListSchema);
 
 describe('Schema Validation for project.js', function () {
-  credentialFixtureCases.forEach(function (fixture) {
+  projectFixtureCases.forEach(function (fixture) {
     let result = validate(fixture);
     if (result === true) {
       it('Should return true when the JSON schema object is VALID\n', function () {
