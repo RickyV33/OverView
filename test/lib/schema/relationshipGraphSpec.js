@@ -5,7 +5,7 @@ let dirtyChai = require('dirty-chai');
 let chaiAsPromised = require('chai-as-promised');
 let Ajv = require('ajv');
 
-let schema = require('../../lib/relationshipGraphSpec');
+let schema = require('../../../lib/schema/relationshipGraphSpec');
 
 chai.use(dirtyChai);
 chai.use(chaiAsPromised);
