@@ -105,7 +105,7 @@ describe('Graph class module', () => {
       expect(graph.toJson()).to.be.empty();
     });
   });
-  
+
   describe('fromJson function', () => {
     let badNodes = [{'id': '10', 'name': 'item name', 'type': '99'}];
     let badEdges = [{'id': '10', 'fromItem': '1', 'toItem': '2', 'type': '99'}];
