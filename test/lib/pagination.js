@@ -126,8 +126,7 @@ describe('Pagination Module', function () {
       page = 0;
       let requestStub = function (options, callback) {
         process.nextTick(function () {
-          let callBackObject = pages[page].body;
-          callback(null, {body: callBackObject});
+          callback(null, pages[page]);
           page += 1;
         });
       };
@@ -142,8 +141,7 @@ describe('Pagination Module', function () {
       page = 0;
       let requestStub = function (options, callback) {
         process.nextTick(function () {
-          let callBackObject = pages[page].body;
-          callback(null, {body: callBackObject});
+          callback(null, pages[page]);
           page += 1;
         });
       };
@@ -158,8 +156,7 @@ describe('Pagination Module', function () {
       page = 0;
       let requestStub = function (options, callback) {
         process.nextTick(function () {
-          let callBackObject = pages[page].body;
-          callback(null, {body: callBackObject});
+          callback(null, pages[page]);
           page += 1;
         });
       };
@@ -174,8 +171,7 @@ describe('Pagination Module', function () {
       page = 0;
       let requestStub = function (options, callback) {
         process.nextTick(function () {
-          let callBackObject = pages[page].body;
-          callback(null, {body: callBackObject});
+          callback(null, pages[page]);
           page += 1;
         });
       };
@@ -190,8 +186,7 @@ describe('Pagination Module', function () {
       page = 0;
       let requestStub = function (options, callback) {
         process.nextTick(function () {
-          let callBackObject = pages[page].body;
-          callback(null, {body: callBackObject});
+          callback(null, pages[page]);
           page += 1;
         });
       };
