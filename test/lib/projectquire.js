@@ -25,10 +25,6 @@ describe('Projectquire module', () => {
   };
 
   describe('getProjectName function', () => {
-    it('should return a resolved promise when there exists a project name.', () => {
-      projectquire = proxyquire('../../lib/projectquire', {'./pagination': resolvedPromise});
-      expect(projectquire.getProjectName(projectId, url)).to.be.fulfilled();
-    });
     it('should return a promise with a name when there exists a project', () => {
       data = [{'fields': {'name': 'mocked project name'}}];
       projectquire = proxyquire('../../lib/projectquire', {'./pagination': resolvedPromise});
@@ -43,10 +39,6 @@ describe('Projectquire module', () => {
   });
 
   describe('getProjectItems function', () => {
-    it('should return a resolved promise when there exists at least one item.', () => {
-      projectquire = proxyquire('../../lib/projectquire', {'./pagination': resolvedPromise});
-      expect(projectquire.getProjectItems(projectId, url)).to.be.fulfilled();
-    });
     it('should return a promise with a name when there exists at least one item', () => {
       data = [{'id': 10, 'name': 'item name', 'type': 99}];
       projectquire = proxyquire('../../lib/projectquire', {'./pagination': resolvedPromise});
@@ -63,10 +55,6 @@ describe('Projectquire module', () => {
   });
 
   describe('getProjectRelationships function', () => {
-    it('should return a resolved promise when there exists at least one item relationship.', () => {
-      projectquire = proxyquire('../../lib/projectquire', {'./pagination': resolvedPromise});
-      expect(projectquire.getProjectRelationships(projectId, url)).to.be.fulfilled();
-    });
     it('should return a resolved promise with relationships if there exists at least one item relationship.', () => {
       data = [{'id': 10, 'fromItem': 1, 'toItem': 2, 'type': 99}];
       projectquire = proxyquire('../../lib/projectquire', {'./pagination': resolvedPromise});
