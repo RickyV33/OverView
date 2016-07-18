@@ -6,7 +6,7 @@ let expect = chai.expect;
 let chaiHttp = require('chai-http');
 
 let Ajv = require('ajv');
-let projectListSchema = require('../../schema/projectList.json');
+let projectListSchema = require('../../lib/schema/projectList.json');
 let projects = require('../../lib/projects');
 
 chai.use(chaiHttp);
