@@ -39,24 +39,24 @@
 <h3><%= subtitle + ' ' + projectId %></h3>
 <script>
     // get the data
-    d3.json('../js/sampleGraphData.json', function(error, links) {
+    d3.json('../js/sampleGraphData.json', function(error, edge) {
 
         // let nodes = {};
-        let items = links.items;
+        let items = edge.items;
 
-    // Compute the distinct nodes from the links.
-        links.relationships.forEach(function(node) {
+    // Compute the distinct nodes from the edge.
+        edge.relationships.forEach(function(node) {
             node.source = getItemWithId(items, node.fromItem);
             node.target = getItemWithId(items, node.toItem);
             node.value = +node.type;
         });
 
         let width = 960;
-        let height = 800;
+        let height = 600;
 
         let force = d3.layout.force()
             .nodes(d3.values(items))
-            .links(links.relationships)
+            .links(edge.relationships)
             .size([width, height])
             .linkDistance(60)
             .charge(-500)
@@ -82,7 +82,7 @@
             .attr('d', 'M0,-5L10,0L0,5')
             .attr('class', 'arrow');
 
-        // ============ links combined with the arrows ===========
+        // ============ edge combined with the arrows ===========
         let path = svg.append('svg:g').selectAll('path')
             .data(force.links())
             .enter().append('svg:path')
@@ -96,7 +96,7 @@
             .enter().append('g')
             .attr('class', 'node')
             .call(force.drag)
-            .on("click", nodeClick);
+            //.on("click", nodeClick);
 
         // add the nodes
         node.append('circle')
@@ -112,6 +112,7 @@
         // ------------ Node Enter Section ----------------
 
         // ============= add the curvy lines ==============
+
         function tick() {
             path.attr('d', function(d) {
                 let dx = d.target.x - d.source.x,
@@ -130,12 +131,13 @@
             });
         }
 
-        // ============ Toggle children on click ===========
+        // ============ Toggle children on click ============
+        // ============ Under Construction For Stretch Goal ============
+/*
         function nodeClick(d) {
-            console.log('Node Click event fired!!!!');
             if (!d3.event.defaultPrevented) {
                 //check if link is from this node, and if so, collapse
-                root.links.forEach(function(l) {
+                root.edge.forEach(function(l) {
                     if(l.source.id == d.id) {
                         if(d.collapsed){
                             l.target.collapsing--;
@@ -148,6 +150,7 @@
             }
             update();
         }
+
         function getToItemValues(array, value) {
             let result = [];
 
@@ -158,6 +161,7 @@
             });
             return result;
         }
+*/
 
         function getItemWithId(itemArray, id) {
             let result = null;
