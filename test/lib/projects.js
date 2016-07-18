@@ -72,76 +72,78 @@ let projectFixtureCases = [
 let ajv = new Ajv();
 let validate = ajv.compile(projectListSchema);
 
-describe('Schema Validation for projects.js', function () {
-  projectFixtureCases.forEach(function (fixture) {
-    let result = validate(fixture);
-    if (result === true) {
-      it('Should return true when the JSON schema object is VALID\n', function () {
-        expect(result).to.be.true();
-      });
-    } else {
-      it('JSON schema object should be INVALID with the credentials\n \tname: ' + fixture[0].name + ' and ID: ' + fixture[0].id + '\n', function () {
-        expect(result).to.not.be.true();
-      });
-    }
-  });
-});
-
-describe('Validation for parseProjectsList in lib/projects.js', function () {
-  // Array 0 is for checking against completely valid JSON
-  // Array 1 is for checking against JSON with an invalid entry in the first set
-  let filterJSON = [
-    [
-      {id: 234, name: 'Chatty'},
-      {id: 345, name: 'IIBA BABOK'},
-      {id: 456, name: 'Integrated System'}
-    ], [
-      {id: 345, name: 'IIBA BABOK'},
-      {id: 456, name: 'Integrated System'}
-    ]
-  ];
-
-  it('Should return a valid JSON with all three projects', function () {
-    // When all projects have valid ids and names
-    let parsed = projects.parseProjectList(mockProjects);
-    let result = validate(parsed);
-    expect(parsed).to.deep.equal(filterJSON[0]);
-    expect(result).to.be.true();
+describe('projects.js module', function () {
+  describe('Schema Validation', function () {
+    projectFixtureCases.forEach(function (fixture) {
+      let result = validate(fixture);
+      if (result === true) {
+        it('Should return true when the JSON schema object is VALID\n', function () {
+          expect(result).to.be.true();
+        });
+      } else {
+        it('JSON schema object should be INVALID with the credentials\n \tname: ' + fixture[0].name + ' and ID: ' + fixture[0].id + '\n', function () {
+          expect(result).to.not.be.true();
+        });
+      }
+    });
   });
 
-  it('Should return a valid JSON with two of three projects when name is null in the first project', function () {
-    // When id is valid and name is invalid
-    mockProjects[0].fields.name = null;
-    let parsed = projects.parseProjectList(mockProjects);
-    let result = validate(parsed);
-    expect(parsed).to.deep.equal(filterJSON[1]);
-    expect(result).to.be.true();
-  });
+  describe('parseProjectsList function', function () {
+    // Array 0 is for checking against completely valid JSON
+    // Array 1 is for checking against JSON with an invalid entry in the first set
+    let filterJSON = [
+      [
+        {id: 234, name: 'Chatty'},
+        {id: 345, name: 'IIBA BABOK'},
+        {id: 456, name: 'Integrated System'}
+      ], [
+        {id: 345, name: 'IIBA BABOK'},
+        {id: 456, name: 'Integrated System'}
+      ]
+    ];
 
-  it('Should return a valid JSON with two of three projects when id is null in the first project', function () {
-    // When id is invalid and name is valid
-    mockProjects[0].id = null;
-    mockProjects[0].fields.name = 'Chatty';
-    let parsed = projects.parseProjectList(mockProjects);
-    let result = validate(parsed);
-    expect(parsed).to.deep.equal(filterJSON[1]);
-    expect(result).to.be.true();
-  });
+    it('Should return a valid JSON with all three projects when all three projects are valid schema format', function () {
+      // When all projects have valid ids and names
+      let parsed = projects.parseProjectList(mockProjects);
+      let result = validate(parsed);
+      expect(parsed).to.deep.equal(filterJSON[0]);
+      expect(result).to.be.true();
+    });
 
-  it('Should return a valid JSON with two of three projects when name and id are null in the first project', function () {
-    // When id and name are invalid
-    mockProjects[0].id = null;
-    mockProjects[0].fields.name = null;
-    let parsed = projects.parseProjectList(mockProjects);
-    let result = validate(parsed);
-    expect(parsed).to.deep.equal(filterJSON[1]);
-    expect(result).to.be.true();
-  });
+    it('Should return a valid JSON with two of three projects when name is null in the first project', function () {
+      // When id is valid and name is invalid
+      mockProjects[0].fields.name = null;
+      let parsed = projects.parseProjectList(mockProjects);
+      let result = validate(parsed);
+      expect(parsed).to.deep.equal(filterJSON[1]);
+      expect(result).to.be.true();
+    });
 
-  it('Should return an empty array of projects when passed a null', function () {
-    // When projects are null
-    let empty = [];
-    let parsed = projects.parseProjectList(null);
-    expect(parsed).to.deep.equal(empty);
+    it('Should return a valid JSON with two of three projects when id is null in the first project', function () {
+      // When id is invalid and name is valid
+      mockProjects[0].id = null;
+      mockProjects[0].fields.name = 'Chatty';
+      let parsed = projects.parseProjectList(mockProjects);
+      let result = validate(parsed);
+      expect(parsed).to.deep.equal(filterJSON[1]);
+      expect(result).to.be.true();
+    });
+
+    it('Should return a valid JSON with two of three projects when name and id are null in the first project', function () {
+      // When id and name are invalid
+      mockProjects[0].id = null;
+      mockProjects[0].fields.name = null;
+      let parsed = projects.parseProjectList(mockProjects);
+      let result = validate(parsed);
+      expect(parsed).to.deep.equal(filterJSON[1]);
+      expect(result).to.be.true();
+    });
+
+    it('Should return an empty array of projects when passed a null', function () {
+      // When projects are null
+      let empty = [];
+      let parsed = projects.parseProjectList(null);
+      expect(parsed).to.deep.equal(empty);
+    });
   });
 });
