@@ -104,7 +104,6 @@ describe('Validation for parseProjectsList in lib/projects.js', function () {
   it('Should return a valid JSON with all three projects', function () {
     // When all projects have valid ids and names
     let parsed = projects.parseProjectList(mockProjects);
-    console.log(mockProjects);
     let result = validate(parsed);
     expect(parsed).to.deep.equal(filterJSON[0]);
     expect(result).to.be.true();
