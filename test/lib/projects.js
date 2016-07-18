@@ -81,7 +81,6 @@ describe('Schema Validation for projects.js', function () {
       });
     } else {
       it('JSON schema object should be INVALID with the credentials\n \tname: ' + fixture[0].name + ' and ID: ' + fixture[0].id + '\n', function () {
-        // console.log('\tShould be invalid with name: ' + fixture[0].name + ' and ID: ' + fixture[0].id);
         expect(result).to.not.be.true();
       });
     }
