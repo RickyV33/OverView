@@ -54,20 +54,16 @@ describe('Relatinship Graph JSON', function () {
   ];
   // Passing test cases for relationship graph JSON
   let passingTestCases = [
-      {title: 'should return true when JSON contains at least 1 item and at least 1 relationship', body: {items: [{id: 34, name: 'story', type: 35}], relationships: [{id: 1, fromItem: 34, toItem: 35, type: 35}]}},
-      {title: 'should return true when JSON contains many items and many relationships with valid properties', body: {items: [{id: 34, name: 'story', type: 35},
-        {id: 1, name: 'story', type: 35},
-        {id: 2, name: 'req', type: 36},
-        {id: 3, name: 'story', type: 35},
-        {id: 4, name: 'story', type: 35},
-        {id: 5, name: 'req', type: 36},
-        {id: 6, name: 'epic', type: 34}],
-       relationships: [{id: 1, fromItem: 6, toItem: 2, type: 37},
-        {id: 2, fromItem: 6, toItem: 5, type: 37},
-        {id: 3, fromItem: 2, toItem: 1, type: 38},
-        {id: 4, fromItem: 5, toItem: 4, type: 38},
-        {id: 5, fromItem: 5, toItem: 3, type: 38},
-        {id: 6, fromItem: 4, toItem: 3, type: 39}]}}
+      {title: 'should return true when JSON contains at least 1 item and at least 1 relationship',
+          body: {items: [{id: 34, name: 'story', type: 35}],
+              relationships: [{id: 1, fromItem: 34, toItem: 35, type: 35}]}},
+      {title: 'should return true when JSON contains many items and many relationships with valid properties',
+          body: {items: [{id: 34, name: 'story', type: 35}, {id: 1, name: 'story', type: 35},
+              {id: 2, name: 'req', type: 36}, {id: 3, name: 'story', type: 35}, {id: 4, name: 'story', type: 35},
+              {id: 5, name: 'req', type: 36}, {id: 6, name: 'epic', type: 34}],
+       relationships: [{id: 1, fromItem: 6, toItem: 2, type: 37}, {id: 2, fromItem: 6, toItem: 5, type: 37},
+           {id: 3, fromItem: 2, toItem: 1, type: 38}, {id: 4, fromItem: 5, toItem: 4, type: 38},
+           {id: 5, fromItem: 5, toItem: 3, type: 38}, {id: 6, fromItem: 4, toItem: 3, type: 39}]}}
   ];
   // Validating all incorrect JSON are rejected
   failingTestCases.forEach(function (item) {
