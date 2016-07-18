@@ -67,7 +67,7 @@ describe('index', function () {
             .get('/')
             .end(function (err, res) {
               if (err) {
-                expect.fail(); // ('Index Page Failed.');
+                expect.fail();
               }
               // Render the view using ejs
               let path = join(__dirname, '../../views/index.ejs');
