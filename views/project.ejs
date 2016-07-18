@@ -3,55 +3,29 @@
 <head>
     <title><%= title %></title>
     <link rel='stylesheet' href='/stylesheets/style.css' />
-    <style> /* set the CSS */
-        path.link {
-            fill: none;
-            stroke: #efefef;
-            stroke-width: 1.5px;
-        }
-
-        .arrow {
-            fill: #bfbfbf;
-            stroke: #afafaf;
-            stroke-width: 1.5px !important;
-        }
-
-        circle {
-            fill: #fff;
-            stroke: #F2622B;
-            stroke-width: 1.5px;
-        }
-
-        text {
-            fill: #000;
-            font: 10px sans-serif;
-            pointer-events: none;
-        }
-
-        .node {
-            fill: 'steelblue';
-        }
-    </style>
 </head>
 <body>
 <script src='http://d3js.org/d3.v3.min.js'></script>
 <h1><%= title %></h1>
 <h3><%= subtitle + ' ' + projectId %></h3>
 <script>
-    // get the data
-    d3.json('../js/sampleGraphData.json', function(error, links) {
+    let file = '../js/ssProject.json'; // '../js/sampleGraphData.json'
 
+    // get the data
+    d3.json('../js/ssProject.json', function(error, links) {
         // let nodes = {};
         let items = links.items;
 
-    // Compute the distinct nodes from the links.
+        // Compute the distinct nodes from the links.
         links.relationships.forEach(function(node) {
-            node.source = getItemWithId(items, node.fromItem);
-            node.target = getItemWithId(items, node.toItem);
-            node.value = +node.type;
+            if (node.type != 31 || node.type != 32) {
+                node.source = getItemWithId(items, node.fromItem);
+                node.target = getItemWithId(items, node.toItem);
+                node.value = +node.type;
+            }
         });
 
-        let width = 960;
+        let width = 1000;
         let height = 800;
 
         let force = d3.layout.force()
@@ -65,55 +39,79 @@
 
         let svg = d3.select('body').append('svg')
             .attr('width', width)
-            .attr('height', height);
+            .attr('height', height)
+            .call(d3.behavior.zoom().on("zoom", function () {
+                svg.attr("transform", "translate(" + d3.event.translate + ")" + " scale(" + d3.event.scale + ")")
+            }));
 
         // ============ build the arrow ================
         svg.append('svg:defs').selectAll('marker')
-            .data(['end'])      // Different link/path types can be defined here
-            .enter().append('svg:marker')    // This section adds in the arrows
-            .attr('id', String)
-            .attr('viewBox', '0 -5 10 10')
-            .attr('refX', 15)
-            .attr('refY', -1.5)
-            .attr('markerWidth', 6)
-            .attr('markerHeight', 6)
-            .attr('orient', 'auto')
-            .append('svg:path')
-            .attr('d', 'M0,-5L10,0L0,5')
-            .attr('class', 'arrow');
+                .data(['end'])      // Different link/path types can be defined here
+                .enter().append('svg:marker')    // This section adds in the arrows
+                .attr('id', String)
+                .attr('viewBox', '0 -5 10 10')
+                .attr('refX', 15)
+                .attr('refY', -1.5)
+                .attr('markerWidth', 6)
+                .attr('markerHeight', 6)
+                .attr('orient', 'auto')
+                .append('svg:path')
+                .attr('d', 'M0,-5L10,0L0,5')
+                .attr('class', 'arrow');
 
         // ============ links combined with the arrows ===========
         let path = svg.append('svg:g').selectAll('path')
-            .data(force.links())
-            .enter().append('svg:path')
-            .attr('class', function(d) { return 'link ' + d.type; })
-            .attr('class', 'link')
-            .attr('marker-end', 'url(#end)');
+                .data(force.links())
+                .enter().append('svg:path')
+                .attr('class', function (d) {
+                    return 'link ' + d.type;
+                })
+                .attr('class', 'link')
+                .attr('marker-end', 'url(#end)');
 
         // define the nodes
         let node = svg.selectAll('.node')
-            .data(force.nodes())
-            .enter().append('g')
-            .attr('class', 'node')
-            .call(force.drag)
-            .on("click", nodeClick);
+                .data(force.nodes())
+                .enter().append('g')
+                .attr('class', 'node')
+                .call(force.drag)
+                .on("click", nodeClick);
 
         // add the nodes
-        node.append('circle')
-            .attr('r', 5);
+        /*node.append('circle')
+                .attr('r', 5);*/
+
+
+        node.append('image')
+                .attr('xlink:http', 'https://sevensource.jamacloud.com/img/tree/book2.png')
+                .attr('x', '-12px')
+                .attr('y', '-12px')
+                .attr('height', '20px')
+                .attr('width', '20px');
+
+        node.append('rect')
+                .attr('width', 40)
+                .attr('height', 10)
+                .attr('class', function (d) {
+                    let styleClass = 'node';
+                    if (d.type === 32) {
+                        styleClass = 'node-test';
+                    }
+                    return styleClass;
+                });
 
         // add the text
         node.append('text')
-            .attr('x', 12)
-            .attr('dy', '.35em')
-            .attr('class', 'nodeText')
-            .text(function(d) { return d.name; });
-
-        // ------------ Node Enter Section ----------------
+                .attr('x', 10)
+                .attr('dy', '.35em')
+                .attr('class', 'nodeText')
+                .text(function (d) {
+                    return d.name;
+                });
 
         // ============= add the curvy lines ==============
         function tick() {
-            path.attr('d', function(d) {
+            path.attr('d', function (d) {
                 let dx = d.target.x - d.source.x,
                         dy = d.target.y - d.source.y,
                         dr = Math.sqrt(dx * dx + dy * dy);
@@ -125,7 +123,7 @@
                         d.target.y;
             });
 
-            node.attr('transform', function(d) {
+            node.attr('transform', function (d) {
                 return 'translate(' + d.x + ',' + d.y + ')';
             });
         }
@@ -135,8 +133,8 @@
             console.log('Node Click event fired!!!!');
             if (!d3.event.defaultPrevented) {
                 //check if link is from this node, and if so, collapse
-                root.links.forEach(function(l) {
-                    if(l.source.id == d.id) {
+                links.relationships.forEach(function(l) {
+                    if(l.fromItem == d.id) {
                         if(d.collapsed){
                             l.target.collapsing--;
                         } else {
@@ -173,6 +171,5 @@
         }
     });
 </script>
-<script src='js/project.js'></script>
 </body>
 </html>

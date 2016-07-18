@@ -6,3 +6,46 @@ body {
 a {
   color: #00B7FF;
 }
+
+/*  === Graph Styles === */
+path.link {
+  fill: none;
+  stroke: #efefef;
+  stroke-width: 1.5px;
+}
+
+.arrow {
+  fill: #bfbfbf;
+  stroke: #afafaf;
+  stroke-width: 1.5px !important;
+}
+
+circle {
+  fill: #fff;
+  stroke: #F2622B;
+  stroke-width: 1.5px;
+}
+
+rect {
+  fill: #fff;
+  stroke: #F2622B;
+  stroke-width: 1.5px;
+}
+
+text {
+  fill: #000;
+  font: 10px sans-serif;
+  pointer-events: none;
+}
+
+.node {
+  fill: 'steelblue';
+}
+
+rect.node-test {
+  stroke: #0029ff;
+}
+
+.activeNode {
+  fill: 'steelblue';
+}
