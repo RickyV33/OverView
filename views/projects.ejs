@@ -5,12 +5,12 @@
     <link rel='stylesheet' href='/stylesheets/style.css' />
 </head>
 <body>
-<h1><%= title %></h1>
-<form id="projects" method="post">
-    <input type="submit" value="Submit" />
-</form>
-<!--TODO: add error messages -->
-<!-- TODO: On a post to this page, don't change the title of the page to the error message -->
-<script src="js/project.js"></script>
+    <h2>Please click on a project below to display its traceability graph: </h2>
+    <ul id="projectList">
+        <% projects.forEach(function(project){ %>
+        <li><a href="/graph?id=<%= project.id %>" data-id="<%= project.id %>"><%= project.name %></a></li>
+        <% }); %>
+    </ul>
+    <script src="js/project.js"></script>
 </body>
 </html>
