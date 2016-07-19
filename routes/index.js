@@ -14,8 +14,14 @@ router.post('/', function (req, res, next) {
       req.session.username = req.body.username;
       req.session.password = req.body.password;
       req.session.teamName = req.body.teamName;
-      req.session.sessionProjects = projects.parseProjectList(projects);
-      res.redirect('/projects');
+      req.session.projects = projects.parseProjectList(sessionProjects);
+      req.session.save(function (err) {
+        if (err) {
+          // TODO Session save Error message
+          res.render('index', { title: err });
+        }
+        res.redirect('/projects');
+      });
     }, function () {
       res.render('index', { title: 'Error: Incorrect credentials, please try again.' });
     });
