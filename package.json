@@ -6,7 +6,7 @@
     "start": "node --harmony ./bin/www",
     "debug": "DEBUG=Jama-Software:* npm start",
     "test": "semistandard | snazzy && mocha --check-leaks --recursive",
-    "cover": "istanbul cover _mocha",
+    "cover": "istanbul cover _mocha -- --recursive",
     "coveralls": "npm run cover -- --report lcovonly && cat ./coverage/lcov.info | coveralls",
     "build": "npm run build:index",
     "build:index": "browserify src/index.js -o public/js/index.js -t [ babelify --presets [ es2015 ] ]",
