@@ -1,0 +1,53 @@
+{
+  "title": "Graph",
+  "type": "object",
+  "properties": {
+    "items": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "title": "Item",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "name": {
+            "type": "string"
+          },
+          "type": {
+            "type": "integer"
+          }
+        },
+        "required": ["id", "name", "type"],
+        "additionalProperties": false
+      }
+
+    },
+    "relationships": {
+      "type": "array",
+      "items": {
+        "title": "Relationship",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "fromItem": {
+            "type": "integer"
+          },
+          "toItem": {
+            "type": "integer"
+          },
+          "type": {
+            "type": "integer"
+          }
+        },
+        "required": ["id", "fromItem", "toItem", "type"],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": ["items", "relationships"],
+  "additionalProperties": false
+}
