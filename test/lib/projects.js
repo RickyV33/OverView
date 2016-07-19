@@ -77,7 +77,7 @@ describe('projects.js module', function () {
     projectFixtureCases.forEach(function (fixture) {
       let result = validate(fixture);
       if (result === true) {
-        it('Should return true when the JSON schema object is VALID\n', function () {
+        it('should return true when the JSON schema object is VALID\n', function () {
           expect(result).to.be.true();
         });
       } else {
@@ -102,7 +102,7 @@ describe('projects.js module', function () {
       ]
     ];
 
-    it('Should return a valid JSON with all three projects when all three projects are valid schema format', function () {
+    it('should return a valid JSON with all three projects when all three projects are valid schema format', function () {
       // When all projects have valid ids and names
       let parsed = projects.parseProjectList(mockProjects);
       let result = validate(parsed);
@@ -110,7 +110,7 @@ describe('projects.js module', function () {
       expect(result).to.be.true();
     });
 
-    it('Should return a valid JSON with two of three projects when name is null in the first project', function () {
+    it('should return a valid JSON with two of three projects when name is null in the first project', function () {
       // When id is valid and name is invalid
       mockProjects[0].fields.name = null;
       let parsed = projects.parseProjectList(mockProjects);
@@ -119,7 +119,7 @@ describe('projects.js module', function () {
       expect(result).to.be.true();
     });
 
-    it('Should return a valid JSON with two of three projects when id is null in the first project', function () {
+    it('should return a valid JSON with two of three projects when id is null in the first project', function () {
       // When id is invalid and name is valid
       mockProjects[0].id = null;
       mockProjects[0].fields.name = 'Chatty';
@@ -129,7 +129,7 @@ describe('projects.js module', function () {
       expect(result).to.be.true();
     });
 
-    it('Should return a valid JSON with two of three projects when name and id are null in the first project', function () {
+    it('should return a valid JSON with two of three projects when name and id are null in the first project', function () {
       // When id and name are invalid
       mockProjects[0].id = null;
       mockProjects[0].fields.name = null;
@@ -139,7 +139,7 @@ describe('projects.js module', function () {
       expect(result).to.be.true();
     });
 
-    it('Should return an empty array of projects when passed a null', function () {
+    it('should return an empty array of projects when passed a null', function () {
       // When projects are null
       let empty = [];
       let parsed = projects.parseProjectList(null);
