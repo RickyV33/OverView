@@ -95,14 +95,14 @@ describe('Graph class module', () => {
       let graph = new Graph();
       graph.nodes = badNodes;
       graph.edges = badEdges;
-      expect(graph.toJson()).to.be.null;
+      expect(graph.toJson()).to.be.empty();
     });
 
     it('should return a valid relationship graph json object if Graph contains valid data', () => {
       let graph = new Graph();
       graph.nodes = nodes;
       graph.edges = edges;
-      expect(graph.toJson()).to.be.empty();
+      expect(graph.toJson()).to.not.be.empty();
     });
   });
 
