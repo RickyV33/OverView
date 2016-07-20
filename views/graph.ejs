@@ -9,7 +9,7 @@
 <script src='http://d3js.org/d3.v3.min.js'></script>
 <h1><%= title %></h1>
 <h3><%= subtitle + ' ' + projectId %></h3>
-<<<<<<< HEAD
+<!--<div id="graph"></div>-->
 <script>
     let file = '../js/ssProject.json'; // '../js/sampleGraphData.json'
 
@@ -33,14 +33,14 @@
         let force = d3.layout.force()
             .nodes(d3.values(items))
             .links(links.relationships)
-            .size([width, height])
+            .size([width , height])
             .linkDistance(60)
             .charge(-500)
             .on('tick', tick)
             .start();
 
         let svg = d3.select('body').append('svg')
-            .attr('width', width)
+            .attr('width', '100%')
             .attr('height', height)
             .call(d3.behavior.zoom().on("zoom", function () {
                 svg.attr("transform", "translate(" + d3.event.translate + ")" + " scale(" + d3.event.scale + ")")
@@ -83,24 +83,23 @@
         /*node.append('circle')
                 .attr('r', 5);*/
 
-
-        node.append('image')
-                .attr('xlink:http', 'https://sevensource.jamacloud.com/img/tree/book2.png')
-                .attr('x', '-12px')
-                .attr('y', '-12px')
-                .attr('height', '20px')
-                .attr('width', '20px');
-
-        node.append('rect')
+        /*node.append('rect')
                 .attr('width', 40)
-                .attr('height', 10)
+                .attr('height', 15)
                 .attr('class', function (d) {
                     let styleClass = 'node';
                     if (d.type === 32) {
                         styleClass = 'node-test';
                     }
                     return styleClass;
-                });
+                });*/
+
+        node.append('image')
+                .attr('xlink:href', 'https://sevensource.jamacloud.com/img/tree/book2.png')
+                .attr('x', '-12px')
+                .attr('y', '-12px')
+                .attr('height', '20px')
+                .attr('width', '20px');
 
         // add the text
         node.append('text')
