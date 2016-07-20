@@ -1,6 +1,5 @@
 {
   "title": "Item Hierarchy",
-
   "type": "object",
   "properties": {
     "items": {

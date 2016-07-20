@@ -9,12 +9,10 @@ let schema = require('../../../lib/schema/itemHierarchy');
 
 chai.use(dirtyChai);
 chai.use(chaiAsPromised);
-Ajv = new Ajv();
-Ajv.addSchema(schema, 'graphSchema');
-let validate = Ajv.compile(schema);
-let validJSON = false;
 
 describe('Item Hierarchy JSON', function () {
+  let ajv = new Ajv();
+  let validJSON = false;
   let failingTestCases = [
     {title: 'should return false for empty JSON', body: {}},
     {title: 'should return false when id field is missing from an item',
@@ -36,6 +34,21 @@ describe('Item Hierarchy JSON', function () {
       body: {items: [
         {id: 1, name: 'story', type: 35}
       ]}
+    },
+    {title: 'should return false when id field is a string',
+      body: {items: [
+        {id: '1', name: 'story', type: 35, children: []}
+      ]}
+    },
+    {title: 'should return false when name field is an integer',
+      body: {items: [
+        {id: 1, name: 123, type: 35, children: []}
+      ]}
+    },
+    {title: 'should return false when type field is a string',
+      body: {items: [
+        {id: 1, name: 'story', type: '35', children: []}
+      ]}
     }
   ];
   let passingTestCases = [
@@ -47,15 +60,11 @@ describe('Item Hierarchy JSON', function () {
     {title: 'should return true when JSON contains many items in the item hierarchy tree',
       body: {items: [
         {id: 1, name: 'story', type: 35, children: [
-          {items: [
             {id: 2, name: 'bug', type: 40, children: []},
             {id: 3, name: 'task', type: 45, children: []}
-          ]}
         ]},
         {id: 10, name: 'story', type: 35, children: [
-          {items: [
             {id: 4, name: 'task', type: 45, children: []}
-          ]}
         ]},
         {id: 11, name: 'story', type: 35, children: []}
       ]}
@@ -63,13 +72,13 @@ describe('Item Hierarchy JSON', function () {
   ];
   failingTestCases.forEach(item => {
     it(item.title, function () {
-      validJSON = validate(item.body);
+      validJSON = ajv.validate(schema, item.body);
       expect(validJSON).to.be.false();
     });
   });
   passingTestCases.forEach(item => {
     it(item.title, function () {
-      validJSON = validate(item.body);
+      validJSON = ajv.validate(schema, item.body);
       expect(validJSON).to.be.true();
     });
   });
