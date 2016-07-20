@@ -1,12 +1,12 @@
 /* eslint-env mocha */
 
-var chai = require('chai');
-var expect = chai.expect;
-var dirtyChai = require('dirty-chai');
-var proxyquire = require('proxyquire');
-var chaiAsPromised = require('chai-as-promised');
+let chai = require('chai');
+let expect = chai.expect;
+let dirtyChai = require('dirty-chai');
+let proxyquire = require('proxyquire');
+let chaiAsPromised = require('chai-as-promised');
 
-var auth = require('../../lib/auth');
+let auth = require('../../lib/auth');
 
 chai.use(dirtyChai);
 chai.use(chaiAsPromised);
@@ -151,19 +151,15 @@ describe('Auth module', function () {
         reject(payload);
       });
     };
-    let stubs = { resolvedPromise: resolvedPromise, rejectPromise: rejectedPromise };
     let auth;
 
-    if (username && password && teamName) {
-      it('should return true when all credentials are valid', function () {
-        auth = proxyquire('../../lib/auth', { './pagination': stubs.resolvedPromise });
-        expect(auth.authenticate(username, password, teamName)).to.be.fulfilled();
-      });
-    } else {
-      it('should return false when all credentials are invalid', function () {
-        auth = proxyquire('../../lib/auth', { './pagination': stubs.resolvedPromise });
-        expect(auth.authenticate(username, password, teamName)).to.be.rejected();
-      });
-    }
+    it('should return a resolved promise when all credentials are valid', function () {
+      auth = proxyquire('../../lib/auth', { './pagination': resolvedPromise });
+      expect(auth.authenticate(username, password, teamName)).to.be.fulfilled();
+    });
+    it('should return a rejected promise when all credentials are invalid', function () {
+      auth = proxyquire('../../lib/auth', { './pagination': rejectedPromise });
+      expect(auth.authenticate(username, password, teamName)).to.be.rejected();
+    });
   });
 });
