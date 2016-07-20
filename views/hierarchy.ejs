@@ -5,6 +5,26 @@
     <link rel='stylesheet' href='/stylesheets/style.css'/>
   </head>
   <body>
-
+    <h1><%= title %></h1>
+    <h3>Click on an item below to view all it's downstream related items, or click 'Render Graph' to view the traceability graph:</h3>
+    <ul id="rootItem">
+      <%if (itemHierarchy != null) {%>
+        <%itemHierarchy.forEach(function (item) {%>
+          <li><%= item.name %></li>
+          <ul id ="subRootItem">
+            <%if (item.children != null) {%>
+              <%item.children.forEach(function (child) {%>
+                <li><%= child.name %></li>
+              <%});%>
+            <%} else {%>
+              <p>Sorry, there are no sub-items to display.</p>
+            <%}%>
+          </ul>
+        <%});%>
+      <%} else {%>
+        <p>Sorry, there are no items to display.</p>
+      <%}%>
+    </ul>
+    <script src="js/hierarchy.js"></script>
   </body>
 </html>

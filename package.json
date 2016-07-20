@@ -8,8 +8,9 @@
     "test": "semistandard | snazzy && mocha --check-leaks --recursive",
     "cover": "istanbul cover _mocha -- --recursive",
     "coveralls": "istanbul cover _mocha --report lcovonly -- --recursive && cat ./coverage/lcov.info | coveralls",
-    "build": "npm run build:index",
+    "build": "npm run build:index & build:hierarchy",
     "build:index": "browserify src/index.js -o public/js/index.js -t [ babelify --presets [ es2015 ] ]",
+    "build:hierarchy": "browserify src/hierarchy.js -o public/js/hierarchy.js -t [ babelify --presets [ es2015 ] ]",
     "build:app": "browserify src/app.js -o public/js/app.js -t [ babelify --presets [ es2015 ] ]",
     "watch": "watchify src/app.js --debug -v -o public/js/app.js -t [ babelify --presets [ es2015 ] ]",
     "lint": "semistandard | snazzy"
