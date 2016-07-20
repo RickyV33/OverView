@@ -40,8 +40,8 @@
                 .nodes(d3.values(items))
                 .links(links.relationships)
                 .size([width , height])
-                .linkDistance(100)
-                .charge(-750)
+                .linkDistance(110)
+                .charge(-950)
                 .on('tick', tick)
                 .start();
 
@@ -86,6 +86,12 @@
                 .attr('class', 'node')
                 .call(force.drag)
                 .on('dblclick', connectedNodesClick);
+
+        node.append('rect')
+                .attr('x', -8)
+                .attr('y', -9)
+                .attr('height', 19)
+                .attr('width', 120)
 
         // Append a circle to the node
         node.append('circle')
@@ -138,7 +144,7 @@
             let k = 10 * e.alpha;
 
             // Push sources up and targets down to form a weak tree.
-            path.each(function (d) { d.source.y -= k, d.target.y += k; })
+            path.each(function (d) { d.source.x -= k, d.target.x += k; })
                     .attr("x1", function (d) { return d.source.x; })
                     .attr("y1", function (d) { return d.source.y; })
                     .attr("x2", function (d) { return d.target.x; })

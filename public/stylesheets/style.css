@@ -21,7 +21,7 @@ path.link {
 }
 
 circle {
-  fill: #efefef;
+  fill: #dfdfdf;
   stroke: #F2622B;
   stroke-width: 1.5px;
 }
@@ -29,6 +29,12 @@ circle {
 circle.active {
   fill: #efefef;
   stroke: #0a1d64;
+  stroke-width: 1.5px;
+}
+
+rect {
+  fill: #fff;
+  stroke: #cfcfcf;
   stroke-width: 1.5px;
 }
 
