@@ -16,15 +16,15 @@ describe('hierarchy', function () {
     describe('get request', function () {
         it('should contain a property called text', function (done) {
             // This makes a server request to the route location '/'
-            chai.request(app)
-                .get('/')
+            chai.request(server)
+                .get('/hierarchy')
                 .end(function (err, res) {
                     if (err) {
                         expect.fail();
                     }
                     // Render the view using ejs
                     let path = join(__dirname, '../../views/hierarchy.ejs');
-                    let data = { title: 'Jama Software Capstone' };
+                    let data = { title: 'Select a Root Item (Optional) ' };
                     let rendHtml = ejs.compile(read(path, 'utf8'), {filename: path})(data);
 
                     // Response rendered html

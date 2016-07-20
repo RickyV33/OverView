@@ -10,9 +10,11 @@ let results = [];
 
 /* GET item hierarchy page */
 router.get('/', function(req, res, next) {
+    results = hierarchy.getItemHierarchy(33, 'http://dummy:password@sevensource.jamacloud.com/rest/latest/');
+
     // These lines will replace line 14 with the explicit URL
   // let url = 'http://' + req.session.username + ':' + req.session.password + '@' + req.session.teamname + '.jamacloud.com/rest/latest/';
-  hierarchy.getRootItems(33, 'http://dummy:password@sevensource.jamacloud.com/rest/latest/').then(function(rootItems){
+  /*hierarchy.getRootItems(33, 'http://dummy:password@sevensource.jamacloud.com/rest/latest/').then(function(rootItems){
       itemHierarchy = hierarchy.parseRootItems(rootItems);
       itemHierarchy.forEach(function(rootItem){
           children = [];
@@ -40,14 +42,13 @@ router.get('/', function(req, res, next) {
               itemHierarchy: req.session.itemHierarchy
             });
           }
-      });*/
-  });
-    console.log('results');
+      });
+  });*/
+    console.log('results' + results);
     res.render('hierarchy', {
         title: 'Select a Root Item (Optional) ',
         itemHierarchy: results
     });
-
 });
 
 module.exports = router;
