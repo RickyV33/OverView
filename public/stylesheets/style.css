@@ -10,25 +10,25 @@ a {
 /*  === Graph Styles === */
 path.link {
   fill: none;
-  stroke: #efefef;
+  stroke: #cfcfcf;
   stroke-width: 1.5px;
 }
 
 .arrow {
-  fill: #bfbfbf;
-  stroke: #afafaf;
+  fill: #cfcfcf;
+  stroke: #cfcfcf;
   stroke-width: 1.5px !important;
 }
 
 circle {
-  fill: #fff;
+  fill: #efefef;
   stroke: #F2622B;
   stroke-width: 1.5px;
 }
 
-rect {
-  fill: #fff;
-  stroke: #F2622B;
+circle.active {
+  fill: #efefef;
+  stroke: #0a1d64;
   stroke-width: 1.5px;
 }
 
@@ -36,14 +36,6 @@ text {
   fill: #000;
   font: 10px sans-serif;
   pointer-events: none;
-}
-
-.node {
-  fill: 'steelblue';
-}
-
-rect.node-test {
-  stroke: #0029ff;
 }
 
 .activeNode {

@@ -1,69 +1,58 @@
 {
   "items": [
     {
-      "id": 2104,
-      "name": "Epics",
-      "type": 31
-    },
-    {
       "id": 2119,
       "name": "User Login Home Page",
-      "type": 99
+      "type": 99,
+      "image": "https://sevensource.jamacloud.com/img/tree/book.png"
     },
     {
       "id": 2142,
       "name": "Collect and Display Project Item Hierarchy from Jama",
-      "type": 99
+      "type": 99,
+      "image": "https://sevensource.jamacloud.com/img/tree/book.png"
     },
     {
       "id": 2146,
       "name": "Render Graph",
-      "type": 99
+      "type": 99,
+      "image": "https://sevensource.jamacloud.com/img/tree/book.png"
     },
     {
       "id": 2194,
       "name": "Collect and Display User Projects from Jama",
-      "type": 99
-    },
-    {
-      "id": 2115,
-      "name": "Requirements",
-      "type": 31
-    },
-    {
-      "id": 2313,
-      "name": "User Login Home Page",
-      "type": 32
+      "type": 99,
+      "image": "https://sevensource.jamacloud.com/img/tree/book.png"
     },
     {
       "id": 2140,
       "name": "Input a Username",
-      "type": 24
+      "type": 24,
+      "image": "https://sevensource.jamacloud.com/img/tree/website.png"
     },
     {
       "id": 2141,
       "name": "Input a Password",
-      "type": 24
+      "type": 24,
+      "image": "https://sevensource.jamacloud.com/img/tree/website.png"
     },
     {
       "id": 2729,
       "name": "Add team 'name' input",
-      "type": 24
+      "type": 24,
+      "image": "https://sevensource.jamacloud.com/img/tree/website.png"
     },
     {
       "id": 2175,
       "name": "Submit username and password",
-      "type": 24
-    },
-    {
-      "id": 2315,
-      "name": "Gather and Display Project Item Hierarchy",
-      "type": 32
+      "type": 24,
+      "image": "https://sevensource.jamacloud.com/img/tree/website.png"
     },
     {
       "id": 2200,
       "name": "Display a Project's Item Hierarchy",
-      "type": 24
+      "type": 24,
+      "image": "https://sevensource.jamacloud.com/img/tree/website.png"
     },
     {
       "id": 2151,
@@ -73,512 +62,356 @@
     {
       "id": 2216,
       "name": "Capture User's Selected Root Item",
-      "type": 24
+      "type": 24,
+      "image": "https://sevensource.jamacloud.com/img/tree/website.png"
     },
     {
       "id": 2217,
       "name": "Gather a Project's Item Hierarchy from jama",
-      "type": 24
+      "type": 24,
+      "image": "https://sevensource.jamacloud.com/img/tree/website.png"
     },
     {
       "id": 2439,
       "name": "Item Hierarchy Tree JSON Specification",
-      "type": 24
-    },
-    {
-      "id": 2317,
-      "name": "Collect and Display User Projects from Jama",
-      "type": 32
+      "type": 24,
+      "image": "https://sevensource.jamacloud.com/img/tree/website.png"
     },
     {
       "id": 2143,
       "name": "Gather User's List of Projects",
-      "type": 24
+      "type": 24,
+      "image": "https://sevensource.jamacloud.com/img/tree/website.png"
     },
     {
       "id": 2196,
       "name": "Display User's List of Projects",
-      "type": 24
-    },
-    {
-      "id": 2316,
-      "name": "Render Graph",
-      "type": 32
+      "type": 24,
+      "image": "https://sevensource.jamacloud.com/img/tree/website.png"
     },
     {
       "id": 2155,
       "name": "Configure D3",
-      "type": 24
+      "type": 24,
+      "image": "https://sevensource.jamacloud.com/img/tree/website.png"
     },
     {
       "id": 2148,
       "name": "Send Relationship Graph Data to D3",
-      "type": 24
+      "type": 24,
+      "image": "https://sevensource.jamacloud.com/img/tree/website.png"
     },
     {
       "id": 2430,
       "name": "Robustly Handle Pagination of Jama Data",
-      "type": 24
-    },
-    {
-      "id": 2110,
-      "name": "Stories",
-      "type": 31
-    },
-    {
-      "id": 2135,
-      "name": "Backlog",
-      "type": 32
-    },
-    {
-      "id": 2165,
-      "name": "User Login Home Page",
-      "type": 32
-    },
-    {
-      "id": 2603,
-      "name": "User Home Login Flow Diagram",
-      "type": 33
-    },
-    {
-      "id": 2201,
-      "name": "Gather and Display Item Hierarchy",
-      "type": 32
-    },
-    {
-      "id": 2205,
-      "name": "Gather a Project's Item Hierarchy",
-      "type": 32
+      "type": 24,
+      "image": "https://sevensource.jamacloud.com/img/tree/website.png"
     },
     {
       "id": 2209,
       "name": "Item Hierarchy Tree JSON Specification",
-      "type": 100
+      "type": 100,
+      "image": "https://sevensource.jamacloud.com/img/tree/book.png"
     },
     {
       "id": 2322,
       "name": "Gather Project's Item Hierarchy Items",
-      "type": 100
+      "type": 100,
+      "image": "https://sevensource.jamacloud.com/img/tree/book.png"
     },
     {
       "id": 2517,
       "name": "Create hierarchy endpoint",
-      "type": 100
-    },
-    {
-      "id": 2461,
-      "name": "Item Tree and Relationship Graph AJAX Request Process diagram",
-      "type": 33
+      "type": 100,
+      "image": "https://sevensource.jamacloud.com/img/tree/book.png"
     },
     {
       "id": 2352,
       "name": "Render Item Hierarchy ",
-      "type": 100
+      "type": 100,
+      "image": "https://sevensource.jamacloud.com/img/tree/book.png"
     },
     {
       "id": 2211,
       "name": "Relationship Graph JSON Specification",
-      "type": 100
+      "type": 100,
+      "image": "https://sevensource.jamacloud.com/img/tree/book.png"
     },
     {
       "id": 2549,
       "name": "Render Graph Button and Click Handler",
-      "type": 100
-    },
-    {
-      "id": 2588,
-      "name": "Gather and Display Project Item Hierarchy Tree Flow Diagram",
-      "type": 33
-    },
-    {
-      "id": 2190,
-      "name": "Gather and Display User Projects",
-      "type": 32
-    },
-    {
-      "id": 2191,
-      "name": "Gather User's List of Projects",
-      "type": 32
+      "type": 100,
+      "image": "https://sevensource.jamacloud.com/img/tree/book.png"
     },
     {
       "id": 2193,
       "name": "Gather User's List of Projects",
-      "type": 100
+      "type": 100,
+      "image": "https://sevensource.jamacloud.com/img/tree/book.png"
     },
     {
       "id": 2516,
       "name": "Create 'projects' endpoint",
-      "type": 100
-    },
-    {
-      "id": 2531,
-      "name": "Project List JSON Specification",
-      "type": 100
-    },
-    {
-      "id": 2192,
-      "name": "Display User's List of Projects",
-      "type": 32
+      "type": 100,
+      "image": "https://sevensource.jamacloud.com/img/tree/book.png"
     },
     {
       "id": 2197,
       "name": "Display names of projects to user",
-      "type": 100
+      "type": 100,
+      "image": "https://sevensource.jamacloud.com/img/tree/book.png"
     },
     {
       "id": 2198,
       "name": "Project selection click handler",
-      "type": 100
-    },
-    {
-      "id": 2596,
-      "name": "Gather and Display User List of Projects Flow Diagram",
-      "type": 33
-    },
-    {
-      "id": 2219,
-      "name": "Render Graph",
-      "type": 32
-    },
-    {
-      "id": 2221,
-      "name": "Prepare Data for D3",
-      "type": 32
+      "type": 100,
+      "image": "https://sevensource.jamacloud.com/img/tree/book.png"
     },
     {
       "id": 2425,
       "name": "Insert Items into Graph",
-      "type": 100
+      "type": 100,
+      "image": "https://sevensource.jamacloud.com/img/tree/book.png"
     },
     {
       "id": 2518,
       "name": "Create 'graph' endpoint",
-      "type": 100
+      "type": 100,
+      "image": "https://sevensource.jamacloud.com/img/tree/book.png"
     },
     {
       "id": 2429,
       "name": "Insert Relationship Items into Graph",
-      "type": 100
+      "type": 100,
+      "image": "https://sevensource.jamacloud.com/img/tree/book.png"
     },
     {
       "id": 2431,
       "name": "Create Graph model class skeleton",
-      "type": 100
+      "type": 100,
+      "image": "https://sevensource.jamacloud.com/img/tree/book.png"
     },
     {
       "id": 2491,
       "name": "Reorganize Graph Function",
-      "type": 100
+      "type": 100,
+      "image": "https://sevensource.jamacloud.com/img/tree/book.png"
     },
     {
       "id": 2472,
       "name": "Configure D3",
-      "type": 100
-    },
-    {
-      "id": 2137,
-      "name": "Current Sprint",
-      "type": 32
+      "type": 100,
+      "image": "https://sevensource.jamacloud.com/img/tree/book.png"
     },
     {
       "id": 2168,
       "name": "Create password form field with title labeled “Password”",
-      "type": 100
-    },
-    {
-      "id": 2173,
-      "name": "Submit username and password",
-      "type": 32
+      "type": 100,
+      "image": "https://sevensource.jamacloud.com/img/tree/book.png"
     },
     {
       "id": 2265,
       "name": "'Submit' button and Click Handler(s) ",
-      "type": 100
+      "type": 100,
+      "image": "https://sevensource.jamacloud.com/img/tree/book.png"
     },
     {
       "id": 2184,
       "name": "Create Submit function requesting authentication from jama",
-      "type": 100
+      "type": 100,
+      "image": "https://sevensource.jamacloud.com/img/tree/book.png"
     },
     {
       "id": 2285,
       "name": "Store users’ valid login credentials",
-      "type": 100
+      "type": 100,
+      "image": "https://sevensource.jamacloud.com/img/tree/book.png"
     },
     {
       "id": 2732,
       "name": "Add Team 'name' Input Field and Label",
-      "type": 100
-    },
-    {
-      "id": 2138,
-      "name": "Done",
-      "type": 32
+      "type": 100,
+      "image": "https://sevensource.jamacloud.com/img/tree/book.png"
     },
     {
       "id": 2435,
       "name": "Pagination Module for Jama API Data",
-      "type": 100
+      "type": 100,
+      "image": "https://sevensource.jamacloud.com/img/tree/book.png"
     },
     {
       "id": 2160,
       "name": "Create username text box with title labeled 'Username'",
-      "type": 100
-    },
-    {
-      "id": 2125,
-      "name": "Test Plans",
-      "type": 31
-    },
-    {
-      "id": 2126,
-      "name": "Data entry fields for log in page",
-      "type": 26
-    },
-    {
-      "id": 2363,
-      "name": "User Login Homepage",
-      "type": 32
-    },
-    {
-      "id": 2364,
-      "name": "Input Username",
-      "type": 32
+      "type": 100,
+      "image": "https://sevensource.jamacloud.com/img/tree/book.png"
     },
     {
       "id": 2231,
       "name": "Initialize Username Field Attributes",
-      "type": 26
+      "type": 26,
+      "image": "https://sevensource.jamacloud.com/img/tree/config.png"
     },
     {
       "id": 2360,
       "name": "Initialize username label attributes",
-      "type": 26
+      "type": 26,
+      "image": "https://sevensource.jamacloud.com/img/tree/config.png"
     },
     {
       "id": 2361,
       "name": "Too few characters: “Invalid Username” error message prompt",
-      "type": 26
-    },
-    {
-      "id": 2373,
-      "name": "Input a Password",
-      "type": 32
+      "type": 26,
+      "image": "https://sevensource.jamacloud.com/img/tree/config.png"
     },
     {
       "id": 2372,
       "name": "Initialize password label attributes",
-      "type": 26
+      "type": 26,
+      "image": "https://sevensource.jamacloud.com/img/tree/config.png"
     },
     {
       "id": 2232,
       "name": "Initialize password field attributes",
-      "type": 26
+      "type": 26,
+      "image": "https://sevensource.jamacloud.com/img/tree/config.png"
     },
     {
       "id": 2374,
       "name": "Error: Too few characters: 'Invalid Password' error message prompt",
-      "type": 26
-    },
-    {
-      "id": 2365,
-      "name": "Submit Username and Password",
-      "type": 32
+      "type": 26,
+      "image": "https://sevensource.jamacloud.com/img/tree/config.png"
     },
     {
       "id": 2375,
       "name": "Create Submit function requesting authentication from Jama",
-      "type": 26
+      "type": 26,
+      "image": "https://sevensource.jamacloud.com/img/tree/config.png"
     },
     {
       "id": 2388,
       "name": "Submit button and 'Enter' key click handlers ",
-      "type": 26
+      "type": 26,
+      "image": "https://sevensource.jamacloud.com/img/tree/config.png"
     },
     {
       "id": 2390,
       "name": "Store users’ valid login credentials",
-      "type": 26
-    },
-    {
-      "id": 2377,
-      "name": "Gather and Display Item Hierarchy",
-      "type": 32
-    },
-    {
-      "id": 2628,
-      "name": "Gather a Project's Item Hierarchy",
-      "type": 32
+      "type": 26,
+      "image": "https://sevensource.jamacloud.com/img/tree/config.png"
     },
     {
       "id": 2387,
       "name": "Item Hierarchy Tree JSON Specification",
-      "type": 26
+      "type": 26,
+      "image": "https://sevensource.jamacloud.com/img/tree/config.png"
     },
     {
       "id": 2403,
       "name": "Gather Project's Item Hierarchy Items",
-      "type": 26
+      "type": 26,
+      "image": "https://sevensource.jamacloud.com/img/tree/config.png"
     },
     {
       "id": 2641,
       "name": "Create 'hierarchy' Endpoint",
-      "type": 26
+      "type": 26,
+      "image": "https://sevensource.jamacloud.com/img/tree/config.png"
     },
     {
       "id": 2639,
       "name": "Render Item Hierarchy",
-      "type": 26
+      "type": 26,
+      "image": "https://sevensource.jamacloud.com/img/tree/config.png"
     },
     {
       "id": 2650,
       "name": "Relationship Graph JSON Specification",
-      "type": 26
+      "type": 26,
+      "image": "https://sevensource.jamacloud.com/img/tree/config.png"
     },
     {
       "id": 2640,
       "name": "'Render Graph' Button and Click Handler ",
-      "type": 26
-    },
-    {
-      "id": 2404,
-      "name": "Gather and Display User Projects",
-      "type": 32
-    },
-    {
-      "id": 2406,
-      "name": "Gather User's List of Projects",
-      "type": 32
+      "type": 26,
+      "image": "https://sevensource.jamacloud.com/img/tree/config.png"
     },
     {
       "id": 2670,
       "name": "Gather User’s List of Projects",
-      "type": 26
+      "type": 26,
+      "image": "https://sevensource.jamacloud.com/img/tree/config.png"
     },
     {
       "id": 2673,
       "name": "Create ‘Projects’ endpoint",
-      "type": 26
+      "type": 26,
+      "image": "https://sevensource.jamacloud.com/img/tree/config.png"
     },
     {
       "id": 2674,
       "name": "Display Names of Projects to User",
-      "type": 26
-    },
-    {
-      "id": 2407,
-      "name": "Display User's list of Projects",
-      "type": 32
+      "type": 26,
+      "image": "https://sevensource.jamacloud.com/img/tree/config.png"
     },
     {
       "id": 2410,
       "name": "Display names of project to user",
-      "type": 26
+      "type": 26,
+      "image": "https://sevensource.jamacloud.com/img/tree/config.png"
     },
     {
       "id": 2411,
       "name": "Project selection click handler",
-      "type": 26
-    },
-    {
-      "id": 2405,
-      "name": "Render Graph",
-      "type": 32
-    },
-    {
-      "id": 2642,
-      "name": "Prepare Graph for D3",
-      "type": 32
+      "type": 26,
+      "image": "https://sevensource.jamacloud.com/img/tree/config.png"
     },
     {
       "id": 2645,
       "name": "Insert Items Into Graph",
-      "type": 26
+      "type": 26,
+      "image": "https://sevensource.jamacloud.com/img/tree/config.png"
     },
     {
       "id": 2646,
       "name": "Create 'graph' Endpoint",
-      "type": 26
+      "type": 26,
+      "image": "https://sevensource.jamacloud.com/img/tree/config.png"
     },
     {
       "id": 2647,
       "name": "Insert Relationship Items",
-      "type": 26
+      "type": 26,
+      "image": "https://sevensource.jamacloud.com/img/tree/config.png"
     },
     {
       "id": 2648,
       "name": "Create Graph Model Skeleton",
-      "type": 26
+      "type": 26,
+      "image": "https://sevensource.jamacloud.com/img/tree/config.png"
     },
     {
       "id": 2649,
       "name": "Reorganize Graph",
-      "type": 26
+      "type": 26,
+      "image": "https://sevensource.jamacloud.com/img/tree/config.png"
     },
     {
       "id": 2651,
       "name": "Configure D3",
-      "type": 26
+      "type": 26,
+      "image": "https://sevensource.jamacloud.com/img/tree/config.png"
     },
     {
       "id": 2699,
       "name": "Pagination Module for Jama API Data",
-      "type": 26
-    },
-    {
-      "id": 2123,
-      "name": "Risks",
-      "type": 31
+      "type": 26,
+      "image": "https://sevensource.jamacloud.com/img/tree/config.png"
     },
     {
       "id": 2133,
       "name": "Security Issues",
-      "type": 101
-    },
-    {
-      "id": 2707,
-      "name": "Sponsor disappears",
-      "type": 101
-    },
-    {
-      "id": 2708,
-      "name": "Loss of key team member",
-      "type": 101
-    },
-    {
-      "id": 2709,
-      "name": "Key changes in sponsor's requirements",
-      "type": 101
-    },
-    {
-      "id": 2710,
-      "name": "Personal conflict within team",
-      "type": 101
-    },
-    {
-      "id": 2711,
-      "name": "Loss of work due to technology error",
-      "type": 101
-    },
-    {
-      "id": 2712,
-      "name": "Personal conflict within team",
-      "type": 101
-    },
-    {
-      "id": 2713,
-      "name": "Failure to implement development technology",
-      "type": 101
-    },
-    {
-      "id": 2714,
-      "name": "Failure to maintain agile development workflow",
-      "type": 101
-    },
-    {
-      "id": 2124,
-      "name": "Bugs",
-      "type": 31
+      "type": 101,
+      "image": "https://sevensource.jamacloud.com/img/tree/book.png"
     }
   ],
   "relationships": [
