@@ -8,7 +8,7 @@ let bodyParser = require('body-parser');
 // TODO: Refactor these into a single routes module
 let routes = require('./routes/index');
 let projects = require('./routes/projects');
-let project = require('./routes/project');
+let project = require('./routes/graph');
 
 let app = express();
 
@@ -30,7 +30,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
 app.use('/projects', projects);
-app.use('/project', project);
+app.use('/graph', project);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

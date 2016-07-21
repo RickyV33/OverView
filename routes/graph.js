@@ -3,9 +3,7 @@ let router = express.Router();
 
 /* GET Project */
 router.get('/:projectId', function (req, res) {
-  // let graph = renderSVG();
-
-  res.render('project', {
+  res.render('graph', {
     title: 'Jama Software Capstone',
     subtitle: 'Project',
     projectId: req.param('projectId')
