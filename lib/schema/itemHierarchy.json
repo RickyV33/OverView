@@ -18,12 +18,12 @@
         "id": { "type": "integer" },
         "name": { "type": "string" },
         "type": { "type": "integer" },
-        "children": {
+        "downstream": {
           "type": "array",
           "items": { "$ref": "item" }
         }
       },
-      "required": [ "id", "name", "type", "children" ]
+      "required": [ "id", "name", "type", "downstream" ]
     }
   }
 }

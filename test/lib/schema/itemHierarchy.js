@@ -17,56 +17,56 @@ describe('Item Hierarchy JSON', function () {
     {title: 'should return false for empty JSON', body: {}},
     {title: 'should return false when id field is missing from an item',
       body: {items: [
-        {name: 'story', type: 35, children: []}
+        {name: 'story', type: 35, downstream: []}
       ]}
     },
     {title: 'should return false when name field is missing from an item',
       body: {items: [
-        {id: 1, type: 35, children: []}
+        {id: 1, type: 35, downstream: []}
       ]}
     },
     {title: 'should return false when type field is missing from an item',
       body: {items: [
-        {id: 1, name: 'story', children: []}
+        {id: 1, name: 'story', downstream: []}
       ]}
     },
-    {title: 'should return false when children are missing from an item',
+    {title: 'should return false when downstream are missing from an item',
       body: {items: [
         {id: 1, name: 'story', type: 35}
       ]}
     },
     {title: 'should return false when id field is a string',
       body: {items: [
-        {id: '1', name: 'story', type: 35, children: []}
+        {id: '1', name: 'story', type: 35, downstream: []}
       ]}
     },
     {title: 'should return false when name field is an integer',
       body: {items: [
-        {id: 1, name: 123, type: 35, children: []}
+        {id: 1, name: 123, type: 35, downstream: []}
       ]}
     },
     {title: 'should return false when type field is a string',
       body: {items: [
-        {id: 1, name: 'story', type: '35', children: []}
+        {id: 1, name: 'story', type: '35', downstream: []}
       ]}
     }
   ];
   let passingTestCases = [
     {title: 'should return true when JSON populates each required field with at least one element once',
       body: {items: [
-        {id: 1, name: 'story', type: 35, children: []}
+        {id: 1, name: 'story', type: 35, downstream: []}
       ]}
     },
     {title: 'should return true when JSON contains many items in the item hierarchy tree',
       body: {items: [
-        {id: 1, name: 'story', type: 35, children: [
-            {id: 2, name: 'bug', type: 40, children: []},
-            {id: 3, name: 'task', type: 45, children: []}
+        {id: 1, name: 'story', type: 35, downstream: [
+            {id: 2, name: 'bug', type: 40, downstream: []},
+            {id: 3, name: 'task', type: 45, downstream: []}
         ]},
-        {id: 10, name: 'story', type: 35, children: [
-            {id: 4, name: 'task', type: 45, children: []}
+        {id: 10, name: 'story', type: 35, downstream: [
+            {id: 4, name: 'task', type: 45, downstream: []}
         ]},
-        {id: 11, name: 'story', type: 35, children: []}
+        {id: 11, name: 'story', type: 35, downstream: []}
       ]}
     }
   ];
