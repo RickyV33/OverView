@@ -162,4 +162,21 @@ describe('Auth module', function () {
       expect(auth.authenticate(username, password, teamName)).to.be.rejected();
     });
   });
+
+  describe('isAuthenticated function', () => {
+    let credentialsFixture = { body: {} };
+
+    it('should continue to specified route when user is authenticated', () => {
+      expect(res.session.username).to.equal('dummy');
+      expect(res.session.password).to.equal('password');
+      expect(res.session.teamName).to.equal('sevensource');
+    });
+
+    it('should redirect to index page with session variable error code 401' +
+      'using invalid credentials', function () {
+      // Place code here
+      expect(res).to.redirectTo('/');
+      expect(res.session.error.id).to.equal(401);
+    });
+  })
 });
