@@ -3,51 +3,34 @@ let hierarchy = require('../lib/hierarchy');
 
 let router = express.Router();
 
-let rootItemSelected = '';
 let itemHierarchy = [];
-let children = [];
-let results = [];
 
 /* GET item hierarchy page */
-router.get('/', function(req, res, next) {
-    results = hierarchy.getItemHierarchy(33, 'http://dummy:password@sevensource.jamacloud.com/rest/latest/');
-
-    // These lines will replace line 14 with the explicit URL
+router.get('/', function (req, res, next) {
+  // Next two lines will replace line 13 with explicit url
   // let url = 'http://' + req.session.username + ':' + req.session.password + '@' + req.session.teamname + '.jamacloud.com/rest/latest/';
-  /*hierarchy.getRootItems(33, 'http://dummy:password@sevensource.jamacloud.com/rest/latest/').then(function(rootItems){
-      itemHierarchy = hierarchy.parseRootItems(rootItems);
-      itemHierarchy.forEach(function(rootItem){
-          children = [];
-          hierarchy.getSubItems('http://dummy:password@sevensource.jamacloud.com/rest/latest/', rootItem.id).then(function(subItems){
-              children = hierarchy.parseSubRootItems(subItems);
-              children.forEach(function(child){
-                  rootItem.children.push(child);
-              });
-              rootItem.children.forEach(function(child){
-                  console.log('child in router: ;' + child.name);
-              });
-              results.push(rootItem);
-          });
-      });
-
-
-      /*req.sesseion.itemHierarchy = itemHierarchy;
-      req.session.save(function (err) {
-          if (err) {
-              // TODO Session save Error message
-          }
-          else {
-            res.render('hierarchy', {
-              title: 'Select a Root Item (Optional) ',
-              itemHierarchy: req.session.itemHierarchy
-            });
-          }
-      });
-  });*/
-    console.log('results' + results);
-    res.render('hierarchy', {
+  // hierarchy.getItemHierarchy(req.session.username, req.session.password, req.session.teamName, 33).then(function(allItems){
+  hierarchy.getAllItems('dummy', 'password', 'sevensource', 33,
+    'http://dummy:password@sevensource.jamacloud.com/rest/latest/').then(function (allItems) {
+    // req.session.rootItems = parseItemHierarchy(allItems); to replace the line below
+      itemHierarchy = hierarchy.parseItemHierarchy(allItems);
+      console.log('done with parse function');
+      console.log('results are ' + itemHierarchy.length);
+      res.render('hierarchy', {
         title: 'Select a Root Item (Optional) ',
-        itemHierarchy: results
+        rootItems: itemHierarchy
+      });
+     /* req.session.save(function (err) {
+      if (err) {
+        // TODO Session save Error message
+      } else {
+        res.render('hierarchy', {
+          title: 'Select a Root Item (Optional) ',
+          // rootItems: req.session.rootItems to replace the line below
+          rootItems: rootItems
+        });
+      }
+    });*/
     });
 });
 
