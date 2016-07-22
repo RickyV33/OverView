@@ -17,6 +17,76 @@ chai.use(chaiHttp);
 chai.use(chaiPromise);
 
 describe('hierarchy', function () {
+  let sampleHierarchy = [
+    {
+      'id': 2104,
+      'itemType': 31,
+      'name': 'Epics',
+      'children': [
+        {
+          'id': 1111,
+          'itemType': 35,
+          'name': 'Epic Sub Item',
+          'children': [
+            {
+              'id': 2222,
+              'itemType': 36,
+              'name': 'Epic Sub Sub Item',
+              'children': [
+                {
+                  'id': 4444,
+                  'itemType': 38,
+                  'name': 'Epic Third Level Sub Sub Item',
+                  'children': []
+                }
+              ]
+            },
+            {
+              'id': 3333,
+              'itemType': 37,
+              'name': 'Epic Second Sub Sub Item',
+              'children': []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      'id': 2115,
+      'itemType': 31,
+      'name': 'Requirements'
+    },
+    {
+      'id': 2110,
+      'itemType': 31,
+      'name': 'Stories'
+    },
+    {
+      'id': 2125,
+      'itemType': 31,
+      'name': 'Test Plans'
+    },
+    {
+      'id': 2123,
+      'itemType': 31,
+      'name': 'Risks'
+    },
+    {
+      'id': 2124,
+      'itemType': 31,
+      'name': 'Bugs'
+    },
+    {
+      'id': 2104,
+      'itemType': 31,
+      'name': 'Epics'
+    },
+    {
+      'id': 2855,
+      'itemType': 31,
+      'name': 'Stories TEST'
+    }
+  ];
   describe('get request', function () {
     // This makes a server request to the route location '/hierarchy'
     chai.request(app)
@@ -38,7 +108,7 @@ describe('hierarchy', function () {
           // Render the view using ejs
           let path = join(__dirname, '../../views/hierarchy.ejs');
           let data = {title: 'Select a Root Item (Optional) ',
-            itemHierarchy: './mockHierarchy.json'};
+            itemHierarchy: sampleHierarchy};
           let renderedView = ejs.compile(read(path, 'utf8'), {filename: path})(data);
           expect(res.text).to.equal(renderedView);
           expect(res.text).contains('Select a Root Item (Optional) ');
