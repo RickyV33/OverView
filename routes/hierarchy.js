@@ -14,8 +14,6 @@ router.get('/', function (req, res, next) {
     'http://dummy:password@sevensource.jamacloud.com/rest/latest/').then(function (allItems) {
     // req.session.rootItems = parseItemHierarchy(allItems); to replace the line below
       itemHierarchy = hierarchy.parseItemHierarchy(allItems);
-      console.log('done with parse function');
-      console.log('results are ' + itemHierarchy.length);
       res.render('hierarchy', {
         title: 'Select a Root Item (Optional) ',
         rootItems: itemHierarchy
