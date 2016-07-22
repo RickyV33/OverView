@@ -6,29 +6,10 @@
   </head>
   <body>
     <h1><%= title %></h1>
-    <h3>Click on an item below to view all it's downstream related items,
-      or click 'Render Graph' to view the traceability graph:</h3>
-    <%function renderSubItems(item) {%>
-      <ul>
-        <li><%= item.name %></li>
-        <%if (item.children) {%>
-        <%item.children.forEach(function (subItem) {%>
-            <%- renderSubItems(subItem); %>
-          <%});%>
-        <%}%>
-      </ul>
-    <%}%>
-    <ul id="rootItems">
-      <%if(rootItems) {%>
-        <%rootItems.forEach(function (rootItem) {%>
-          <li>
-              <%= rootItem.name %>
-              <%if (rootItem.children) {%>
-                <%rootItem.children.forEach(function (subItem) {%>
-                  <%- renderSubItems(subItem); %>
-                <%});%>
-              <%}%>
-        </li>
+    <ul id="itemHierarchy">
+      <%if(itemHierarchy.length > 0) {%>
+        <%itemHierarchy.forEach(function (item) {%>
+          <li><%= item.name %></li>
         <%});%>
       <%} else {%>
         <p>Sorry, there are no items to display.</p>
