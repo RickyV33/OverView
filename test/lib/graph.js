@@ -64,7 +64,7 @@ describe('Graph class module', () => {
         expect(newGraph.edges[0].fromItem).to.equal(1);
         expect(newGraph.edges[0].toItem).to.equal(2);
         expect(newGraph.edges[0].type).to.equal(99);
-      }, 2000);
+      }, 5000);
     });
 
     it('should return a graph that contains nothing when either project ID or url are invalid.', () => {
