@@ -1,4 +1,5 @@
 /* eslint-env mocha */
+
 let chai = require('chai');
 let expect = chai.expect;
 let dirtyChai = require('dirty-chai');
