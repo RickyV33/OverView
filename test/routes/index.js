@@ -84,7 +84,7 @@ describe('index', function () {
     });
   });
 
-  describe('post request', function () {
+  describe.skip('post request', function () {
     'use strict';
 
     credentialFixtureCases.forEach(function (fixture) {
