@@ -1,4 +1,4 @@
-# Jama-Software
+# JamaTrace
 
 ## Developing
 
