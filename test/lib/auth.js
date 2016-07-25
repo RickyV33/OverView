@@ -5,8 +5,9 @@ let expect = chai.expect;
 let dirtyChai = require('dirty-chai');
 let proxyquire = require('proxyquire');
 let chaiAsPromised = require('chai-as-promised');
-
 let auth = require('../../lib/auth');
+let httpMocks = require('node-mocks-http');
+let sinon = require('sinon');
 
 chai.use(dirtyChai);
 chai.use(chaiAsPromised);
@@ -17,42 +18,50 @@ describe('Auth module', function () {
     {
       username: '',
       password: '',
-      teamName: ''
+      teamName: '',
+      description: 'all fields are empty'
     },
     {
       username: 'dummy',
       password: '',
-      teamName: ''
+      teamName: '',
+      description: 'username is correct and password/teamname are empty'
     },
     {
       username: '',
       password: 'dumber',
-      teamName: ''
+      teamName: '',
+      description: 'password is incorrect and username/teamname are empty'
     },
     {
       username: '',
       password: '',
-      teamName: 'dummy'
+      teamName: 'dummy',
+      description: 'teamname is incorrect and password/username are empty'
     },
     {
       username: 'dummy',
       password: 'password',
-      teamName: ''
+      teamName: '',
+      description: 'username is incorrect and password/teamname are empty'
     },
     {
       username: '',
       password: 'password',
-      teamName: 'sevensource'
+      teamName: 'sevensource',
+      description: 'username is empty'
     },
     {
       username: 'dummy',
       password: '',
-      teamName: 'sevensource'
+      teamName: 'sevensource',
+      description: 'username is incorrect and password is empty'
     },
     {
       username: 'dummy',
       password: 'password',
-      teamName: 'sevensource'
+      teamName: 'sevensource',
+      description: 'all fields are valid'
     }
   ];
   describe('validate function', function () {
@@ -164,19 +173,57 @@ describe('Auth module', function () {
   });
 
   describe('isAuthenticated function', () => {
-    let credentialsFixture = { body: {} };
+    credentialFixtureCases.forEach(function (fixture) {
+      let credentialsFixture = {
+        session: {},
+        body: {}
+      };
+      credentialsFixture.session = fixture;
+      credentialsFixture.body = fixture;
+      auth = proxyquire('../../lib/auth', {
+        './validate': validateStub,
+        './jamaServerAuth': jamaServerAuthStub
+      });
+      let callback = sinon.spy();
+      let req = httpMocks.createRequest();
+      let res = httpMocks.createResponse();
+      req.session = {};
+      req.body = {};
+      req.session.username = fixture.username;
+      req.session.password = fixture.password;
+      req.session.teamName = fixture.teamName;
+      req.session.isAuthenticated = false;
+      req.body.username = fixture.username;
+      req.body.password = fixture.password;
+      req.body.teamName = fixture.teamName;
+      if (fixture.name === 'dummy' && fixture.password === 'password' && fixture.teamName === 'sevensource') {
+        it('should return true when ' + fixture.description, function (done) {
+          auth.isAuthenticated(req, res, callback);
+          expect(req.session.isAuthenticated).to.be.true();
+          done();
+        });
+      } else {
+        it('should be false when ' + fixture.description, function (done) {
+          auth.isAuthenticated(req, res, callback);
+          expect(req.session.isAuthenticated).to.be.false();
+          done();
+        });
+      }
 
-    it('should continue to specified route when user is authenticated', () => {
-      expect(res.session.username).to.equal('dummy');
-      expect(res.session.password).to.equal('password');
-      expect(res.session.teamName).to.equal('sevensource');
-    });
+      function validateStub (req) {
+        'use strict';
 
-    it('should redirect to index page with session variable error code 401' +
-      'using invalid credentials', function () {
-      // Place code here
-      expect(res).to.redirectTo('/');
-      expect(res.session.error.id).to.equal(401);
+        let username = req.body.username;
+        let password = req.body.password;
+        let teamName = req.body.teamName;
+
+        return (username !== '' && username.length <= 200 &&
+        password.length >= 6 && password.length <= 200 &&
+        teamName !== '');
+      }
     });
-  })
+    function jamaServerAuthStub (username, password, teamName) {
+      return (username === 'dummy' && password === 'password' && teamName === 'sevensource');
+    }
+  });
 });
