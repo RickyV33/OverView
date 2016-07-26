@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css'/>
+</head>
+<body>
+<h1><%= title %></h1>
+<h3>Select a root item from below to view all it's downstream related items,
+    or click the "Render Graph" button to view the traceability graph:</h3>
+<%function renderSubItems(item) {%>
+<ul>
+    <li id="<%= item.id%>" tabindex="1" >
+        <%= item.name %> <%= item.id%>
+        <%if (item.children) {%>
+        <%item.children.forEach(function (subItem) {%>
+        <%- renderSubItems(subItem); %>
+        <%});%>
+        <%}%>
+    </li>
+</ul>
+<%}%>
+<ul id="itemHierarchy" >
+    <%if(itemHierarchy) {%>
+    <%itemHierarchy.forEach(function (rootItem) {%>
+    <li id="<%= rootItem.id%>" tabindex="2">
+        <%= rootItem.name %> <%= rootItem.id%>
+        <%if (rootItem.children) {%>
+        <%rootItem.children.forEach(function (subItem) {%>
+        <%- renderSubItems(subItem); %>
+        <%});%>
+        <%}%>
+    </li>
+    <%});%>
+    <%} else {%>
+    <p>Sorry, there are no items to display.</p>
+    <%}%>
+</ul>
+<%let selected = itemHierarchy.id; %>
+<input id="renderButton" type="button" value="Render Graph" >
+</body>
+</html>
