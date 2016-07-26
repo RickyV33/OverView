@@ -13,16 +13,17 @@ d3.json('../js/ssProject.json', function (error, links) {
 
   for (let i = 0; i < items.length; i++) {
     linkedByIndex[items[i].id + ',' + items[i].id] = 1;
+    items[i].downstream = []; // This will store the index for for relationships for each item *see downstreamCheck() below
+    items[i].downstream.noRelations = false;
   }
 
   // Compute the distinct nodes from the links.
-  links.relationships.forEach(function (nodeItem) {
-    nodeItem.source = getItemWithId(items, nodeItem.fromItem);
-    nodeItem.target = getItemWithId(items, nodeItem.toItem);
-    nodeItem.value = +nodeItem.type;
-
+  links.relationships.forEach(function (relItem) {
+    relItem.source = getItemWithId(items, relItem.fromItem);
+    relItem.target = getItemWithId(items, relItem.toItem);
+    relItem.value = +relItem.type;
     // create relationship tuples for linkedByIndex array
-    linkedByIndex[nodeItem.source.id + ',' + nodeItem.target.id] = 1;
+    linkedByIndex[relItem.source.id + ',' + relItem.target.id] = 1;
   });
 
   let width = 1000;
@@ -68,7 +69,7 @@ d3.json('../js/ssProject.json', function (error, links) {
     .data(force.links())
     .enter().append('svg:path')
     .attr('class', function (thisPath) {
-      return 'link ' + (thisPath.type === 8 ? 'link-dash' : '');
+      return 'link ' + (thisPath.type === 8 ? 'link-dash' : ''); // Need
     })
     .attr('marker-end', 'url(#end)');
 
@@ -78,7 +79,7 @@ d3.json('../js/ssProject.json', function (error, links) {
     .enter().append('g')
     .attr('class', 'node')
     .call(force.drag)
-    .on('dblclick', connectedNodesClick);
+    .on('click', nodeClick);
 
   // White rectangle behind text
   node.append('rect')
@@ -180,27 +181,69 @@ d3.json('../js/ssProject.json', function (error, links) {
     return linkedByIndex[a.id + ',' + b.id];
   }
 
-  // ============ Toggle children on click ===========
-  function connectedNodesClick () {
-    if (nodeSelectedToggle === 0) {
-      // Reduce the opacity of all but its neighbors
-      let d = d3.select(this).node().__data__;
+  /*
+   * Traverse through child nodes recursively
+   */
 
-      console.log(d);
-
-      node.style('opacity', function (curNode) {
-        return neighbor(d, curNode) ? 1 : 0.1;
+  function downstreamCheck(d) {
+    console.log('try1');
+    if (d.downstream.length === 0 && d.downstream.noRelations === false){
+      console.log('try2');
+      // build downstream if you don't have one already and don't have the noRelationships flag set.
+      links.relationships.forEach( function (relItem, index) {
+        if (d.id === relItem.fromItem) {
+          d.downstream.push(relItem);
+        }
       });
-      path.style('opacity', function (curPath) {
-        return (d.index === curPath.source.index) ? 1 : 0.1;
-      });
-
-      nodeSelectedToggle = 1;
-    } else {
-      // Set opacity to normal
-      node.style('opacity', 1);
-      path.style('opacity', 1);
-      nodeSelectedToggle = 0;
+      //This will be called if we have NO RELATIONSHIPS. So we're setting that flag.
+      if (d.downstream.length === 0) {
+        d.downstream.noRelations = true;
+      }
     }
+  }
+  function showNodesDownstream(d) {
+    // let downStreamArray = [];
+    //
+    // links.relationships.forEach( function (relItem) {
+    //   if (d.id === relItem.fromItem) {
+    //     downStreamArray.push(relItem.toItem);
+    //   }
+    // });
+
+    node.style('opacity', function (curNode) {
+      for( let i = 0; i < d.downstream.length; i++ ){
+        if (d.downstream[i].toItem ===curNode.id) {
+          curNode.isHighlighted = true;
+        }
+      }
+      return curNode.isHighlighted ? 1 : 0.1;
+    });
+
+    path.style('opacity', function (curPath) {
+      return (curPath.source.isHighlighted && curPath.target.isHighlighted) ? 1 : 0.1;
+    });
+
+  }
+
+  // ============ Toggle highlighting children on single click ===========
+  function nodeClick () {
+    // Reduce the opacity of all but its neighbors
+    let d = d3.select(this).node().__data__;
+    downstreamCheck(d);
+    // if (d.isDisplayed == false) {
+    d.isSelected = true;
+    d.isHighlighted = true;
+    showNodesDownstream(d);  // Run algorithm for showing all of the downstream items
+    nodeSelectedToggle = 1;
+    /*} else {
+     // Set opacity to normal for all items in graph
+     node.style('opacity', 1);
+     path.style('opacity', 1);
+     node.forEach( function () {
+
+     });
+
+     nodeSelectedToggle = 0;
+     }*/
   }
 });
