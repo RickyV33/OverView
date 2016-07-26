@@ -14,6 +14,13 @@ path.link {
   stroke-width: 1.5px;
 }
 
+path.link-dash {
+  fill: none;
+  stroke: #73a8cf;
+  stroke-width: 1.5px;
+  stroke-dasharray: 5;
+}
+
 .arrow {
   fill: #cfcfcf;
   stroke: #cfcfcf;
