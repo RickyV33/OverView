@@ -6,7 +6,7 @@ d3.json('../js/ssProject.json', function (error, graphData) {
     console.log(error);
   }
 
-  let passedID = 2142;
+  let passedID = 2142;  // Gets the passed parameter value from URL
 
   let width = 1000;
   let height = 800;
@@ -42,19 +42,17 @@ d3.json('../js/ssProject.json', function (error, graphData) {
     .attr('d', 'M0,-5L10,0L0,5')
     .attr('class', 'arrow');
 
-  updateGraph(passedID ? passedID : -1);  // checks to see if a value has been passed
+  updateGraph(passedID);  // Render the graph
 
   /*
    * Updates the graph
    */
-  function updateGraph(rootId) {
-
+  function updateGraph (rootId) {
     let itemsToRender = [{id: -1, name: graphData.name, type: -1}];  // The list of nodes to render
     let itemRelationsToRender = []; // The list of relationships to render
-    let rootNode = itemsToRender[0]; // References the root node
+    // let projectNode = itemsToRender[0]; // References the root node
 
     let linkedByIndex = [];      // Array with info as to what is connected to what
-    let nodeSelectedToggle = 0;  // Toggle stores whether the highlighting is on
 
     // Sift through the nodes to see which node does not have a upstream element
     /*  items.forEach( function (curItem) {
@@ -88,14 +86,12 @@ d3.json('../js/ssProject.json', function (error, graphData) {
       .on('tick', tick)
       .start();
 
-
-
     // ============ edges combined with the arrows ===========
     let path = svg.append('svg:g').selectAll('path')
       .data(force.links())
       .enter().append('svg:path')
       .attr('class', function (thisPath) {
-        return 'link ' + (thisPath.type === 8 ? 'link-dash' : ''); // Need
+        return 'link ' + (thisPath.type === 8 ? 'link-dash' : ''); // Checks the path type and formats accordingly
       })
       .attr('marker-end', 'url(#end)');
 
@@ -105,7 +101,7 @@ d3.json('../js/ssProject.json', function (error, graphData) {
       .enter().append('g')
       .attr('class', function (thisNode) {
         // Check to see if the node is the project root node
-        return thisNode.type == -1 ? 'node projectRoot' : 'node';
+        return thisNode.type === -1 ? 'node projectRoot' : 'node';
       })
       .call(force.drag)
       .on('click', nodeClick);
@@ -151,7 +147,7 @@ d3.json('../js/ssProject.json', function (error, graphData) {
       });
 
     // ============= add the curvy lines ==============
-    function tick(e) {
+    function tick (e) {
       path.attr('d', function (d) {
         let dx = d.target.x - d.source.x;
         let dy = d.target.y - d.source.y;
@@ -206,7 +202,7 @@ d3.json('../js/ssProject.json', function (error, graphData) {
      }*/
 
     // Gets the item with id
-    function getItemWithId(itemArray, id) {
+    function getItemWithId (itemArray, id) {
       let result = null;
 
       itemArray.forEach(function (item) {
@@ -219,16 +215,11 @@ d3.json('../js/ssProject.json', function (error, graphData) {
       return result;
     }
 
-    // This function looks up whether a pair are neighbours
-    function neighbor(a, b) {
-      return linkedByIndex[a.id + ',' + b.id];
-    }
-
     /*
      * Traverse through child nodes recursively
      */
 
-    function downstreamCheck(d) {
+    function downstreamCheck (d) {
       console.log('try1');
       if (d.downstream.length === 0 && d.downstream.noRelations === false) {
         console.log('try2');
@@ -238,14 +229,14 @@ d3.json('../js/ssProject.json', function (error, graphData) {
             d.downstream.push(relItem);
           }
         });
-        //This will be called if we have NO RELATIONSHIPS. So we're setting that flag.
+        // This will be called if we have NO RELATIONSHIPS. So we're setting that flag.
         if (d.downstream.length === 0) {
           d.downstream.noRelations = true;
         }
       }
     }
 
-    function showNodesDownstream(d) {
+    function showNodesDownstream (d) {
       // let downStreamArray = [];
       //
       // graphData.relationships.forEach( function (relItem) {
@@ -266,29 +257,16 @@ d3.json('../js/ssProject.json', function (error, graphData) {
       path.style('opacity', function (curPath) {
         return (curPath.source.isHighlighted && curPath.target.isHighlighted) ? 1 : 0.1;
       });
-
     }
 
     // ============ Toggle highlighting children on single click ===========
-    function nodeClick() {
+    function nodeClick () {
       // Reduce the opacity of all but its neighbors
       let d = d3.select(this).node().__data__;
       downstreamCheck(d);
-      // if (d.isDisplayed == false) {
       d.isSelected = true;
       d.isHighlighted = true;
       showNodesDownstream(d);  // Run algorithm for showing all of the downstream items
-      nodeSelectedToggle = 1;
-      /*} else {
-       // Set opacity to normal for all items in graph
-       node.style('opacity', 1);
-       path.style('opacity', 1);
-       node.forEach( function () {
-
-       });
-
-       nodeSelectedToggle = 0;
-       }*/
     }
-}
+  }
 });
