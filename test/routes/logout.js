@@ -27,7 +27,6 @@ describe('logout', () => {
               expect(res).to.redirect('/');
               expect(res).to.have.property('text');
               path = join(__dirname, '../../views/index.ejs');
-              // TODO need to test with actual data once "Gather projects" story is completed
               data = {title: 'JamaTrace'};
               renderedView = ejs.compile(read(path, 'utf8'), {filename: path})(data);
               expect(res.text).to.equal(renderedView);
