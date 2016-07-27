@@ -27,7 +27,7 @@ path.link-dash {
   stroke-width: 1.5px !important;
 }
 
-circle {
+.node circle {
   fill: #dfdfdf;
   stroke: #F2622B;
   stroke-width: 1.5px;
@@ -53,4 +53,10 @@ text {
 
 .activeNode {
   fill: 'steelblue';
+}
+
+.projectRoot circle {
+  fill: #0a1d64;
+  stroke: #F2622B;
+  stroke-width: 1.5px;
 }
