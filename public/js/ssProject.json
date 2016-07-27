@@ -1,5 +1,6 @@
 {
-  "items": [
+  "name": "Jama Trace",
+  "nodes": [
     {
       "id": 2119,
       "name": "User Login Home Page",
@@ -414,7 +415,7 @@
       "image": "https://sevensource.jamacloud.com/img/tree/book.png"
     }
   ],
-  "relationships": [
+  "edges": [
     {
       "id": 215,
       "fromItem": 2119,
