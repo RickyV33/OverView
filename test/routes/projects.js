@@ -32,8 +32,6 @@ describe('projects', function () {
               data = {title: 'Projects', projects: null};
               renderedView = ejs.compile(read(path, 'utf8'), {filename: path})(data);
               expect(res.text).to.equal(renderedView);
-              expect(res.text).contains('Projects');
-              expect(res.text).contains('Click on a project below to view it\'s traceability graph:');
               done();
             });
     });
