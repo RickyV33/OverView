@@ -41,8 +41,6 @@ describe('hierarchy', function () {
             itemHierarchy: './mockHierarchy.json'};
           let renderedView = ejs.compile(read(path, 'utf8'), {filename: path})(data);
           expect(res.text).to.equal(renderedView);
-          expect(res.text).contains('Select a Root Item (Optional) ');
-          expect(res.text).contains('Please select a root item from below, and click "Render Graph": ');
           done();
         });
       });
