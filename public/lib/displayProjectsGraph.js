@@ -46,6 +46,7 @@ d3.json('../js/ssProject.json', function (error, graphData) {
 
   /*
    * Updates the graph
+   * @param rootId - This is the id of the element that is to be the root
    */
   function updateGraph (rootId) {
     let itemsToRender = [{id: -1, name: graphData.name, type: -1}];  // The list of nodes to render
@@ -54,27 +55,27 @@ d3.json('../js/ssProject.json', function (error, graphData) {
 
     let linkedByIndex = [];      // Array with info as to what is connected to what
 
-    // Sift through the nodes to see which node does not have a upstream element
-    /*  items.forEach( function (curItem) {
-
-     });*/
-
+    // Compute the distinct nodes from the edges.
     for (let i = 0; i < items.length; i++) {
       linkedByIndex[items[i].id + ',' + items[i].id] = 1;
       items[i].downstream = []; // This will store the index for for relationships for each item *see downstreamCheck() below
       items[i].downstream.noRelations = false;
-      itemsToRender.push(items[i]); // Add all the items to the render list
     }
 
-    // Compute the distinct nodes from the edges.
+    // Set the node source and target
     itemRelations.forEach(function (relItem) {
-      itemRelationsToRender.push(relItem); // Add the relationships to the relationship array
-      relItem.source = getItemWithId(items, relItem.fromItem);
-      relItem.target = getItemWithId(items, relItem.toItem);
-      relItem.value = +relItem.type;
+      if (relItem.source === rootId) {
+        console.log(relItem);
+        itemRelationsToRender.push(relItem);           // Save the relationship to render
+        itemsToRender.push(getItemWithId(relItem.target));  // Save the node to render
+      }
+      // itemRelationsToRender.push(relItem); // Add the relationships to the relationship array
+      // relItem.value = +relItem.type;
       // create relationship tuples for linkedByIndex array
-      linkedByIndex[relItem.source.id + ',' + relItem.target.id] = 1;
+      // linkedByIndex[relItem.source.id + ',' + relItem.target.id] = 1;
     });
+
+    console.log(itemRelationsToRender);
 
     let force = d3.layout.force()
       .nodes(d3.values(itemsToRender))
@@ -189,23 +190,11 @@ d3.json('../js/ssProject.json', function (error, graphData) {
         });
     }
 
-    // Gets the given node ToItem value
-    /* function getToItemValues (array, value) {
-     let result = [];
-
-     array.forEach(function (item) {
-     if (item.fromItem === value) {
-     result.push(item.toItem);
-     }
-     });
-     return result;
-     }*/
-
     // Gets the item with id
-    function getItemWithId (itemArray, id) {
+    function getItemWithId (id) {
       let result = null;
 
-      itemArray.forEach(function (item) {
+      items.forEach(function (item) {
         if (item.id === id) {
           result = item;
           return;
@@ -220,12 +209,10 @@ d3.json('../js/ssProject.json', function (error, graphData) {
      */
 
     function downstreamCheck (d) {
-      console.log('try1');
       if (d.downstream.length === 0 && d.downstream.noRelations === false) {
-        console.log('try2');
         // build downstream if you don't have one already and don't have the noRelationships flag set.
-        graphData.relationships.forEach(function (relItem, index) {
-          if (d.id === relItem.fromItem) {
+        graphData.edges.forEach(function (relItem, index) {
+          if (d.id === relItem.source) {
             d.downstream.push(relItem);
           }
         });
@@ -240,14 +227,14 @@ d3.json('../js/ssProject.json', function (error, graphData) {
       // let downStreamArray = [];
       //
       // graphData.relationships.forEach( function (relItem) {
-      //   if (d.id === relItem.fromItem) {
-      //     downStreamArray.push(relItem.toItem);
+      //   if (d.id === relItem.source) {
+      //     downStreamArray.push(relItem.target);
       //   }
       // });
 
       node.style('opacity', function (curNode) {
         for (let i = 0; i < d.downstream.length; i++) {
-          if (d.downstream[i].toItem === curNode.id) {
+          if (d.downstream[i].target === curNode.id) {
             curNode.isHighlighted = true;
           }
         }
