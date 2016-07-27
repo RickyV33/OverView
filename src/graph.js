@@ -2,6 +2,6 @@
 
 document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('logOut').addEventListener('click', () => {
-    document.location.href = '/';
+    document.location.href = '/logout';
   });
 });
