@@ -1,7 +1,8 @@
-// let file = '../js/ssProject.json'; // '../js/sampleGraphData.json'
+"use strict";
+let fileName = '../js/ssProject.json'; // '../js/sampleGraphData.json'
 
 // get the data
-d3.json('../js/ssProject.json', function (error, graphData) {
+d3.json(fileName, function (error, graphData) {
   if (error) {
     console.log(error);
   }
@@ -48,11 +49,16 @@ d3.json('../js/ssProject.json', function (error, graphData) {
    * Updates the graph
    * @param rootId - This is the id of the element that is to be the root
    */
-  function updateGraph (rootId) {
-    let itemsToRender = [{id: -1, name: graphData.name, type: -1}];  // The list of nodes to render
-    let itemRelationsToRender = []; // The list of relationships to render
-    // let projectNode = itemsToRender[0]; // References the root node
+  function updateGraph (rootId = -1) {
+    let defaultRootId = -1.1;
+    let defaultRootNodeType = -1.1;
+    let defaultRelLinkId = -1.2;
+    let defaultRelType = -1.2;
 
+    let itemsToRender = [{id: defaultRootId, name: graphData.name, type: defaultRootNodeType}];  // The list of nodes to render
+    let itemRelationsToRender = []; // The list of relationships to render
+    let projectNode;  // References the root node
+    let rootLink = {};     // references the relationship from project name to selected node
     let linkedByIndex = [];      // Array with info as to what is connected to what
 
     // Compute the distinct nodes from the edges.
@@ -62,19 +68,68 @@ d3.json('../js/ssProject.json', function (error, graphData) {
       items[i].downstream.noRelations = false;
     }
 
-    // Set the node source and target
-    itemRelations.forEach(function (relItem) {
-      if (relItem.source === rootId) {
-        console.log(relItem);
-        itemRelationsToRender.push(relItem);           // Save the relationship to render
-        itemsToRender.push(getItemWithId(relItem.target));  // Save the node to render
-      }
-      // itemRelationsToRender.push(relItem); // Add the relationships to the relationship array
-      // relItem.value = +relItem.type;
-      // create relationship tuples for linkedByIndex array
-      // linkedByIndex[relItem.source.id + ',' + relItem.target.id] = 1;
-    });
+    // Check to see if the user passed in a node id
+    // If one is provided, then create a link from the project node and add a new
+    // object to be rendered. Otherwise create edges from project node to first level of nodes
+    if (rootId >= 0) {
+      console.log('Root ID: ' + rootId);
+      // Set the node source and target
+      /*itemRelations.forEach( relItem => {
+        if (relItem.source === rootId) {
+          console.log(relItem);
+          itemRelationsToRender.push(relItem);           // Save the relationship to render
+        }
+        // itemRelationsToRender.push(relItem); // Add the relationships to the relationship array
+        // relItem.value = +relItem.type;
+        // create relationship tuples for linkedByIndex array
+        // linkedByIndex[relItem.source.id + ',' + relItem.target.id] = 1;
+      });*/
 
+      // Go through each item relationship and find all of the nodes related to the passed node ID
+      /*itemRelationsToRender.forEach( relItem => {
+        let foundItem = items.filter( function (item) {
+          return item.id === relItem.target;
+        });
+
+        if(foundItem) {
+          itemsToRender.push(foundItem[0]);  // Save the node to render
+        }
+      });*/
+
+
+      // Get the item object
+      let foundItem = items.filter(function (item) {
+        return item.id === rootId;
+      });
+
+      if (foundItem.length > 0) {
+        projectNode = foundItem[0];  // Reference is make at function scope
+        itemsToRender.push(projectNode);  // Add the selected item to the render list
+
+        // Add an edge from project name to the selected root id provided
+        rootLink = {
+          id: defaultRelLinkId,
+          sourceNode: defaultRootId,
+          targetNode: rootId,
+          type: defaultRelType
+        };
+
+        itemRelations.unshift(rootLink);  // Add the node and edge to the front of the render lists
+        console.log(itemRelations[0]);
+        itemRelationsToRender.push(itemRelations[0]); // Take the edge just created and put it in the render list
+      }
+    } else {
+      // TODO: Add the nodes that do not have parents to the project node
+      // project name is the root node, so add edges to all of the first level nodes
+      /*itemsToRender.forEach( function (item) {
+        let newEdge = { id: 999, source: defaultRootId, target: item.id, type: defaultRelType};
+        itemRelationsToRender.push(newEdge);
+      });*/
+    }
+
+    console.log('Items list');
+    console.log(itemsToRender);
+    console.log('Relations list');
     console.log(itemRelationsToRender);
 
     let force = d3.layout.force()
@@ -91,7 +146,7 @@ d3.json('../js/ssProject.json', function (error, graphData) {
     let path = svg.append('svg:g').selectAll('path')
       .data(force.links())
       .enter().append('svg:path')
-      .attr('class', function (thisPath) {
+      .attr('class', thisPath => {
         return 'link ' + (thisPath.type === 8 ? 'link-dash' : ''); // Checks the path type and formats accordingly
       })
       .attr('marker-end', 'url(#end)');
@@ -192,16 +247,9 @@ d3.json('../js/ssProject.json', function (error, graphData) {
 
     // Gets the item with id
     function getItemWithId (id) {
-      let result = null;
-
-      items.forEach(function (item) {
-        if (item.id === id) {
-          result = item;
-          return;
-        }
+      items.filter( function (item) {
+        return item.id === id;
       });
-
-      return result;
     }
 
     /*
