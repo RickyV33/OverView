@@ -150,7 +150,7 @@ describe('Graph class module', () => {
       expect(newGraph.edges).to.be.empty();
     });
 
-    it('should return a graph that contains nothing when an error is encountered', () => {
+    it('should return a graph that contains nothing when an error not including timeout is encountered', () => {
       stubs.getProjectName = () => rejectedErrorPromise();
       stubs.getProjectItems = () => rejectedErrorPromise();
       stubs.getProjectRelationships = () => rejectedErrorPromise();
