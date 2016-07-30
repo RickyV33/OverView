@@ -11,7 +11,7 @@
 <%function renderSubItems(item) {%>
 <ul>
     <li id="<%= item.id%>" tabindex="1" >
-        <%= item.name %> <%= item.id%>
+        <%= item.name %>
         <%if (item.children) {%>
         <%item.children.forEach(function (subItem) {%>
         <%- renderSubItems(subItem); %>
@@ -24,7 +24,7 @@
     <%if(itemHierarchy) {%>
     <%itemHierarchy.forEach(function (rootItem) {%>
     <li id="<%= rootItem.id%>" tabindex="2">
-        <%= rootItem.name %> <%= rootItem.id%>
+        <%= rootItem.name %>
         <%if (rootItem.children) {%>
         <%rootItem.children.forEach(function (subItem) {%>
         <%- renderSubItems(subItem); %>
