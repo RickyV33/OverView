@@ -4,9 +4,6 @@ node_js:
   - "6"
   - "6.1"
 
-after_success:
-  - npm run coveralls
-
 cache:
   directories:
     - node_modules
