@@ -1,4 +1,4 @@
-# Jama-Software
+![Alt text](/public/img/logo.png)
 
 ## Developing
 
