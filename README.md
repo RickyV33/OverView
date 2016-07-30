@@ -1,4 +1,4 @@
-# JamaTrace
+![Alt text](/public/img/logo.png)
 
 ## Developing
 
