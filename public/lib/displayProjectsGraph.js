@@ -76,13 +76,7 @@ d3.json(fileName, function (error, graphData) {
         return item.id === relItem.target;
       });
 
-      // Check if downstream items array exists
-      if (typeof srcNode.downstream === 'undefined') {
-        srcNode.downstream = [];
-      }
-      srcNode.downstream.push(relItem.target);  // Add the target ID to list of downstream items
-
-      // relItem.value = +relItem.type;
+      addDownstreamItemToNode(srcNode, relItem);  // Check if downstream items array exists
     });
 
     // Checks to see if a node id was passed
@@ -93,11 +87,8 @@ d3.json(fileName, function (error, graphData) {
       });
       // Add an edge from the project node to the passed node
       itemRelations.unshift({id: 0, source: projectNode, target: rootItem, type: -1});
-      if (typeof projectNode.downstream === 'undefined') {
-        projectNode.downstream = [rootItem];
-      } else {
-        projectNode.downstream.push(rootItem);
-      }
+
+      addDownstreamItemToNode(projectNode, itemRelations[0]);  // Add downstream item to project node
     }
 
     // Set the force nodes, edges and start the graph
@@ -213,7 +204,8 @@ d3.json(fileName, function (error, graphData) {
 
     /*
      * Traverse through child nodes recursively
-     * @param: d - is the selected node
+     *
+     * @param {Object} d is the selected node
      */
     function downstreamCheck (d) {
       if (typeof d.downstream !== 'undefined') {
@@ -234,7 +226,8 @@ d3.json(fileName, function (error, graphData) {
 
     /*
      * Shows the Nodes downstream by recursing through them
-     * @param: d - is the selected node
+     *
+     * @param {Object} d is the selected node
      */
     function showNodesDownstream (d) {
       // let downStreamArray = [];
@@ -263,7 +256,9 @@ d3.json(fileName, function (error, graphData) {
 
     // ======= Click Events Below =======
     /*
-     * Node click event toggles highlighting children on single click
+     * Node click event toggles highlighting children on single click.
+     *
+     * @param {Object} clickedNode is the node that was clicked on
      */
     function nodeClick (clickedNode) {
       // Reduce the opacity of all but its neighbors
@@ -271,6 +266,26 @@ d3.json(fileName, function (error, graphData) {
       clickedNode.isSelected = true;
       clickedNode.isHighlighted = true;
       showNodesDownstream(clickedNode);  // Run algorithm for showing all of the downstream items
+    }
+
+    /*
+     * Adds a downstream item and downstream edge to a given Node
+     *
+     * @param {Object} nodeItem is a node item
+     * @param {Object} edge is an edge object that is going to be added to the nodeItem
+     */
+    function addDownstreamItemToNode(nodeItem, edge) {
+      // Check if downstream items array exists
+      if (typeof nodeItem.downstream === 'undefined') {
+        nodeItem.downstream = [];
+      }
+      nodeItem.downstream.push(edge.target);  // Add the target ID to list of downstream items
+
+      // Check if downstream Edges array exists
+      if (typeof nodeItem.downstreamEdges === 'undefined') {
+        nodeItem.downstreamEdges = [];
+      }
+      nodeItem.downstreamEdges.push(edge);  // Add the target ID to list of downstream items
     }
   }
 });
