@@ -93,6 +93,11 @@ d3.json(fileName, function (error, graphData) {
       });
       // Add an edge from the project node to the passed node
       itemRelations.unshift({id: 0, source: projectNode, target: rootItem, type: -1});
+      if (typeof projectNode.downstream === 'undefined') {
+        projectNode.downstream = [rootItem];
+      } else {
+        projectNode.downstream.push(rootItem);
+      }
     }
 
     // Set the force nodes, edges and start the graph
