@@ -60,7 +60,7 @@ d3.json(fileName, function (error, graphData) {
 
   /*
    * Updates the graph visuals
-   * @param rootId - This is the id of the element that is to be the root node coming off the project node
+   * @param {Integer} rootId is the id of the element that is to be the root node coming off the project node
    */
   function updateGraph (rootId = -1) {
     // For each relationship, add the target to the source node
@@ -163,6 +163,7 @@ d3.json(fileName, function (error, graphData) {
       .attr('dy', '.35em')
       .attr('class', 'nodeText')
       .text(function (d) {
+        // Limit the length of the name text
         return d.name.length > 18 ? d.name.substring(0, 15) + '...' : d.name;
       });
 
@@ -170,6 +171,8 @@ d3.json(fileName, function (error, graphData) {
     /*
      * For every shift of the graph, this gets called.
      * It updates the location of the nodes and edges.
+     *
+     * @param {Object} e
      */
     function tick (e) {
       path.attr('d', function (d) {
@@ -274,7 +277,7 @@ d3.json(fileName, function (error, graphData) {
      * @param {Object} nodeItem is a node item
      * @param {Object} edge is an edge object that is going to be added to the nodeItem
      */
-    function addDownstreamItemToNode(nodeItem, edge) {
+    function addDownstreamItemToNode (nodeItem, edge) {
       // Check if downstream items array exists
       if (typeof nodeItem.downstream === 'undefined') {
         nodeItem.downstream = [];
