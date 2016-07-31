@@ -4,22 +4,48 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('projectList').addEventListener('click', event => {
     if (event.target.nodeName === 'A') {
       let selectedProject = event.target.getAttributeNode('data-id').nodeValue;
-      // TODO: (1) AJAX request for item hierarchy tree and (2) creation of project graph
-      let graph = makeRequest('/graph', selectedProject);
-      console.log(graph);
-      // TODO: Re-organize graph object if a project root was selected
+      let hierarchy = getHierarchyRequest('/hierarchy', selectedProject);
+      let graph = getGraphRequest('/graph', selectedProject);
+      // Temporary statement for linter
+      console.log(graph + hierarchy);
+      // TODO: change query parameter (dependent on hierarchy endpoint story)
     }
   });
 });
 
 /**
- * Makes an AJAX request to the provided endpoint.
+ * Makes an AJAX request to the provided endpoint for the item hierarchy tree.
  *
  * @param url
  * @param projectId
  * @returns {*}
  */
-function makeRequest (url, projectId) {
+function getHierarchyRequest (url, projectId) {
+  let hierarchy;
+  let httpRequest = new XMLHttpRequest();
+  httpRequest.onreadystatechange = () => {
+    if (httpRequest.readyState === XMLHttpRequest.DONE) {
+      if (httpRequest.status === 200) {
+        hierarchy = JSON.parse(httpRequest.responseText);
+        console.log(httpRequest.responseText);
+      } else {
+        console.log('There was a problem requesting to the hierarchy endpoint.');
+      }
+    }
+  };
+  httpRequest.open('GET', url);
+  httpRequest.send('project=' + projectId);
+  return hierarchy;
+}
+
+/**
+ * Makes an AJAX request to the provided endpoint for the project graph.
+ *
+ * @param url
+ * @param projectId
+ * @returns {*}
+ */
+function getGraphRequest (url, projectId) {
   let graph;
   let httpRequest = new XMLHttpRequest();
   httpRequest.onreadystatechange = () => {
