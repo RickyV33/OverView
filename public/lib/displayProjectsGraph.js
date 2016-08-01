@@ -24,9 +24,11 @@ d3.json(fileName, function (error, graphData) {
   // Create a project node and add it to the items list
   let projectNode = { id: -1, name: graphData.name, image: '', type: -1 };
   items.unshift(projectNode);
+  itemRelations.push({ id: -1, source: -1, target: rootID, type: -1 });
   projectNode = items[0];
 
-  // Map all node edges
+  // ++++++++++++ Map all node edges +++++++++++++
+  // nodeToEdgeMap is an array that uses id as the index for direct access
   let nodeToEdgeMap = {};
 
   items.forEach(function (item) {
@@ -40,7 +42,6 @@ d3.json(fileName, function (error, graphData) {
 
     item.noRelations = true;
   });
-  console.log(nodeToEdgeMap);
 
   // Append the SVG object to the body
   // Add a group element within it to encompass all the nodes - this fixes the chrome
