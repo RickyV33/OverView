@@ -393,22 +393,22 @@ d3.json(fileName, function (error, graphData) {
 
     /*
      * Collapses all of the graph nodes downstream from the selected node
+     *
+     * param {Object} root is the object that is selected and whose downstream items will be toggled
      */
     function collapse (root) {
       console.log('Collapse Initiated');
-      console.log(root);
       // Hide the node
-      if (root.downstream) {
-        root.downstream.forEach(function (child) {
-          console.log('Child');
-          let childSel = d3.select('.node').datum(child.id);
-          console.log('Child ID: ' + child.id);
-          console.log(childSel[0]);
-          childSel[0].style('opacity', 1);
+      if (root.downstream && root.downstreamEdges) {
+        root.downstream.forEach(function (item) {
+          let selItem = d3.select("[id='" + item.id + "']");
+          selItem.style('opacity', (selItem.style('opacity') == 0) ? 1 : 0);
         });
-        root._downstream = root.downstream;
-        root.downstream = null;
-        console.log(root);
+
+        root.downstreamEdges.forEach(function (item) {
+          let selItem = d3.select("[id='" + item.id + "']");
+          selItem.style('opacity', (selItem.style('opacity') == 0) ? 1 : 0);
+        });
       }
     }
   }
