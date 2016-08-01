@@ -13,6 +13,7 @@ d3.json(fileName, function (error, graphData) {
 
   let width = 1000;
   let height = 800;
+  let reducedOpacity = 0.2;
 
   // let nodes = {};
   let items = graphData.nodes;
@@ -278,11 +279,11 @@ d3.json(fileName, function (error, graphData) {
             }
           }
         }
-        return curNode.isHighlighted ? 1 : 0.1;
+        return curNode.isHighlighted ? 1 : reducedOpacity;
       });
 
       path.style('opacity', function (curPath) {
-        return (curPath.source.isHighlighted && curPath.target.isHighlighted) ? 1 : 0.1;
+        return (curPath.source.isHighlighted && curPath.target.isHighlighted) ? 1 : reducedOpacity;
       });
     }
 
@@ -300,11 +301,11 @@ d3.json(fileName, function (error, graphData) {
             }
           }
         }
-        return curNode.isHighlighted ? 1 : 0.1;
+        return curNode.isHighlighted ? 1 : reducedOpacity;
       });
 
       path.style('opacity', function (curPath) {
-        return (curPath.source.isHighlighted && curPath.target.isHighlighted) ? 1 : 0.1;
+        return (curPath.source.isHighlighted && curPath.target.isHighlighted) ? 1 : reducedOpacity;
       });
     }
 
