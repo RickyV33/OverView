@@ -5,44 +5,49 @@
 let chai = require('chai');
 let expect = chai.expect;
 let dirtyChai = require('dirty-chai');
-let chaiHttp = require('chai-http');
 let chaiPromise = require('chai-as-promised');
-let ejs = require('ejs');
-let read = require('fs').readFileSync;
-let join = require('path').join;
-let app = require('../../app');
+let express = require('express');
+let request = require('supertest');
+let app = express();
+let router = express.Router();
 
 chai.use(dirtyChai);
-chai.use(chaiHttp);
+chai.use(chaiPromise);
 chai.use(chaiPromise);
 
+function initializeRoute (object) {
+  router.get('/hierarchy', function (req, res) {
+    res.status(200).send({title: 'Select a root item (Optional)',
+      itemHierarchy: [{name: 'oneName', children: [{name: 'childName', children: []}]}]});
+  });
+}
+
 describe('hierarchy', function () {
-  describe('get request', function () {
-    // This makes a server request to the route location '/hierarchy'
-    chai.request(app)
+  describe('GET /hierarchy', function () {
+    initializeRoute({});
+    app.use(router);
+    request(app)
       .get('/hierarchy')
       .end(function (err, res) {
         if (err) {
-          expect.fail();
+          throw (err);
+        } else {
+          expect(res.statusCode).to.equal(200);
+          expect(res.body).to.deep.equal({
+            "itemHierarchy": [
+              {
+                "children": [
+                  {
+                    "children": [],
+                    "name": "childName"
+                  }
+                ],
+                "name": "oneName"
+              }
+            ],
+            "title": "Select a root item (Optional)"
+          });
         }
-        expect(err).to.be.null();
-        it('should contain a property called text', function (done) {
-          expect(res).to.have.property('text');
-          done();
-        });
-        it('should have status 200', function (done) {
-          expect(res).to.have.status(200);
-          done();
-        });
-        it('should render view with title and unordered list', function (done) {
-          // Render the view using ejs
-          let path = join(__dirname, '../../views/hierarchy.ejs');
-          let data = {title: 'Select a Root Item (Optional) ',
-            itemHierarchy: './mockHierarchy.json'};
-          let renderedView = ejs.compile(read(path, 'utf8'), {filename: path})(data);
-          expect(res.text).to.equal(renderedView);
-          done();
-        });
       });
   });
 });
