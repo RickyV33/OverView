@@ -21,7 +21,6 @@ chai.use(chaiPromise);
 
 function initializeRoute (object) {
   router.get('/hierarchy', function (req, res) {
-    // let rendHtml = ejs.compile(read(path, 'utf8'), {filename: path})(object);
     res.status(200).send(ejs.compile(read(path, 'utf8'), {filename: path})(object));
   });
 }
@@ -38,12 +37,12 @@ let hierarchyTestCases = [
 
   {title: 'Single root item with mulitple children',
     itemHierarchy: [{name: 'Root Item', children:
-      [{name: 'child one', children: []}, {name: 'child two', children: []}]}]},
+    [{name: 'child one', children: []}, {name: 'child two', children: []}]}]},
 
   {title: 'Single root item with one nested child',
     itemHierarchy: [{name: 'Root Item', children:
-      [{name: 'single child',
-        children: [{name: 'nested child', children: []}]}]}]},
+    [{name: 'single child',
+      children: [{name: 'nested child', children: []}]}]}]},
 
   {title: 'Mulitple root items with no children',
     itemHierarchy: [{name: 'Root Item 1', children: []}, {name: 'Root item 2', children: []}]},
@@ -56,17 +55,17 @@ let hierarchyTestCases = [
     itemHierarchy:
       [{name: 'Root item 1',
         children: [{name: 'Root 1 Child 1', children: []}, {name: 'Root 1 Child 1', children: []}]},
-        {name: 'Root item 2',
-          children: [{name: 'Root 2 Child 1', children: []}, {name: 'Root 2 Child 2', children: []}]}]},
+      {name: 'Root item 2',
+        children: [{name: 'Root 2 Child 1', children: []}, {name: 'Root 2 Child 2', children: []}]}]},
 
   {title: 'Multiple root items with one nested child',
     itemHierarchy:
       [{name: 'Root item 1',
         children: [{name: 'Root 1 Child 1', children: []}, {name: 'Root 1 Child 1',
           children: [{name: 'Nested child of root 1', children: []}]}]},
-        {name: 'Root item 2',
-          children: [{name: 'Root 2 Child 1', children: []}, {name: 'Root 2 Child 2',
-            children: [{name: 'Nested child of root 2', children: []}]}]}]}
+      {name: 'Root item 2',
+        children: [{name: 'Root 2 Child 1', children: []}, {name: 'Root 2 Child 2',
+          children: [{name: 'Nested child of root 2', children: []}]}]}]}
 ];
 
 describe('hierarchy', function () {
