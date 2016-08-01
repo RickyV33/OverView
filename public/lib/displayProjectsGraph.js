@@ -23,6 +23,18 @@ d3.json(fileName, function (error, graphData) {
   items.unshift(projectNode);
   projectNode = items[0];
 
+  // Map all node edges
+  let nodeToEdgeMap = {};
+
+  items.forEach( function (item) {
+    nodeToEdgeMap[item.id] = itemRelations.filter( function (relItem) {
+      return relItem.source === item.id; // Filter all of the edges that have this item source id
+    }).map( function (mapItem) {
+      // Map each item to an edge
+      return mapItem.source === item.id ? mapItem.target : mapItem.source;
+    });
+  });
+
   // Append the SVG object to the body
   // Add a group element within it to encompass all the nodes - this fixes the chrome
   let svg = d3.select('body').append('svg')
