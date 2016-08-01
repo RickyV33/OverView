@@ -71,11 +71,11 @@ d3.json(fileName, function (error, graphData) {
   let force = d3.layout.force()
     .size([width, height])
     .linkDistance(100)  // sets the target distance between linked nodes to the specified value
-    .charge(-500)       // - value results in node repulsion, while + value results in node attraction
+    .charge(-1000)       // - value results in node repulsion, while + value results in node attraction
     .friction(0.8);     // closely approximates velocity decay
 
   updateGraph(passedID);  // Render the graph
-  collapseAll();
+  //collapseAll();
   /*
    * Updates the graph visuals
    * @param {Integer} rootId is the id of the element that is to be the root node coming off the project node
@@ -162,11 +162,11 @@ d3.json(fileName, function (error, graphData) {
       .call(force.drag)
       .on('click', function (d) {
         if (clickedOnce) {
-          nodeClick(d);  // Call the single click function
+          nodeDoubleClick(d);  // Call the single click function
         } else {
           timer = setTimeout(function () {
-            nodeDoubleClick(d); // Call the double click function
-          }, 300);
+            nodeClick(d); // Call the double click function
+          }, 175);
           clickedOnce = true;
         }
       });
