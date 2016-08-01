@@ -26,10 +26,10 @@ d3.json(fileName, function (error, graphData) {
   // Map all node edges
   let nodeToEdgeMap = {};
 
-  items.forEach( function (item) {
-    nodeToEdgeMap[item.id] = itemRelations.filter( function (relItem) {
+  items.forEach(function (item) {
+    nodeToEdgeMap[item.id] = itemRelations.filter(function (relItem) {
       return relItem.source === item.id; // Filter all of the edges that have this item source id
-    }).map( function (mapItem) {
+    }).map(function (mapItem) {
       // Map each item to an edge
       return mapItem.source === item.id ? mapItem.target : mapItem.source;
     });
@@ -293,6 +293,7 @@ d3.json(fileName, function (error, graphData) {
      */
     function nodeDoubleClick (clickedNode) {
       console.log('Double Click Fired');
+      collapse(clickedNode);
     }
 
     /*
@@ -314,15 +315,37 @@ d3.json(fileName, function (error, graphData) {
       }
       nodeItem.downstreamEdges.push(edge);  // Add the target ID to list of downstream items
     }
+
+    /*
+     * Collapses all of the graph nodes downstream from the selected node
+     */
+    function collapse (root) {
+      console.log('Collapse Initiated');
+      console.log(root);
+      console.log(d3.select(root.id));
+      // Hide the node
+      if (root.downstream) {
+        root.downstream.forEach(function (child) {
+          console.log('Child');
+          let childSel = d3.select('.node').datum(child.id);
+          console.log('Child ID: ' + child.id);
+          console.log(childSel[0]);
+          childSel[0].style('opacity', 1);
+        });
+        root._downstream = root.downstream;
+        root.downstream = null;
+        console.log(root);
+      }
+    }
   }
 
   /*
    * Hides all of the graph nodes except the root id
    */
-  function collapseAll() {
-    svg.selectAll('.node').style("opacity", function (item) {
+  function collapseAll () {
+    svg.selectAll('.node').style('opacity', function (item) {
       return item.id !== -1 ? 0 : 1;
     });
-    svg.selectAll('path').style("opacity", 0);
+    svg.selectAll('path').style('opacity', 0);
   }
 });
