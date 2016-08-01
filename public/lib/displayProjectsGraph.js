@@ -75,7 +75,7 @@ d3.json(fileName, function (error, graphData) {
     .friction(0.8);     // closely approximates velocity decay
 
   updateGraph(passedID);  // Render the graph
-
+  collapseAll();
   /*
    * Updates the graph visuals
    * @param {Integer} rootId is the id of the element that is to be the root node coming off the project node
@@ -162,9 +162,9 @@ d3.json(fileName, function (error, graphData) {
       .call(force.drag)
       .on('click', function (d) {
         if (clickedOnce) {
-            nodeClick(d);  // Call the single click function
+          nodeClick(d);  // Call the single click function
         } else {
-          timer = setTimeout(function() {
+          timer = setTimeout(function () {
             nodeDoubleClick(d); // Call the double click function
           }, 300);
           clickedOnce = true;
@@ -416,10 +416,22 @@ d3.json(fileName, function (error, graphData) {
   /*
    * Hides all of the graph nodes except the root id
    */
-  // function collapseAll () {
-  //   svg.selectAll('.node').style('opacity', function (item) {
-  //     return item.id !== -1 ? 0 : 1;
-  //   });
-  //   svg.selectAll('path').style('opacity', 0);
-  // }
+  /*
+   * Hides all of the graph nodes except the root id
+   */
+  function collapseAll () {
+    svg.selectAll('.node').style('opacity', function (item) {
+      return item.id !== -1 ? 0 : 1;
+    });
+    d3.select('projectRoot').style('opacity', 1);  // Show the project node
+    projectNode.downstream.forEach(function (item) {
+      d3.select("[id='" + item.id + "']").style('opacity', 1);
+    });
+
+    let paths = svg.selectAll('path');
+    paths.style('opacity', 0);
+    projectNode.downstreamEdges.forEach(function (item) {
+      d3.select("[id='" + item.id + "']").style('opacity', 1);
+    });
+  }
 });
