@@ -9,7 +9,6 @@ d3.json(fileName, function (error, graphData) {
     console.log(error);
   }
 
-  let passedID = 2142;  // Gets the passed parameter value from URL
   let clickedOnce = false;  // For monitoring the click event on node
   let timer;                // For click event monitoring
 
@@ -31,15 +30,17 @@ d3.json(fileName, function (error, graphData) {
   let nodeToEdgeMap = {};
 
   items.forEach(function (item) {
-    nodeToEdgeMap[item.id] = itemRelations.filter(function (relItem) {
-      return relItem.source === item.id; // Filter all of the edges that have this item source id
-    }).map(function (mapItem) {
-      // Map each item to an edge
-      return mapItem.source === item.id ? mapItem.target : mapItem.source;
+    nodeToEdgeMap[item.id] = {};
+    nodeToEdgeMap[item.id].node = item;
+    nodeToEdgeMap[item.id].edges = itemRelations.filter(function (relItem) {
+      if (relItem.source === item.id) {
+        return relItem; // Filter all of the edges that have this item source id
+      }
     });
 
     item.noRelations = true;
   });
+  console.log(nodeToEdgeMap);
 
   // Append the SVG object to the body
   // Add a group element within it to encompass all the nodes - this fixes the chrome
@@ -74,13 +75,13 @@ d3.json(fileName, function (error, graphData) {
     .charge(-1000)       // - value results in node repulsion, while + value results in node attraction
     .friction(0.8);     // closely approximates velocity decay
 
-  updateGraph(passedID);  // Render the graph
+  updateGraph(rootID);  // Render the graph
   //collapseAll();
   /*
    * Updates the graph visuals
    * @param {Integer} rootId is the id of the element that is to be the root node coming off the project node
    */
-  function updateGraph (rootId = -1) {
+  function updateGraph (passedId = -1) {
     if (!relationsChecked) {
       // For each relationship, add the target to the source node
       itemRelations.forEach(function (relItem) {
@@ -112,10 +113,10 @@ d3.json(fileName, function (error, graphData) {
     }
 
     // Checks to see if a node id was passed
-    if (rootId !== -1) {
+    if (passedId !== -1) {
       // Get the root item from the items list
       let rootItem = items.find(function (item) {
-        return item.id === rootId;
+        return item.id === passedId;
       });
       // Add an edge from the project node to the passed node
       itemRelations.unshift({id: 0, source: projectNode, target: rootItem, type: -1});
@@ -203,7 +204,7 @@ d3.json(fileName, function (error, graphData) {
     // Add Text for hovering that shows full filename
     node.append('svg:title')
       .text(function (d) {
-        return d.name;
+        return (d.id + ' - ' + d.name);
       });
 
     // Add the name of the node as text
