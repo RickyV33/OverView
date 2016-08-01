@@ -5,116 +5,90 @@
 let chai = require('chai');
 let expect = chai.expect;
 let dirtyChai = require('dirty-chai');
-let chaiHttp = require('chai-http');
 let chaiPromise = require('chai-as-promised');
+let express = require('express');
+let request = require('supertest');
+let app = express();
+let router = express.Router();
 let ejs = require('ejs');
 let read = require('fs').readFileSync;
 let join = require('path').join;
-let app = require('../../app');
+let path = join(__dirname, '../../views/hierarchy.ejs');
 
 chai.use(dirtyChai);
-chai.use(chaiHttp);
+chai.use(chaiPromise);
 chai.use(chaiPromise);
 
+function initializeRoute (object) {
+  router.get('/hierarchy', function (req, res) {
+    // let rendHtml = ejs.compile(read(path, 'utf8'), {filename: path})(object);
+    res.status(200).send(ejs.compile(read(path, 'utf8'), {filename: path})(object));
+  });
+}
+
+let hierarchyTestCases = [
+  {title: 'Empty item hierarchy tree (no root items)',
+    itemHierarchy: []},
+
+  {title: 'Single root item with no children',
+    itemHierarchy: [{name: 'Root Item', children: []}]},
+
+  {title: 'Single root item with one child',
+    itemHierarchy: [{name: 'Root Item', children: [{name: 'single child', children: []}]}]},
+
+  {title: 'Single root item with mulitple children',
+    itemHierarchy: [{name: 'Root Item', children:
+      [{name: 'child one', children: []}, {name: 'child two', children: []}]}]},
+
+  {title: 'Single root item with one nested child',
+    itemHierarchy: [{name: 'Root Item', children:
+      [{name: 'single child',
+        children: [{name: 'nested child', children: []}]}]}]},
+
+  {title: 'Mulitple root items with no children',
+    itemHierarchy: [{name: 'Root Item 1', children: []}, {name: 'Root item 2', children: []}]},
+
+  {title: 'Multiple items with children',
+    itemHierarchy: [{name: 'Root Item 1', children: [{name: 'Sub root item 1', children: []}]},
+      {name: 'Root Item 2', children: [{name: 'Sub root item 2', children: []}]}]},
+
+  {title: 'Multiple root items with multiple children',
+    itemHierarchy:
+      [{name: 'Root item 1',
+        children: [{name: 'Root 1 Child 1', children: []}, {name: 'Root 1 Child 1', children: []}]},
+        {name: 'Root item 2',
+          children: [{name: 'Root 2 Child 1', children: []}, {name: 'Root 2 Child 2', children: []}]}]},
+
+  {title: 'Multiple root items with one nested child',
+    itemHierarchy:
+      [{name: 'Root item 1',
+        children: [{name: 'Root 1 Child 1', children: []}, {name: 'Root 1 Child 1',
+          children: [{name: 'Nested child of root 1', children: []}]}]},
+        {name: 'Root item 2',
+          children: [{name: 'Root 2 Child 1', children: []}, {name: 'Root 2 Child 2',
+            children: [{name: 'Nested child of root 2', children: []}]}]}]}
+];
+
 describe('hierarchy', function () {
-  let sampleHierarchy = [
-    {
-      'id': 2104,
-      'itemType': 31,
-      'name': 'Epics',
-      'children': [
-        {
-          'id': 1111,
-          'itemType': 35,
-          'name': 'Epic Sub Item',
-          'children': [
-            {
-              'id': 2222,
-              'itemType': 36,
-              'name': 'Epic Sub Sub Item',
-              'children': [
-                {
-                  'id': 4444,
-                  'itemType': 38,
-                  'name': 'Epic Third Level Sub Sub Item',
-                  'children': []
-                }
-              ]
-            },
-            {
-              'id': 3333,
-              'itemType': 37,
-              'name': 'Epic Second Sub Sub Item',
-              'children': []
+  describe('GET /hierarchy', function () {
+    it('Should render item hierarchy view according to item hierarchy test case', function (done) {
+      hierarchyTestCases.forEach(function (item) {
+        initializeRoute(item);
+        app.use(router);
+        request(app)
+          .get('/hierarchy')
+          .end(function (err, res) {
+            if (err) {
+              return done(err);
+            } else {
+              let rendHtml = ejs.compile(read(path, 'utf8'), {filename: path})(item);
+              expect(res).to.have.property('text');
+              expect(res.status).to.equal(200);
+              expect(res.text).to.be.equal(rendHtml);
+              done();
             }
-          ]
-        }
-      ]
-    },
-    {
-      'id': 2115,
-      'itemType': 31,
-      'name': 'Requirements'
-    },
-    {
-      'id': 2110,
-      'itemType': 31,
-      'name': 'Stories'
-    },
-    {
-      'id': 2125,
-      'itemType': 31,
-      'name': 'Test Plans'
-    },
-    {
-      'id': 2123,
-      'itemType': 31,
-      'name': 'Risks'
-    },
-    {
-      'id': 2124,
-      'itemType': 31,
-      'name': 'Bugs'
-    },
-    {
-      'id': 2104,
-      'itemType': 31,
-      'name': 'Epics'
-    },
-    {
-      'id': 2855,
-      'itemType': 31,
-      'name': 'Stories TEST'
-    }
-  ];
-  describe('get request', function () {
-    // This makes a server request to the route location '/hierarchy'
-    chai.request(app)
-      .get('/hierarchy')
-      .end(function (err, res) {
-        if (err) {
-          expect.fail();
-        }
-        expect(err).to.be.null();
-        it('should contain a property called text', function (done) {
-          expect(res).to.have.property('text');
-          done();
-        });
-        it('should have status 200', function (done) {
-          expect(res).to.have.status(200);
-          done();
-        });
-        it('should render view with title and unordered list', function (done) {
-          // Render the view using ejs
-          let path = join(__dirname, '../../views/hierarchy.ejs');
-          let data = {title: 'Select a Root Item (Optional) ',
-            itemHierarchy: sampleHierarchy};
-          let renderedView = ejs.compile(read(path, 'utf8'), {filename: path})(data);
-          expect(res.text).to.equal(renderedView);
-          expect(res.text).contains('Select a Root Item (Optional) ');
-          expect(res.text).contains('Please select a root item from below, and click "Render Graph": ');
-          done();
-        });
+          });
       });
+    });
   });
 });
