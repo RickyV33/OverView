@@ -53,8 +53,8 @@ d3.json(fileName, function (error, graphData) {
   let force = d3.layout.force()
     .size([width, height])
     .linkDistance(100)  // sets the target distance between linked nodes to the specified value
-    .charge(-950)       // - value results in node repulsion, while + value results in node attraction
-    .friction(0.5);     // closely approximates velocity decay
+    .charge(-500)       // - value results in node repulsion, while + value results in node attraction
+    .friction(0.8);     // closely approximates velocity decay
 
   updateGraph(passedID);  // Render the graph
 
@@ -119,12 +119,15 @@ d3.json(fileName, function (error, graphData) {
       .append('g')
       .attr('class', function (thisNode) {
         // Add projectRoot class if the node is the project node
-        return thisNode.type === -1 ? 'node projectRoot' : 'node';
+        return thisNode.id === -1 ? 'node projectRoot' : 'node';
       })
       .call(force.drag)
-      .on('click', nodeClick);
+      .on('click', nodeClick)
+      .on('dblclick', nodeDoubleClick);
 
     projectNode.fixed = true;  // Set the project Node to be fixed and not moving
+    projectNode.x = height / 2;
+    projectNode.y = width / 2;
 
     // White rectangle behind text configuration
     node.append('rect')
@@ -269,6 +272,15 @@ d3.json(fileName, function (error, graphData) {
       clickedNode.isSelected = true;
       clickedNode.isHighlighted = true;
       showNodesDownstream(clickedNode);  // Run algorithm for showing all of the downstream items
+    }
+
+    /*
+     * Node double click event hides all of the children nodes for double clicked node.
+     *
+     * @param {Object} clickedNode is the node that was clicked on
+     */
+    function nodeDoubleClick (clickedNode) {
+      console.log('Double Click Fired');
     }
 
     /*
