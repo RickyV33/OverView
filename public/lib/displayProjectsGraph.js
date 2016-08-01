@@ -315,4 +315,14 @@ d3.json(fileName, function (error, graphData) {
       nodeItem.downstreamEdges.push(edge);  // Add the target ID to list of downstream items
     }
   }
+
+  /*
+   * Hides all of the graph nodes except the root id
+   */
+  function collapseAll() {
+    svg.selectAll('.node').style("opacity", function (item) {
+      return item.id !== -1 ? 0 : 1;
+    });
+    svg.selectAll('path').style("opacity", 0);
+  }
 });
