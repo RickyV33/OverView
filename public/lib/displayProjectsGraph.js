@@ -238,31 +238,34 @@ d3.json(fileName, function (error, graphData) {
           .attr('cy', function (d) { return d.y; });
     }
 
+    //
+    // ============ Toggle highlighting nodes on single click ===========
+    //
     /**
-     * This function checks for an array or downstream items from a node "d". If an array doesn't exist, it creates one.
-     * If there are no relationships, a flag is set on the node to prevent future traversals.
-     * @param d
+     * This function handles the logic for highlighting and un-highlighting nodes on single-click
      */
-/*    function downstreamCheck(d) {
-      if (d.downstream.length === 0 && d.downstream.noRelations === false){
-        // build downstream if you don't have one already and don't have the noRelationships flag set.
-        links.relationships.forEach( function (relItem) {
-          if (d.id === relItem.fromItem) {
-            d.downstream.push(relItem);
-          }
-        });
-        //This will be called if we have NO RELATIONSHIPS. So we're setting that flag.
-        if (d.downstream.length === 0) {
-          d.downstream.noRelations = true;
+    function nodeClick (d) {
+      d.isSelected = true; // Sets the node you clicked on to have a "selected" flag.
+      let highlightedCount = -1; // this will count how many downstream nodes are highlighted.
+      highlightedCount = downstreamHighlightCheck(d, highlightedCount);
+      // If there are no downstream items and d is highlighted, un-highlight it.
+      if (d.isHighlighted) {
+        if (d.downstream && (highlightedCount !== d.downstream.length)) {
+          highlightNodes(d);
+        } else {
+          unHighlightNodes(d);
         }
+      } else {
+        highlightNodes(d);
       }
-    }*/
+    }
 
     /**
      * This function will un-highlight d and the array of downstream nodes for d. This will NOT
      * un-highlight a node if all of it's children are highlighted (cycle checking)
-     * @param d
+     * @param {object} d
      */
+
     // TODO : Keep nodes with two highlighted upstream nodes highlighted on un-highlight with a count
     function unHighlightNodes (d) {
       d.isHighlighted = false;
@@ -271,7 +274,6 @@ d3.json(fileName, function (error, graphData) {
         if (d.downstream) {
           for (let i = 0; i < d.downstream.length; i++) {
             if (d.downstream[i].id === curNode.id) {
-              // downstreamCheck(curNode); // Get your downstream list
               downstreamHighlightCheck(curNode, count); // check downstream items for highlighting
             }
             if (count !== d.downstream.length && d.downstream[i].id === curNode.id) {
@@ -289,7 +291,7 @@ d3.json(fileName, function (error, graphData) {
 
     /**
      * This function will highlight the selected node "d" then highlight the nodes in it's downstream array
-     * @param d
+     * @param {object} d
      */
     function highlightNodes (d) {
       d.isHighlighted = true;
@@ -312,18 +314,17 @@ d3.json(fileName, function (error, graphData) {
     /**
      * This function checks all the downstream items of your array to see if they are highlighted. This prevents
      * issues when we have a cycle and are un-highlighting nodes.
-     * @param d
-     * @param count
+     * @param {object} d
+     * @param {int} count
      */
     function downstreamHighlightCheck (d, count) {
-      // This checks whether we should be highlighting or un-highlighting
-      console.log(d);
+      // This checks whether we should be highlighting or un-highlighting nodes
       d3.selectAll('g.node')  // Loops through all nodes and checks if they have downstream relations
         .each(function (curNode) {
           if (!d.noRelations) {
             for (let i = 0; i < d.downstream.length; i++) {
               // If the index matches and the node is already highlighted, increase our count.
-              if (d.downstream[i].id === curNode.id /* Also needs to check for Highlighted member */) {
+              if (d.downstream[i].id === curNode.id) {
                 if (curNode.isHighlighted) {
                   if (count === -1) {
                     count = 1;
@@ -338,46 +339,7 @@ d3.json(fileName, function (error, graphData) {
       return count;
     }
 
-    // ============ Toggle highlighting children on single click ===========
-    /**
-     * This function handles the logic for highlighting and un-highlighting nodes on single-click
-     */
-    function nodeClick (d) {
-      console.log('===== Click Fired =====');
-      // let d = d3.select(this).node().__data__;
-      // downstreamCheck(d);
-      d.isSelected = true; // Sets the node you clicked on to have a "selected" flag.
-      let highlightedCount = -1; // this will count how many downstream nodes are highlighted.
-      highlightedCount = downstreamHighlightCheck(d, highlightedCount);
-      // If there are no downstream items and d is highlighted, un-highlight it.
-
-      if (d.isHighlighted) {
-        if (d.downstream && (highlightedCount !== d.downstream.length)) {
-          highlightNodes(d);
-        } else {
-          unHighlightNodes(d);
-        }
-      } else {
-        highlightNodes(d);
-      }
-      // if (d.downstream === 'undefined' && d.isHighlighted){
-      //   unHighlightNodes(d);
-      //   console.log('--> unHighlightNodes');
-      //   // If there are no downstream items and d is NOT highlighted, highlight it.
-      // } else if (d.downstream === 'undefined' && d.isHighlighted === false) {
-      //   highlightNodes(d);
-      //   console.log('--> HighlightNodes');
-      //   // If there are downstream items, and some of them are highlighted, but not all, then highlight them all.
-      // } else if ( d.downstream && highlightedCount != d.downstream.length){
-      //   highlightNodes(d);
-      //   console.log('--> HighlightNodes2');
-      //   // Else we have a scenario where all the downstream nodes are highlighted an we want to un-highlight them.
-      // } else {
-      //   unHighlightNodes(d);
-      //   console.log('--> unHighlightNodes2');
-      // }
-    }
-
+    // ============ Toggle collapsing nodes on Double click ===========
     /*
      * Node double click event hides all of the children nodes for double clicked node.
      *
