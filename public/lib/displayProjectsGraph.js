@@ -17,6 +17,7 @@ d3.json(fileName, function (error, graphData) {
   // let nodes = {};
   let items = graphData.nodes;
   let itemRelations = graphData.edges;
+  let relationsChecked = false;
 
   // Create a project node and add it to the items list
   let projectNode = { id: -1, name: graphData.name, image: '', type: -1 };
@@ -33,6 +34,8 @@ d3.json(fileName, function (error, graphData) {
       // Map each item to an edge
       return mapItem.source === item.id ? mapItem.target : mapItem.source;
     });
+
+    item.noRelations = true;
   });
 
   // Append the SVG object to the body
@@ -75,21 +78,35 @@ d3.json(fileName, function (error, graphData) {
    * @param {Integer} rootId is the id of the element that is to be the root node coming off the project node
    */
   function updateGraph (rootId = -1) {
-    // For each relationship, add the target to the source node
-    itemRelations.forEach(function (relItem) {
-      let srcNode = items.find(function (item) {
-        return item.id === relItem.source;
+    if (!relationsChecked) {
+      // For each relationship, add the target to the source node
+      itemRelations.forEach(function (relItem) {
+        // Find node object based on the relationship source id
+        let srcNode = items.find(function (item) {
+          return item.id === relItem.source;
+        });
+
+        // Set the relationship source and target values
+        // Note - Use objects only and not just ids of the nodes
+        relItem.source = srcNode;
+        relItem.target = items.find(function (item) {
+          return item.id === relItem.target;
+        });
+
+        addDownstreamItemToNode(srcNode, relItem);  // Check if downstream items array exists
       });
 
-      // Set the relationship source and target values
-      // Note - Use objects only and not just ids of the nodes
-      relItem.source = srcNode;
-      relItem.target = items.find(function (item) {
-        return item.id === relItem.target;
+      // Check if there are relations for each node and set a flag
+      items.forEach(function (item) {
+        if (typeof item.downstream === 'undefined') {
+          item.noRelations = true;
+        } else {
+          item.noRelations = (item.downstream.length === 0);
+        }
       });
 
-      addDownstreamItemToNode(srcNode, relItem);  // Check if downstream items array exists
-    });
+      relationsChecked = true;
+    }
 
     // Checks to see if a node id was passed
     if (rootId !== -1) {
@@ -220,46 +237,65 @@ d3.json(fileName, function (error, graphData) {
           .attr('cy', function (d) { return d.y; });
     }
 
-    /*
-     * Traverse through child nodes recursively
-     *
-     * @param {Object} d is the selected node
+    /**
+     * This function checks for an array or downstream items from a node "d". If an array doesn't exist, it creates one.
+     * If there are no relationships, a flag is set on the node to prevent future traversals.
+     * @param d
      */
-    function downstreamCheck (d) {
-      if (typeof d.downstream !== 'undefined') {
-        if (d.downstream.length === 0 && d.downstream.noRelations === false) {
-          // build downstream if you don't have one already and don't have the noRelationships flag set.
-          graphData.edges.forEach(function (relItem, index) {
-            if (d.id === relItem.source) {
-              d.downstream.push(relItem);
-            }
-          });
-          // This will be called if we have NO RELATIONSHIPS. So we're setting that flag.
-          if (d.downstream.length === 0) {
-            d.downstream.noRelations = true;
+/*    function downstreamCheck(d) {
+      if (d.downstream.length === 0 && d.downstream.noRelations === false){
+        // build downstream if you don't have one already and don't have the noRelationships flag set.
+        links.relationships.forEach( function (relItem) {
+          if (d.id === relItem.fromItem) {
+            d.downstream.push(relItem);
           }
+        });
+        //This will be called if we have NO RELATIONSHIPS. So we're setting that flag.
+        if (d.downstream.length === 0) {
+          d.downstream.noRelations = true;
         }
       }
+    }*/
+
+    /**
+     * This function will un-highlight d and the array of downstream nodes for d. This will NOT
+     * un-highlight a node if all of it's children are highlighted (cycle checking)
+     * @param d
+     */
+    // TODO : Keep nodes with two highlighted upstream nodes highlighted on un-highlight with a count
+    function unHighlightNodes (d) {
+      d.isHighlighted = false;
+      node.style('opacity', function (curNode) {
+        let count = -1;
+        if (d.downstream) {
+          for (let i = 0; i < d.downstream.length; i++) {
+            if (d.downstream[i].id === curNode.id) {
+              // downstreamCheck(curNode); // Get your downstream list
+              downstreamHighlightCheck(curNode, count); // check downstream items for highlighting
+            }
+            if (count !== d.downstream.length && d.downstream[i].id === curNode.id) {
+              curNode.isHighlighted = false;
+            }
+          }
+        }
+        return curNode.isHighlighted ? 1 : 0.1;
+      });
+
+      path.style('opacity', function (curPath) {
+        return (curPath.source.isHighlighted && curPath.target.isHighlighted) ? 1 : 0.1;
+      });
     }
 
-    /*
-     * Shows the Nodes downstream by recursing through them
-     *
-     * @param {Object} d is the selected node
+    /**
+     * This function will highlight the selected node "d" then highlight the nodes in it's downstream array
+     * @param d
      */
-    function showNodesDownstream (d) {
-      // let downStreamArray = [];
-      //
-      // graphData.relationships.forEach( function (relItem) {
-      //   if (d.id === relItem.source) {
-      //     downStreamArray.push(relItem.target);
-      //   }
-      // });
-
+    function highlightNodes (d) {
+      d.isHighlighted = true;
       node.style('opacity', function (curNode) {
-        if (typeof d.downstream !== 'undefined') {
+        if (!d.noRelations) {
           for (let i = 0; i < d.downstream.length; i++) {
-            if (d.downstream[i].target === curNode.id) {
+            if (d.downstream[i].id === curNode.id) {
               curNode.isHighlighted = true;
             }
           }
@@ -272,18 +308,73 @@ d3.json(fileName, function (error, graphData) {
       });
     }
 
-    // ======= Click Events Below =======
-    /*
-     * Node click event toggles highlighting children on single click.
-     *
-     * @param {Object} clickedNode is the node that was clicked on
+    /**
+     * This function checks all the downstream items of your array to see if they are highlighted. This prevents
+     * issues when we have a cycle and are un-highlighting nodes.
+     * @param d
+     * @param count
      */
-    function nodeClick (clickedNode) {
-      // Reduce the opacity of all but its neighbors
-      downstreamCheck(clickedNode);
-      clickedNode.isSelected = true;
-      clickedNode.isHighlighted = true;
-      showNodesDownstream(clickedNode);  // Run algorithm for showing all of the downstream items
+    function downstreamHighlightCheck (d, count) {
+      // This checks whether we should be highlighting or un-highlighting
+      console.log(d);
+      d3.selectAll('g.node')  // Loops through all nodes and checks if they have downstream relations
+        .each(function (curNode) {
+          if (!d.noRelations) {
+            for (let i = 0; i < d.downstream.length; i++) {
+              // If the index matches and the node is already highlighted, increase our count.
+              if (d.downstream[i].id === curNode.id /* Also needs to check for Highlighted member */) {
+                if (curNode.isHighlighted) {
+                  if (count === -1) {
+                    count = 1;
+                  } else {
+                    count++;
+                  }
+                }
+              }
+            }
+          }
+        });
+      return count;
+    }
+
+    // ============ Toggle highlighting children on single click ===========
+    /**
+     * This function handles the logic for highlighting and un-highlighting nodes on single-click
+     */
+    function nodeClick (d) {
+      console.log('===== Click Fired =====');
+      // let d = d3.select(this).node().__data__;
+      // downstreamCheck(d);
+      d.isSelected = true; // Sets the node you clicked on to have a "selected" flag.
+      let highlightedCount = -1; // this will count how many downstream nodes are highlighted.
+      highlightedCount = downstreamHighlightCheck(d, highlightedCount);
+      // If there are no downstream items and d is highlighted, un-highlight it.
+
+      if (d.isHighlighted) {
+        if (d.downstream && (highlightedCount !== d.downstream.length)) {
+          highlightNodes(d);
+        } else {
+          unHighlightNodes(d);
+        }
+      } else {
+        highlightNodes(d);
+      }
+      // if (d.downstream === 'undefined' && d.isHighlighted){
+      //   unHighlightNodes(d);
+      //   console.log('--> unHighlightNodes');
+      //   // If there are no downstream items and d is NOT highlighted, highlight it.
+      // } else if (d.downstream === 'undefined' && d.isHighlighted === false) {
+      //   highlightNodes(d);
+      //   console.log('--> HighlightNodes');
+      //   // If there are downstream items, and some of them are highlighted, but not all, then highlight them all.
+      // } else if ( d.downstream && highlightedCount != d.downstream.length){
+      //   highlightNodes(d);
+      //   console.log('--> HighlightNodes2');
+      //   // Else we have a scenario where all the downstream nodes are highlighted an we want to un-highlight them.
+      // } else {
+      //   unHighlightNodes(d);
+      //   console.log('--> unHighlightNodes2');
+      // }
     }
 
     /*
@@ -292,7 +383,7 @@ d3.json(fileName, function (error, graphData) {
      * @param {Object} clickedNode is the node that was clicked on
      */
     function nodeDoubleClick (clickedNode) {
-      console.log('Double Click Fired');
+      console.log('===== Double Click Fired =====');
       collapse(clickedNode);
     }
 
@@ -314,6 +405,7 @@ d3.json(fileName, function (error, graphData) {
         nodeItem.downstreamEdges = [];
       }
       nodeItem.downstreamEdges.push(edge);  // Add the target ID to list of downstream items
+      nodeItem.noRelations = false;
     }
 
     /*
@@ -342,10 +434,10 @@ d3.json(fileName, function (error, graphData) {
   /*
    * Hides all of the graph nodes except the root id
    */
-  function collapseAll () {
-    svg.selectAll('.node').style('opacity', function (item) {
-      return item.id !== -1 ? 0 : 1;
-    });
-    svg.selectAll('path').style('opacity', 0);
-  }
+  // function collapseAll () {
+  //   svg.selectAll('.node').style('opacity', function (item) {
+  //     return item.id !== -1 ? 0 : 1;
+  //   });
+  //   svg.selectAll('path').style('opacity', 0);
+  // }
 });
