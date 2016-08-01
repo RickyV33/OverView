@@ -10,6 +10,8 @@ d3.json(fileName, function (error, graphData) {
   }
 
   let passedID = 2142;  // Gets the passed parameter value from URL
+  let clickedOnce = false;  // For monitoring the click event on node
+  let timer;                // For click event monitoring
 
   let width = 1000;
   let height = 800;
@@ -132,6 +134,9 @@ d3.json(fileName, function (error, graphData) {
     let path = svg.append('svg:g').selectAll('path')
       .data(force.links())
       .enter().append('svg:path')
+      .attr('id', function (d) {
+        return d.id;  // Add an id element to each edge
+      })
       .attr('class', thisPath => {
         let result = 'link';
         // Check the type and add a style according to type
@@ -147,13 +152,24 @@ d3.json(fileName, function (error, graphData) {
       .data(force.nodes())
       .enter()
       .append('g')
+      .attr('id', function (d) {
+        return d.id;  // Add an id element to each node
+      })
       .attr('class', function (thisNode) {
         // Add projectRoot class if the node is the project node
         return thisNode.id === -1 ? 'node projectRoot' : 'node';
       })
       .call(force.drag)
-      .on('click', nodeClick)
-      .on('dblclick', nodeDoubleClick);
+      .on('click', function (d) {
+        if (clickedOnce) {
+            nodeClick(d);  // Call the single click function
+        } else {
+          timer = setTimeout(function() {
+            nodeDoubleClick(d); // Call the double click function
+          }, 300);
+          clickedOnce = true;
+        }
+      });
 
     projectNode.fixed = true;  // Set the project Node to be fixed and not moving
     projectNode.x = height / 2;
@@ -245,6 +261,7 @@ d3.json(fileName, function (error, graphData) {
      * This function handles the logic for highlighting and un-highlighting nodes on single-click
      */
     function nodeClick (d) {
+      console.log('===== Click Fired =====');
       d.isSelected = true; // Sets the node you clicked on to have a "selected" flag.
       let highlightedCount = -1; // this will count how many downstream nodes are highlighted.
       highlightedCount = downstreamHighlightCheck(d, highlightedCount);
@@ -258,6 +275,7 @@ d3.json(fileName, function (error, graphData) {
       } else {
         highlightNodes(d);
       }
+      clickedOnce = false;  // This is for resetting the click flag
     }
 
     /**
@@ -347,6 +365,8 @@ d3.json(fileName, function (error, graphData) {
      */
     function nodeDoubleClick (clickedNode) {
       console.log('===== Double Click Fired =====');
+      clickedOnce = false;  // For resetting the clickedOnce flag
+      clearTimeout(timer);  // Reset the timer for click event
       collapse(clickedNode);
     }
 
@@ -377,7 +397,6 @@ d3.json(fileName, function (error, graphData) {
     function collapse (root) {
       console.log('Collapse Initiated');
       console.log(root);
-      console.log(d3.select(root.id));
       // Hide the node
       if (root.downstream) {
         root.downstream.forEach(function (child) {
