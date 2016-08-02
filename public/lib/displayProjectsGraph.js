@@ -16,7 +16,8 @@ d3.json(fileName, function (error, graphData) {
   let height = 800;
   let reducedOpacity = 0.2;
 
-  // let nodes = {};
+  let nodesToRender = [];
+  let edgesToRender = [];
   let items = graphData.nodes;
   let itemRelations = graphData.edges;
   let relationsChecked = false;
@@ -27,7 +28,7 @@ d3.json(fileName, function (error, graphData) {
   itemRelations.push({ id: -1, source: -1, target: rootID, type: -1 });
   projectNode = items[0];
 
-  // ++++++++++++ Map all node edges +++++++++++++
+  // ++++++++++++ Map all node edges START+++++++++++++
   // nodeToEdgeMap is an array that uses id as the index for direct access
   let nodeToEdgeMap = {};
 
@@ -41,7 +42,31 @@ d3.json(fileName, function (error, graphData) {
     });
 
     item.noRelations = true;
+    item.visited = false;
   });
+  // ++++++++++++ Map all node edges  END+++++++++++++
+
+  console.log(nodeToEdgeMap);
+  filterJSON(rootID);
+
+  /**
+   * Filters the graph input to be filtered by the rootId and all its downstream nodes
+   * @param rootId
+   */
+  function filterJSON (rootId) {
+    let thisNode = nodeToEdgeMap[rootId];
+    if (!thisNode.node.visited || thisNode.node.visited === 'undefined') {
+      thisNode.node.visited = true;
+      nodesToRender.push(thisNode.node);
+
+      if (thisNode.edges.length > 0) {
+        thisNode.edges.forEach(function (relItem) {
+          edgesToRender.push(relItem);
+          filterJSON(relItem.target);  // Traverse down the relations
+        });
+      }
+    }
+  }
 
   // Append the SVG object to the body
   // Add a group element within it to encompass all the nodes - this fixes the chrome
@@ -125,10 +150,17 @@ d3.json(fileName, function (error, graphData) {
       addDownstreamItemToNode(projectNode, itemRelations[0]);  // Add downstream item to project node
     }
 
+    console.log('Nodes');
+    console.log(nodesToRender);
+    console.log('Edges');
+    console.log(edgesToRender);
+
     // Set the force nodes, edges and start the graph
     force
-      .nodes(graphData.nodes)
-      .links(graphData.edges)
+      // .nodes(graphData.nodes)
+      .nodes(nodesToRender)
+      // .links(graphData.edges)
+      .links(edgesToRender)
       .on('tick', tick)
       .start();
 
@@ -159,7 +191,7 @@ d3.json(fileName, function (error, graphData) {
       })
       .attr('class', function (thisNode) {
         // Add projectRoot class if the node is the project node
-        return thisNode.id === -1 ? 'node projectRoot' : 'node';
+        return thisNode.id === rootId ? 'node projectRoot' : 'node';
       })
       .call(force.drag)
       .on('click', function (d) {
