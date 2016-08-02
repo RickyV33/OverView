@@ -191,7 +191,7 @@ d3.json(fileName, function (error, graphData) {
       })
       .attr('class', function (thisNode) {
         // Add projectRoot class if the node is the project node
-        return thisNode.id === rootId ? 'node projectRoot' : 'node';
+        return thisNode.id === rootID ? 'node projectRoot' : 'node';
       })
       .call(force.drag)
       .on('click', function (d) {
