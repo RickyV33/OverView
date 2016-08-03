@@ -74,8 +74,8 @@ d3.json(fileName, function (error, gData) {
 
     force = d3.layout.force()
       .size([width, height])
-      .linkDistance(100)  // sets the target distance between linked nodes to the specified value
-      .charge(-1000);       // - value results in node repulsion, while + value results in node attraction
+      .linkDistance(100);  // sets the target distance between linked nodes to the specified value
+      // .charge(-1000);       // - value results in node repulsion, while + value results in node attraction
 
     updateGraph(rootID);  // Render the graph
     // collapseAll();
@@ -174,6 +174,14 @@ function updateGraph (passedId = -1) {
   force  // Set the force nodes, edges and start the graph
     .nodes(nodesToRender)  // .nodes(graphData.nodes)
     .links(edgesToRender) // .links(graphData.edges)
+    .charge(function (d) {  // Variable Charge
+      let chargeVal = -500;
+      return chargeVal + (-200 * d.downStream.length);
+    })
+    .linkStrength(function (d) {  // Variable link Strength
+      let strengthVal = 1;
+      return strengthVal + (-0.12 * (d.source.downStream.length));
+    })
     .on('tick', tick)
     .start();
 
@@ -263,12 +271,8 @@ function updateGraph (passedId = -1) {
    */
   function tick (e) {
     path.attr('d', function (d) {
-      let dx = d.target.x - d.source.x;
-      let dy = d.target.y - d.source.y;
-      let dr = Math.sqrt(dx * dx + dy * dy);
-
-      return 'M' + d.source.x + ',' + d.source.y + 'A' +
-        dr + ',' + dr + ' 0 0,1 ' + d.target.x + ',' + d.target.y;
+      return straightEdges(d);
+      // return curvedEdges(d);
     });
 
     // Move the edge depending on node location
@@ -276,6 +280,42 @@ function updateGraph (passedId = -1) {
       return 'translate(' + d.x + ',' + d.y + ')';
     });
 
+    // floatNodeRight(e);
+
+    // Set the node position
+    node.attr('cx', function (d) { return 5 * d.x; })
+        .attr('cy', function (d) { return d.y; });
+  }
+
+  /**
+   * Returns a curved line parameter for edge
+   * @param d
+   * @returns {string}
+   */
+  function curvedEdges (d) {
+    let dx = d.target.x - d.source.x;
+    let dy = d.target.y - d.source.y;
+    let dr = Math.sqrt(dx * dx + dy * dy);
+
+    return 'M' + d.source.x + ',' + d.source.y + 'A' +
+      dr + ',' + dr + ' 0 0,1 ' + d.target.x + ',' + d.target.y;
+  }
+
+  /**
+   * Returns a straight line parameter for edge
+   * @param d
+   * @returns {string}
+   */
+  function straightEdges (d) {
+    return 'M' + d.source.x + ',' + d.source.y +
+      'S' + d.source.x + ',' + d.source.y +
+      ' ' + d.target.x + ',' + d.target.y;
+  }
+
+  /**
+   * Float the nodes to the right of their upstream node
+   */
+  function floatNodeRight (e) {
     let k = 10 * e.alpha; // For the node offset
 
     // This section pushes sources up and targets down to form a weak tree-like structure.
@@ -286,10 +326,6 @@ function updateGraph (passedId = -1) {
       .attr('y1', function (d) { return d.source.y; })
       .attr('x2', function (d) { return d.target.x; })
       .attr('y2', function (d) { return d.target.y; });
-
-    // This sets the node position
-    node.attr('cx', function (d) { return 5 * d.x; })
-        .attr('cy', function (d) { return d.y; });
   }
 
   //
@@ -406,7 +442,7 @@ function updateGraph (passedId = -1) {
     });
     if (highlight === false) {  // Only executes if ALL nodes are NOT highlighted.
       allNodes.style('opacity', 1); // Turn Everyone on
-      svg.selectAll('path').style('opacity', 1); // Turn on all the edges.
+      d3.selectAll('path').style('opacity', 1); // Turn on all the edges.
     }
   }
 
