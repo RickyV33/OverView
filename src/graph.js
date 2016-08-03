@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
  * @returns {*}
  */
 function getHierarchyRequest (url, projectId) {
-  let hierarchy;
+  let hierarchy = {};
   let httpRequest = new XMLHttpRequest();
   httpRequest.onreadystatechange = () => {
     if (httpRequest.readyState === XMLHttpRequest.DONE) {
@@ -46,7 +46,7 @@ function getHierarchyRequest (url, projectId) {
  * @returns {*}
  */
 function getGraphRequest (url, projectId) {
-  let graph;
+  let graph = {};
   let httpRequest = new XMLHttpRequest();
   httpRequest.onreadystatechange = () => {
     if (httpRequest.readyState === XMLHttpRequest.DONE) {
