@@ -71,8 +71,8 @@ d3.json(fileName, function (error, gData) {
     force = d3.layout.force()
       .size([width, height])
       .linkDistance(100)  // sets the target distance between linked nodes to the specified value
-      .charge(-1000)       // - value results in node repulsion, while + value results in node attraction
-      .friction(0.8);     // closely approximates velocity decay
+      .charge(-1000);       // - value results in node repulsion, while + value results in node attraction
+      //.friction(0.8);     // closely approximates velocity decay
 
     updateGraph(rootID);  // Render the graph
     // collapseAll();
@@ -183,11 +183,17 @@ function updateGraph (passedId = -1) {
       let result = 'link';
       // Check the type and add a style according to type
       result = (thisPath.type === -1) ? result + ' link-dot' : result;
-      result = (thisPath.type === 8) ? ' link-dash' : result;
+      result = (thisPath.type === 8) ? result + ' link-dash' : result;
 
       return result;
     })
     .attr('marker-end', 'url(#end)');
+
+  // Added a string to edge hover
+  path.append('svg:title')
+    .text(function (d) {
+      return (d.type);
+    });
 
   // ============ Node Properties Definition ===========
   node = svg.selectAll('.node')
@@ -222,15 +228,13 @@ function updateGraph (passedId = -1) {
     .attr('x', -8)
     .attr('y', -9)
     .attr('height', 19)
-    .attr('width', 120)
-    .style('opacity', 0.80);
+    .attr('width',  120);
 
   // Circle at node behind icon configuration
   node.append('circle')
     .attr('x', '-14px')
     .attr('y', '-14px')
-    .attr('r', 13)
-    .style('opacity', 0.80);
+    .attr('r', 13);
 
   // Image in the node circle configuration
   node.append('image')
@@ -524,10 +528,10 @@ function collapseAll () {
   svg.selectAll('.node').style('opacity', function (item) {
     return item.id !== -1 ? 0 : 1;
   });
-  d3.select('projectRoot').style('opacity', 1);  // Show the project node
   projectNode.downStream.forEach(function (item) {
     d3.select("[id='" + item.id + "']").style('opacity', 1);
   });
+  d3.select("[id='" + rootID + "']").style('opacity', 1);  // Show the project node
 
   let paths = svg.selectAll('path');
   paths.style('opacity', 0);

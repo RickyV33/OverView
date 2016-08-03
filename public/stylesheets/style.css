@@ -15,16 +15,12 @@ path.link {
 }
 
 path.link-dash {
-  fill: none;
   stroke: #73a8cf;
-  stroke-width: 1.5px;
   stroke-dasharray: 5;
 }
 
 path.link-dot {
-  fill: none;
   stroke: #F2622B;
-  stroke-width: 1.5px;
   stroke-dasharray: 5,5;
   d: M5 20 l215 0;
 }
@@ -39,6 +35,7 @@ path.link-dot {
   fill: #dfdfdf;
   stroke: #F2622B;
   stroke-width: 1.5px;
+  fill-opacity: 0.80;
 }
 
 circle.active {
@@ -49,8 +46,10 @@ circle.active {
 
 rect {
   fill: #fff;
-  stroke: #cfcfcf;
+  stroke: #efefef;
   stroke-width: 1.5px;
+  fill-opacity: 0.80;
+  pointer-events: none;
 }
 
 text {
