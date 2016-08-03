@@ -49,7 +49,8 @@ $ npm run lint
 
 ## Testing
 
-The Mocha framework was used with Chai, an assertion library, to conduct all tests on JamaTrace.
+The [Mocha](https://mochajs.org) framework was used with [Chai](http://chaijs.com), an assertion library, to conduct all
+tests on JamaTrace.
 
 ## Copyright and license
 
