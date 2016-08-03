@@ -10,7 +10,6 @@ let proxyquire = require('proxyquire');
 let Ajv = require('ajv');
 let projectListSchema = require('../../lib/schema/projectList.json');
 let projects = require('../../lib/projects');
-let proxyquire = require('proxyquire');
 let mockProjects = require('../routes/mockProjects.json');
 
 chai.use(dirtyChai);
