@@ -72,7 +72,6 @@ d3.json(fileName, function (error, gData) {
       .size([width, height])
       .linkDistance(100)  // sets the target distance between linked nodes to the specified value
       .charge(-1000);       // - value results in node repulsion, while + value results in node attraction
-      //.friction(0.8);     // closely approximates velocity decay
 
     updateGraph(rootID);  // Render the graph
     // collapseAll();
@@ -224,11 +223,11 @@ function updateGraph (passedId = -1) {
   projectNode.y = width / 2;
 
   // White rectangle behind text configuration
-  node.append('rect')
+/*  node.append('rect')
     .attr('x', -8)
     .attr('y', -9)
     .attr('height', 19)
-    .attr('width',  120);
+    .attr('width', 120);*/
 
   // Circle at node behind icon configuration
   node.append('circle')
@@ -253,7 +252,7 @@ function updateGraph (passedId = -1) {
     });
 
   // Add the name of the node as text
-  node.append('text')
+  let nodeText = node.append('text')
     .attr('x', 18)
     .attr('dy', '.35em')
     .attr('class', 'nodeText')
