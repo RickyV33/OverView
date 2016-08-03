@@ -23,7 +23,8 @@ app.use(session({
   secret: process.env.SESSION_SECRET || 'reallyBadSecret',
   cookie: { maxAge: 24 * 60 * 60 * 1000 }, // 1 day
   resave: false,
-  saveUninitialized: false
+  saveUninitialized: false,
+  teamName: process.env.TEAM_NAME || 'defaultTeamName'
 }));
 app.use(express.static(path.join(__dirname, 'public')));
 
