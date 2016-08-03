@@ -23,6 +23,16 @@ If it doesn't already exist in your environment, create a new `.env` file in the
 `.env.example` and modifying it as is necessary for the environment. *The `SESSION_SECRET` variable must be changed to
 any unique String.*
 
+To run the application
+```
+$ npm run start
+```
+
+To run and debug
+```
+$ npm run debug
+```
+
 To run all tests (this will also run the linter)
 ```
 $ npm test
@@ -33,21 +43,13 @@ To run the linter
 $ npm run lint
 ```
 
-To run and debug
-```
-$ npm run debug
-```
+## Development
+
+
 
 ## Testing
 
-### Unit testing using Mocha and Chai
-
-To use Mocha, write your testing scripts in the test folder and then run the
-specific script (if mocha is installed globally) using `mocha script.js` or
-`mocha script`. (Or `./node_modules/.bin/mocha script.js` or
-`./node_modules/.bin/mocha script` using your local installation of mocha)
-
-Alternatively, lint and run all the tests using `npm test`.
+The Mocha framework was used with Chai, an assertion library, to conduct all tests on JamaTrace.
 
 ## Copyright and license
 
