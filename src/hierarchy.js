@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', function () {
   document.getElementById('renderButton').addEventListener('click', event => {
     if (selected !== undefined) {
       //  TODO-update rootID
-      window.location = './graph?rootID=' + selected;
+      window.location = './graph?rootId=' + selected;
     }
   });
   /**
@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', function () {
       selected = event.target.id;
       if (selected !== undefined) {
         //  TODO-update rootID
-        window.location = './graph?rootID=' + selected;
+        window.location = './graph?rootId=' + selected;
       }
     }
   });
