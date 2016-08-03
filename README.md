@@ -7,7 +7,7 @@ JamaTrace is a project between Seven Source, a Portland State University compute
 [Iman Bilal](https://github.com/ibilal), [Mike Hansen](https://github.com/HansenML),
 [Ruben Piatnitsky](https://github.com/ruv-prog-so), [Chance Snow](https://github.com/chances),
 [Kathleen Tran](https://github.com/kathtran), [Ricardo Valencia](https://github.com/RickyV33) (Team Lead), and
-[Marc Week](https://github.com/Marc-Week).
+[Marcus Week](https://github.com/Marc-Week).
 
 JamaTrace allows customers of Jama Software to view the downstream relationships between their project items via a
 graph that supports traceability. All data is retrieved from Jama's REST API.
@@ -23,7 +23,7 @@ If it doesn't already exist in your environment, create a new `.env` file in the
 `.env.example` and modifying it as is necessary for the environment. *The `SESSION_SECRET` variable must be changed to
 any unique String.*
 
-To run all tests (as well as lint)
+To run all tests (this will also run the linter)
 ```
 $ npm test
 ```
@@ -35,7 +35,7 @@ $ npm run lint
 
 To run and debug
 ```
-npm run debug
+$ npm run debug
 ```
 
 ## Testing
