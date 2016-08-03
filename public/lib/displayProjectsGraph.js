@@ -59,8 +59,8 @@ d3.json(fileName, function (error, gData) {
       .enter().append('svg:marker')    // This section adds in the arrows
       .attr('id', String)
       .attr('viewBox', '0 -5 10 10')
-      .attr('refX', 25)
-      .attr('refY', -1.5)
+      .attr('refX', 21)
+      .attr('refY', -0.5)
       .attr('markerWidth', 6)
       .attr('markerHeight', 6)
       .attr('orient', 'auto')
@@ -162,12 +162,9 @@ function updateGraph (passedId = -1) {
     relationsChecked = true;
   }
 
-  // Set the force nodes, edges and start the graph
-  force
-    // .nodes(graphData.nodes)
-    .nodes(nodesToRender)
-    // .links(graphData.edges)
-    .links(edgesToRender)
+  force  // Set the force nodes, edges and start the graph
+    .nodes(nodesToRender)  // .nodes(graphData.nodes)
+    .links(edgesToRender) // .links(graphData.edges)
     .on('tick', tick)
     .start();
 
@@ -188,8 +185,7 @@ function updateGraph (passedId = -1) {
     })
     .attr('marker-end', 'url(#end)');
 
-  // Added a string to edge hover
-  path.append('svg:title')
+  path.append('svg:title')  // Added a string to edge hover
     .text(function (d) {
       return (d.type);
     });
@@ -222,40 +218,28 @@ function updateGraph (passedId = -1) {
   projectNode.x = height / 2;
   projectNode.y = width / 2;
 
-  // White rectangle behind text configuration
-/*  node.append('rect')
-    .attr('x', -8)
-    .attr('y', -9)
-    .attr('height', 19)
-    .attr('width', 120);*/
+  // node.append('rect'); // White rectangle behind text configuration
 
-  // Circle at node behind icon configuration
-  node.append('circle')
+  node.append('circle') // Circle at node behind icon configuration
     .attr('x', '-14px')
     .attr('y', '-14px')
     .attr('r', 13);
 
-  // Image in the node circle configuration
-  node.append('image')
+  node.append('image') // Image in the node circle configuration
     .attr('xlink:href', function (n) {
       return n.image;
     })
     .attr('x', '-9px')
-    .attr('y', '-9px')
-    .attr('height', '18px')
-    .attr('width', '18px');
+    .attr('y', '-9px');
 
-  // Add Text for hovering that shows full filename
-  node.append('svg:title')
+  node.append('svg:title')  // Add Text for hovering that shows full filename
     .text(function (d) {
       return (d.id + ' - ' + d.name);
     });
 
-  // Add the name of the node as text
-  let nodeText = node.append('text')
+  node.append('text') // Add the name of the node as text
     .attr('x', 18)
     .attr('dy', '.35em')
-    .attr('class', 'nodeText')
     .text(function (d) {
       // Limit the length of the name text
       return d.name.length > 18 ? d.name.substring(0, 15) + '...' : d.name;
@@ -331,7 +315,6 @@ function updateGraph (passedId = -1) {
    */
   // TODO : Keep nodes with two highlighted upstream nodes highlighted on un-highlight with a count
   function unHighlightNodes (d) {
-    console.log('un-highlight called');
     d.isHighlighted = false;
     node.style('opacity', function (curNode) {
       let count = -1;
@@ -339,7 +322,6 @@ function updateGraph (passedId = -1) {
         for (let i = 0; i < d.downStream.length; i++) {
           if (d.downStream[i] === curNode.id) {
             count = downStreamHighlightCheck(curNode, count); // check downStream items for highlighting
-            console.log('count is: ' + count);
           }
           if (count !== curNode.downStream.length && d.downStream[i] === curNode.id) {
             curNode.isHighlighted = false;
@@ -359,13 +341,11 @@ function updateGraph (passedId = -1) {
    * @param {object} d
    */
   function highlightNodes (d) {
-    console.log('highlight invoked');
     d.isHighlighted = true;
     node.style('opacity', function (curNode) {
       if (!d.noRelations) {
         for (let i = 0; i < d.downStream.length; i++) {
           if (d.downStream[i] === curNode.id) {
-            console.log('match');
             curNode.isHighlighted = true;
           }
         }
