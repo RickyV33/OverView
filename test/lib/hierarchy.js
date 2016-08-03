@@ -21,10 +21,18 @@ let teamName = 'invalidTeamName';
 let projectId = 0;
 
 let rejectedPromise = () => {
-  return new Promise((resolve, reject) => {
-    reject(data);
+  process.nextTick(function () {
+    return new Promise((resolve, reject) => {
+      reject(data);
+    });
   });
-};
+}
+  /*process.nextTick(function (options, callback) {
+     callback(null, new Promise((resolve, reject) => {
+      reject(data);
+    }));
+  });*/
+//};
 
 let resolvedPromise = () => {
   return new Promise((resolve, reject) => {
@@ -36,17 +44,17 @@ describe('Hierarchy Module', function () {
 
 
   describe('getAllItems function', function () {
-    //   this.timeout(15000);
-    it('should return a rejected promise when the login credentials are invalid', function (done) {
-      //     this.timeout(15000);
-      //     setTimeout(done, 15000);
+  //     this.timeout(15000);
+    it('should return a rejected promise when the login credentials are invalid', function () {
+  //         this.timeout(15000);
+    //       setTimeout(done, 15000);
       projectId = 99;
       data = 'Invalid login credentials';
       pagination = proxyquire('../../lib/hierarchy', {'./pagination': rejectedPromise});
-      return expect(pagination.getAllItems(username, password, teamName, projectId))
-        .to.eventually.be.fulfilled().and.to.equal('Invalid login credentials');
-      done();
-    });
+      expect(pagination.getAllItems(username, password, teamName, projectId))
+        .to.be.rejected();
+      }); //.equal(undefined);
+        //.to.eventually.be.rejected().and.to.equal('Invalid login credentials');
     xit('should return a rejected promise when the login credentials are valid, but projectId is invalid',
       function () {
         projectId = 1000;
