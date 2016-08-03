@@ -45,7 +45,9 @@ $ npm run lint
 
 ## Development
 
-
+Our development process focused on pair programming, with a *hint* of mob programming. The pairs were as follows: Iman &
+Marcus, Michael & Ruben, and Kathleen & Ricardo. Chance was the technical adviser, a readily available resource for all
+team members.
 
 ## Testing
 
