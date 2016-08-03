@@ -9,21 +9,26 @@ JamaTrace is a project between Seven Source, a Portland State University compute
 [Kathleen Tran](https://github.com/kathtran), [Ricardo Valencia](https://github.com/RickyV33) (Team Lead), and
 [Marc Week](https://github.com/Marc-Week).
 
+JamaTrace allows customers of Jama Software to view the downstream relationships between their project items via a
+graph that supports traceability. All data is retrieved from Jama's REST API.
+
 ## Usage
 
-After cloning the repo run `npm install` to install the app's dependencies.
+After cloning the repository, run the following command to install the application's dependencies.
+```$ npm install```
 
-If it doesn't already exist in your environment, create a new `.env` file in
-the project root directory, copying `.env.example` and modifying as necessary
-for the environment. (**Change the `SESSION_SECRET`!**)
+If it doesn't already exist in your environment, create a new `.env` file in the project root directory, copying the
+`.env.example` and modifying it as is necessary for the environment. *The `SESSION_SECRET` variable must be changed to
+any unique String.*
 
-Implement features and corresponding unit tests.
+To run all tests (as well as lint)
+```$ npm test```
 
-Lint and run all tests using `npm test`.
+To run the linter
+```$ npm run lint```
 
-To simply lint your code, use `npm run lint`.
-
-Then, to run and debug the app use `npm run debug`.
+To run and debug
+```npm run debug```
 
 ## Testing
 
