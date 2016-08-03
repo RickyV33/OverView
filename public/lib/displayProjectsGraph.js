@@ -33,9 +33,13 @@ d3.json(fileName, function (error, gData) {
     // Create a project node and add it to the items list
     projectNode = {id: -1, name: graphData.name, image: '', type: -1};
     items.unshift(projectNode);
-    itemRelations.push({id: -1, source: -1, target: rootID, type: -1});
 
-    mapNodesToEdges();
+    // Check if a root id was passed
+    if (rootID !== -1 && rootID !== null) {
+      itemRelations.push({id: -1, source: -1, target: rootID, type: -1});
+    }
+
+    mapNodesToEdges();  // Preprocess data for faster data retrieval
 
     // rootID is set in the graph view
     filterJSON(rootID); // Filters the JSON for only the downStream items from the selected item
@@ -111,20 +115,25 @@ function mapNodesToEdges () {
 
 /**
  * Filters the graph input to be filtered by the rootId and all its downStream nodes
- * @param rootId
+ * @param id
  */
-function filterJSON (rootId) {
-  let thisNode = nodeToEdgeMap[rootId];
-  if (!thisNode.node.visited || thisNode.node.visited === 'undefined') {
-    thisNode.node.visited = true;
-    nodesToRender.push(thisNode.node);
+function filterJSON (id) {
+  if (id !== -1 && id !== null) {
+    let thisNode = nodeToEdgeMap[id];
+    if (!thisNode.node.visited || thisNode.node.visited === 'undefined') {
+      thisNode.node.visited = true;
+      nodesToRender.push(thisNode.node);
 
-    if (thisNode.edges.length > 0) {
-      thisNode.edges.forEach(function (relItem) {
-        edgesToRender.push(relItem);
-        filterJSON(relItem.target);  // Traverse down the relations
-      });
+      if (thisNode.edges.length > 0) {
+        thisNode.edges.forEach(function (relItem) {
+          edgesToRender.push(relItem);
+          filterJSON(relItem.target);  // Traverse down the relations
+        });
+      }
     }
+  } else {
+    nodesToRender = items;
+    edgesToRender = itemRelations;
   }
 }
 
@@ -200,7 +209,7 @@ function updateGraph (passedId = -1) {
     })
     .attr('class', function (thisNode) {
       // Add projectRoot class if the node is the project node
-      return thisNode.id === rootID ? 'node projectRoot' : 'node';
+      return thisNode.id === passedId || thisNode.id === -1 ? 'node projectRoot' : 'node';
     })
     .call(force.drag)
     .on('click', function (d) {
