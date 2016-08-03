@@ -15,20 +15,28 @@ graph that supports traceability. All data is retrieved from Jama's REST API.
 ## Usage
 
 After cloning the repository, run the following command to install the application's dependencies.
-```$ npm install```
+```
+$ npm install
+```
 
 If it doesn't already exist in your environment, create a new `.env` file in the project root directory, copying the
 `.env.example` and modifying it as is necessary for the environment. *The `SESSION_SECRET` variable must be changed to
 any unique String.*
 
 To run all tests (as well as lint)
-```$ npm test```
+```
+$ npm test
+```
 
 To run the linter
-```$ npm run lint```
+```
+$ npm run lint
+```
 
 To run and debug
-```npm run debug```
+```
+npm run debug
+```
 
 ## Testing
 
