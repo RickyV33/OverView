@@ -20,8 +20,10 @@ document.addEventListener('DOMContentLoaded', function () {
    * item to the render graph function
    */
   document.getElementById('renderButton').addEventListener('click', event => {
-    // TODO call render_Graph with selected as argument
-    console.log(selected);
+    if (selected !== undefined) {
+      //  TODO-update rootID
+      window.location = './graph?rootID=' + selected;
+    }
   });
   /**
    * Listens for 'enter' button pressing for the Item hierarchy
@@ -31,8 +33,10 @@ document.addEventListener('DOMContentLoaded', function () {
   document.getElementById('itemHierarchy').addEventListener('keydown', event => {
     if (event.keyCode === 13) {
       selected = event.target.id;
-      // TODO call render_Graph with selected as argument
-      console.log(selected);
+      if (selected !== undefined) {
+        //  TODO-update rootID
+        window.location = './graph?rootID=' + selected;
+      }
     }
   });
 });
