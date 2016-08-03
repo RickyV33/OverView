@@ -36,10 +36,9 @@ d3.json(fileName, function (error, gData) {
     itemRelations.push({id: -1, source: -1, target: rootID, type: -1});
 
     mapNodesToEdges();
-    // console.log(nodeToEdgeMap);
 
     // rootID is set in the graph view
-    filterJSON(rootID); // Filters the JSON for only the downstream items from the selected item
+    filterJSON(rootID); // Filters the JSON for only the downStream items from the selected item
     resetVisitedFlag(); // Sets all of the visited flags to false
 
     // Append the SVG object to the body
@@ -81,7 +80,7 @@ d3.json(fileName, function (error, gData) {
 });
 
 /**
- * Maps each node to a node object and all of its upstream and downstream relationships
+ * Maps each node to a node object and all of its upstream and downStream relationships
  * NOTE - nodeToEdgeMap is an array that uses id as the index for direct access
  */
 function mapNodesToEdges () {
@@ -90,11 +89,11 @@ function mapNodesToEdges () {
     thisItem.node = item;
     thisItem.node.downStream = [];
 
-    // thisItem.edges refers to the downstream nodes
+    // thisItem.edges refers to the downStream nodes
     thisItem.edges = itemRelations.filter(function (relItem) {
       relItem.visited = false;
       if (relItem.source === item.id) {
-        thisItem.node.downStream.push(relItem.target);  // Add the target to the downstream items
+        thisItem.node.downStream.push(relItem.target);  // Add the target to the downStream items
         return relItem; // Filter all of the edges that have this item source id
       }
     });
@@ -112,7 +111,7 @@ function mapNodesToEdges () {
 }
 
 /**
- * Filters the graph input to be filtered by the rootId and all its downstream nodes
+ * Filters the graph input to be filtered by the rootId and all its downStream nodes
  * @param rootId
  */
 function filterJSON (rootId) {
@@ -148,16 +147,16 @@ function updateGraph (passedId = -1) {
       if (srcNode && trgNode) {
         relItem.source = srcNode.node;
         relItem.target = trgNode.node;
-        addDownstreamItemToNode(srcNode, relItem);  // Check if downstream items array exists
+        adddownStreamItemToNode(srcNode, relItem);  // Check if downStream items array exists
       }
     });
 
     // Check if there are relations for each node and set a flag
     items.forEach(function (item) {
-      if (typeof item.downstream === 'undefined') {
+      if (typeof item.downStream === 'undefined') {
         item.noRelations = true;
       } else {
-        item.noRelations = (item.downstream.length === 0);
+        item.noRelations = (item.downStream.length === 0);
       }
     });
 
@@ -305,16 +304,16 @@ function updateGraph (passedId = -1) {
    * @param {Object} d is the node that was just clicked
    */
   function nodeClick (d) {
-    // console.log('===== Click Fired =====');
     d.isSelected = true; // Sets the node you clicked on to have a "selected" flag.
-    let highlightedCount = -1; // this will count how many downstream nodes are highlighted.
-    highlightedCount = downstreamHighlightCheck(d, highlightedCount);
-    // If there are no downstream items and d is highlighted, un-highlight it.
+    let highlightedCount = -1; // this will count how many downStream nodes are highlighted.
+    highlightedCount = downStreamHighlightCheck(d, highlightedCount);
+    // If there are no downStream items and d is highlighted, un-highlight it.
     if (d.isHighlighted) {
-      if (d.downstream && (highlightedCount !== d.downstream.length)) {
+      if (d.downStream > 0 && (highlightedCount !== d.downStream.length)) {
         highlightNodes(d);
       } else {
         unHighlightNodes(d);
+        checkOpacity();
       }
     } else {
       highlightNodes(d);
@@ -323,21 +322,23 @@ function updateGraph (passedId = -1) {
   }
 
   /**
-   * This function will un-highlight d and the array of downstream nodes for d. This will NOT
+   * This function will un-highlight d and the array of downStream nodes for d. This will NOT
    * un-highlight a node if all of it's children are highlighted (cycle checking)
    * @param {object} d is the node that was just clicked
    */
   // TODO : Keep nodes with two highlighted upstream nodes highlighted on un-highlight with a count
   function unHighlightNodes (d) {
+    console.log('un-highlight called');
     d.isHighlighted = false;
     node.style('opacity', function (curNode) {
       let count = -1;
-      if (d.downstream) {
-        for (let i = 0; i < d.downstream.length; i++) {
-          if (d.downstream[i].id === curNode.id) {
-            downstreamHighlightCheck(curNode, count); // check downstream items for highlighting
+      if (d.downStream) {
+        for (let i = 0; i < d.downStream.length; i++) {
+          if (d.downStream[i] === curNode.id) {
+            count = downStreamHighlightCheck(curNode, count); // check downStream items for highlighting
+            console.log('count is: ' + count);
           }
-          if (count !== d.downstream.length && d.downstream[i].id === curNode.id) {
+          if (count !== curNode.downStream.length && d.downStream[i] === curNode.id) {
             curNode.isHighlighted = false;
           }
         }
@@ -351,15 +352,17 @@ function updateGraph (passedId = -1) {
   }
 
   /**
-   * This function will highlight the selected node "d" then highlight the nodes in it's downstream array
+   * This function will highlight the selected node "d" then highlight the nodes in it's downStream array
    * @param {object} d
    */
   function highlightNodes (d) {
+    console.log('highlight invoked');
     d.isHighlighted = true;
     node.style('opacity', function (curNode) {
       if (!d.noRelations) {
-        for (let i = 0; i < d.downstream.length; i++) {
-          if (d.downstream[i].id === curNode.id) {
+        for (let i = 0; i < d.downStream.length; i++) {
+          if (d.downStream[i] === curNode.id) {
+            console.log('match');
             curNode.isHighlighted = true;
           }
         }
@@ -373,31 +376,46 @@ function updateGraph (passedId = -1) {
   }
 
   /**
-   * This function checks all the downstream items of your array to see if they are highlighted. This prevents
+   * This function checks all the downStream items of your array to see if they are highlighted. This prevents
    * issues when we have a cycle and are un-highlighting nodes.
    * @param {object} d
    * @param {int} count
    */
-  function downstreamHighlightCheck (d, count) {
+  function downStreamHighlightCheck (d, count) {
     // This checks whether we should be highlighting or un-highlighting nodes
-    d3.selectAll('g.node')  // Loops through all nodes and checks if they have downstream relations
+    d3.selectAll('g.node')  // Loops through all nodes and checks if they have downStream relations
       .each(function (curNode) {
-        if (!d.noRelations) {
-          for (let i = 0; i < d.downstream.length; i++) {
-            // If the index matches and the node is already highlighted, increase our count.
-            if (d.downstream[i].id === curNode.id) {
-              if (curNode.isHighlighted) {
-                if (count === -1) {
-                  count = 1;
-                } else {
-                  count++;
-                }
+        for (let i = 0; i < d.downStream.length; i++) {
+          // If the index matches and the node is already highlighted, increase our count.
+          if (d.downStream[i] === curNode.id) {
+            if (curNode.isHighlighted) {
+              if (count === -1) {
+                count = 1;
+              } else {
+                count++;
               }
             }
           }
         }
       });
     return count;
+  }
+
+  /**
+   * This function is to check if all the nodes are un-highlighted. If they are, highlight all the nodes on the graph.
+   */
+  function checkOpacity () {
+    let highlight = false; // flag to see if anyone is highlighted.
+    let allNodes = svg.selectAll('.node');
+    allNodes[0].forEach(function (d) {
+      if (d.__data__.isHighlighted) {
+        highlight = true; // If ANY node is highlighted set this flag.
+      }
+    });
+    if (highlight === false) {  // Only executes if ALL nodes are NOT highlighted.
+      allNodes.style('opacity', 1); // Turn Everyone on
+      svg.selectAll('path').style('opacity', 1); // Turn on all the edges.
+    }
   }
 
   /**
@@ -411,43 +429,43 @@ function updateGraph (passedId = -1) {
     clickedOnce = false;  // For resetting the clickedOnce flag
     clearTimeout(timer);  // Reset the timer for click event
 
-    collapseDownstream(clickedNode.id);   // Traverse down the graph
+    collapsedownStream(clickedNode.id);   // Traverse down the graph
     resetVisitedFlag();
   }
 
   /**
-   * Adds a downstream item and downstream edge to a given Node
+   * Adds a downStream item and downStream edge to a given Node
    *
    * @param {Object} nodeItem is a node item
    * @param {Object} edge is an edge object that is going to be added to the nodeItem
    */
-  function addDownstreamItemToNode (nodeItem, edge) {
-    // Check if downstream items array exists
-    if (typeof nodeItem.downstream === 'undefined') {
-      nodeItem.downstream = [];
+  function adddownStreamItemToNode (nodeItem, edge) {
+    // Check if downStream items array exists
+    if (typeof nodeItem.downStream === 'undefined') {
+      nodeItem.downStream = [];
     }
-    nodeItem.downstream.push(edge.target);  // Add the target ID to list of downstream items
+    nodeItem.downStream.push(edge.target);  // Add the target ID to list of downStream items
 
-    // Check if downstream Edges array exists
-    if (typeof nodeItem.downstreamEdges === 'undefined') {
-      nodeItem.downstreamEdges = [];
+    // Check if downStream Edges array exists
+    if (typeof nodeItem.downStreamEdges === 'undefined') {
+      nodeItem.downStreamEdges = [];
     }
-    nodeItem.downstreamEdges.push(edge);  // Add the target ID to list of downstream items
+    nodeItem.downStreamEdges.push(edge);  // Add the target ID to list of downStream items
     nodeItem.noRelations = false;
   }
 }
 
 /**
- * Collapse only the nodes downstream from the given node
+ * Collapse only the nodes downStream from the given node
  * @param {number} id - is the id of the object
  */
-function collapseDownstream (id) {
-  // console.log('======> collapseDownstream() ===');
+function collapsedownStream (id) {
+  // console.log('======> collapsedownStream() ===');
   let thisNode = nodeToEdgeMap[id];
 
   if (thisNode.edges.length > 0) {
-    // console.log('\t--> Collapsing downstream edges...');
-    // Hide each downstream edge and recurse to downstream node
+    // console.log('\t--> Collapsing downStream edges...');
+    // Hide each downStream edge and recurse to downStream node
     thisNode.edges.forEach(function (relItem) {
       if (!relItem.visited) {
         toggleOpacity(relItem.id);  // Toggle the opacity of the edge
@@ -460,9 +478,9 @@ function collapseDownstream (id) {
 }
 
 /**
- * Collapses all of the graph nodes downstream from the selected node
+ * Collapses all of the graph nodes downStream from the selected node
  *
- * @param {number} id is the object that is selected and whose downstream items will be toggled
+ * @param {number} id is the object that is selected and whose downStream items will be toggled
  */
 function collapse (id, count) {
   // console.log('-- Collapse Initiated [' + count + '] --');
@@ -484,8 +502,8 @@ function collapse (id, count) {
     }
 
     if (thisNode.edges.length > 0) {
-      // console.log('\t--> Collapsing downstream edges...');
-      // Hide each downstream edge and recurse to downstream node
+      // console.log('\t--> Collapsing downStream edges...');
+      // Hide each downStream edge and recurse to downStream node
       thisNode.edges.forEach(function (relItem) {
         if (!relItem.visited) {
           toggleOpacity(relItem.id);  // Toggle the opacity of the edge
@@ -507,13 +525,13 @@ function collapseAll () {
     return item.id !== -1 ? 0 : 1;
   });
   d3.select('projectRoot').style('opacity', 1);  // Show the project node
-  projectNode.downstream.forEach(function (item) {
+  projectNode.downStream.forEach(function (item) {
     d3.select("[id='" + item.id + "']").style('opacity', 1);
   });
 
   let paths = svg.selectAll('path');
   paths.style('opacity', 0);
-  projectNode.downstreamEdges.forEach(function (item) {
+  projectNode.downStreamEdges.forEach(function (item) {
     d3.select("[id='" + item.id + "']").style('opacity', 1);
   });
 }
