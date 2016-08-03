@@ -78,7 +78,7 @@ d3.json(fileName, function (error, gData) {
       // .charge(-1000);       // - value results in node repulsion, while + value results in node attraction
 
     updateGraph(rootID);  // Render the graph
-    // collapseAll();
+    collapseAll();
   }
 });
 
@@ -341,7 +341,7 @@ function updateGraph (passedId = -1) {
     highlightedCount = downStreamHighlightCheck(d, highlightedCount);
     // If there are no downStream items and d is highlighted, un-highlight it.
     if (d.isHighlighted) {
-      if (d.downStream > 0 && (highlightedCount !== d.downStream.length)) {
+      if (d.downStream.length > 0 && (highlightedCount !== d.downStream.length)) {
         highlightNodes(d);
       } else {
         unHighlightNodes(d);
