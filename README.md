@@ -55,7 +55,7 @@ team members.
 
 * [Node.js](https://nodejs.org/en/)
 * [Express](https://expressjs.com)
-* JavaScript ([ES6](http://es6-features.org/#Constants))
+* JavaScript (ES6)
 * HTML5
 * CSS
 * [D3](https://d3js.org)
