@@ -1,41 +1,41 @@
 <!DOCTYPE html>
-<html>
-<head>
-  <title><%= title %></title>
-  <link rel='stylesheet' href='/stylesheets/style.css'/>
-</head>
-<body>
-<h1><%= title %></h1>
-<h3>Select a root item from below to view all it's downstream related items,
-  or click the "Render Graph" button to view the traceability graph:</h3>
-<%function renderSubItems(item) {%>
-<ul>
-  <li>
-    <%= item.name %>
-    <%if (item.children) {%>
-    <%item.children.forEach(function (subItem) {%>
-    <%- renderSubItems(subItem); %>
-    <%});%>
-    <%}%>
-  </li>
-</ul>
-<%}%>
-<ul id="itemHierarchyLists">
-  <%if(itemHierarchy) {%>
-  <%itemHierarchy.forEach(function (rootItem) {%>
-  <li>
-    <%= rootItem.name %>
-    <%if (rootItem.children) {%>
-    <%rootItem.children.forEach(function (subItem) {%>
-    <%- renderSubItems(subItem); %>
-    <%});%>
-    <%}%>
-  </li>
-  <%});%>
-  <%} else {%>
-  <p>Sorry, there are no items to display.</p>
-  <%}%>
-</ul>
-<script src="js/hierarchy.js"></script>
-</body>
-</html>
+  <html>
+    <head>
+      <title><%= title %></title>
+      <link rel='stylesheet' href='/stylesheets/style.css'/>
+    </head>
+    <body>
+      <h1><%= title %></h1>
+      <h3>Select a root item from below to view all it's downstream related items,
+        or click the "Render Graph" button to view the traceability graph:</h3>
+      <%function renderSubItems(item) {%>
+        <ul>
+          <li>
+            <%= item.name %>
+            <%if (item.children) {%>
+              <%item.children.forEach(function (subItem) {%>
+                <%- renderSubItems(subItem); %>
+              <%});%>
+            <%}%>
+          </li>
+        </ul>
+      <%}%>
+      <ul id="itemHierarchyLists">
+        <%if(itemHierarchy) {%>
+          <%itemHierarchy.forEach(function (rootItem) {%>
+            <li>
+              <%= rootItem.name %>
+              <%if (rootItem.children) {%>
+                <%rootItem.children.forEach(function (subItem) {%>
+                  <%- renderSubItems(subItem); %>
+                <%});%>
+              <%}%>
+            </li>
+          <%});%>
+        <%} else {%>
+          <p>Sorry, there are no items to display.</p>
+        <%}%>
+      </ul>
+      <script src="js/hierarchy.js"></script>
+    </body>
+    </html>
