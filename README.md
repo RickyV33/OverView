@@ -67,5 +67,5 @@ tests on JamaTrace.
 
 ## Copyright and license
 
-Code and documentation copyright 2016 Iman Bilal, Michael Hansen, Ruben Piatnitsky, Chance Snow,
+Code and documentation &copy; 2016 Iman Bilal, Michael Hansen, Ruben Piatnitsky, Chance Snow,
 Kathleen Tran, Ricardo Valencia, Marcus Week. Code and documentation is released under the MIT license.
