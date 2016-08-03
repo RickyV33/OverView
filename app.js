@@ -11,6 +11,8 @@ let projects = require('./routes/projects');
 
 let app = express();
 
+// require('dotenv').config();
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
@@ -23,9 +25,18 @@ app.use(session({
   secret: process.env.SESSION_SECRET || 'reallyBadSecret',
   cookie: { maxAge: 24 * 60 * 60 * 1000 }, // 1 day
   resave: false,
-  saveUninitialized: false,
-  teamName: process.env.TEAM_NAME || 'defaultTeamName'
+  saveUninitialized: false
 }));
+
+app.use(function (req, res, next) {
+  var teamName = req.session.teamName;
+
+  if (!teamName) {
+    teamName = req.session.teamName = process.env.TEAM_NAME || 'sevensource';
+  }
+  next();
+});
+
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
@@ -37,6 +48,8 @@ app.use(function (req, res, next) {
   err.status = 404;
   next(err);
 });
+
+
 
 // error handlers
 

@@ -10,10 +10,9 @@ router.get('/', function (req, res, next) {
 
 router.post('/', function (req, res, next) {
   if (auth.validate(req)) {
-    auth.authenticate(req.body.username, req.body.password, req.body.teamName).then(function (sessionProjects) {
+    auth.authenticate(req.body.username, req.body.password, req.session.teamName).then(function (sessionProjects) {
       req.session.username = req.body.username;
       req.session.password = req.body.password;
-      req.session.teamName = req.body.teamName;
       req.session.projects = projects.parseProjectList(sessionProjects);
       req.session.save(function (err) {
         if (err) {
