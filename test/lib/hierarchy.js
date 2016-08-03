@@ -11,51 +11,57 @@ let chaiAsPromised = require('chai-as-promised');
 chai.use(dirtyChai);
 chai.use(chaiAsPromised);
 
+let pagination = null;
 let startAt = 0;
 let maxResults = 20;
+let data = '';
+let username = 'invalidUsername';
+let password = 'invalidPassword';
+let teamName = 'invalidTeamName';
+let projectId = 0;
 
-let rejectedPromise = (data) => {
+let rejectedPromise = () => {
   return new Promise((resolve, reject) => {
     reject(data);
   });
 };
 
-let resolvedPromise = (data) => {
+let resolvedPromise = () => {
   return new Promise((resolve, reject) => {
     resolve(data);
   });
 };
 
-function buildURL(username, password, teamName, projectId) {
-  return 'https://' + username + ':' + password + '@' + teamName +
-    '.jamacloud.com/rest/latest/items?project=' + projectId;
-}
-
 describe('Hierarchy Module', function () {
-  let url = 'url';
-  let pagination;
-  let projectId = 0;
+
 
   describe('getAllItems function', function () {
-    it('should return a rejected promise when the login credentials are invalid', function () {
+    //   this.timeout(15000);
+    it('should return a rejected promise when the login credentials are invalid', function (done) {
+      //     this.timeout(15000);
+      //     setTimeout(done, 15000);
       projectId = 99;
-      url = buildURL('invalidusername', 'invalid password', 'invalid teamName', projectId);
-      pagination = proxyquire('../../lib/pagination', {'Promise': rejectedPromise('Invalid login credentials')});
-      expect(pagination(url, startAt, maxResults)).to.eventually.be.rejected().and.to.equal('Invalid login credentials');
+      data = 'Invalid login credentials';
+      pagination = proxyquire('../../lib/hierarchy', {'./pagination': rejectedPromise});
+      return expect(pagination.getAllItems(username, password, teamName, projectId))
+        .to.eventually.be.fulfilled().and.to.equal('Invalid login credentials');
+      done();
     });
-    it('should return a rejected promise when the login credentials are valid, but projectId is invalid',
+    xit('should return a rejected promise when the login credentials are valid, but projectId is invalid',
       function () {
         projectId = 1000;
-        url = buildURL('dummy', 'password', 'sevensource', projectId);
-        pagination = proxyquire('../../lib/pagination', {'Promise': rejectedPromise('Project ID invalid')});
-        expect(pagination(url, startAt, maxResults)).to.eventually.be.rejected().and.to.equal('Project ID invalid');
+        data = 'Invalid project ID';
+        pagination = proxyquire('../../lib/pagination', {'Promise': rejectedPromise});
+        return expect(pagination.getAllItems(username, password, teamName, projectId))
+          .to.eventually.be.rejected().and.to.equal('Invalid project ID');
       });
-    it('should return an empty JSON blob when login credentials and projectId are valid',
+    xit('should return an empty JSON blob when login credentials and projectId are valid',
       function () {
         projectId = 33;
-        url = buildURL('dummy', 'password', 'sevensource', projectId);
-        pagination = proxyquire('../../lib/pagination', {'Promise': resolvedPromise({})});
-        expect(pagination(url, startAt, maxResults)).to.eventually.be.rejected().and.to.equal({});
+        data = {};
+        pagination = proxyquire('../../lib/pagination', {'Promise': resolvedPromise});
+        return expect(pagination.getAllItems(username, password, teamName, projectId))
+          .to.eventually.be.rejected().and.to.equal({});
       });
   });
 });
