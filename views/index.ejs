@@ -6,11 +6,8 @@
   </head>
   <body>
     <h1><%= title %></h1>
+    <input type="hidden" id=teamName value=<%= teamName %>/>
     <form id="logIn" method="post">
-      <!--<div>
-        <label for="teamName">Team Name:</label>
-        <input id="teamName" type="text" name="teamName" autofocus required maxlength="200" />
-      </div>-->
       <div>
         <label for="username">Username:</label>
         <input id="username" type="text" name="username" required maxlength="200" />

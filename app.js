@@ -11,8 +11,6 @@ let projects = require('./routes/projects');
 
 let app = express();
 
-// require('dotenv').config();
-
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
@@ -28,17 +26,16 @@ app.use(session({
   saveUninitialized: false
 }));
 
+// Middleware to add the teamName to the session from the .env config file
 app.use(function (req, res, next) {
   var teamName = req.session.teamName;
-
   if (!teamName) {
-    teamName = req.session.teamName = process.env.TEAM_NAME || 'sevensource';
+    req.session.teamName = process.env.TEAM_NAME || 'sevensource';
   }
   next();
 });
 
 app.use(express.static(path.join(__dirname, 'public')));
-
 app.use('/', routes);
 app.use('/projects', projects);
 
@@ -48,8 +45,6 @@ app.use(function (req, res, next) {
   err.status = 404;
   next(err);
 });
-
-
 
 // error handlers
 
