@@ -255,8 +255,9 @@ function updateGraph (passedId = -1) {
     });
 
   node.append('text') // Add the name of the node as text
-    .attr('x', 18)
-    .attr('dy', '.35em')
+    .attr('x', 0)
+    .attr('dy', 30)
+    .attr('text-anchor', 'middle')
     .text(function (d) {
       // Limit the length of the name text
       return d.name.length > 18 ? d.name.substring(0, 15) + '...' : d.name;
