@@ -21,6 +21,14 @@ let path = null;          // The collection of path html objects
 let svg = null;           // The svg window
 let force = null;         // The force layout for d3
 let relationsChecked = false;   // Flag to see if relations check was run
+// ////// DEMO VARS//////
+
+let curves = true;
+let physics = true;
+let itemNames = true;
+
+// /////////////////////
+// /////////////////////
 
 // Parse the JSON data
 d3.json(fileName, function (error, gData) {
@@ -211,28 +219,53 @@ function updateGraph (passedId = -1) {
     });
 
   // ============ Node Properties Definition ===========
-  node = svg.selectAll('.node')
-    .data(force.nodes())
-    .enter()
-    .append('g')
-    .attr('id', function (d) {
-      return d.id;  // Add an id element to each node
-    })
-    .attr('class', function (thisNode) {
-      // Add projectRoot class if the node is the project node
-      return thisNode.id === passedId || thisNode.id === -1 ? 'node projectRoot' : 'node';
-    })
-    // .call(force.drag)
-    .on('click', function (d) {
-      if (clickedOnce) {
-        nodeDoubleClick(d);  // Call the single click function
-      } else {
-        timer = setTimeout(function () {
-          nodeClick(d); // Call the double click function
-        }, 175);
-        clickedOnce = true;
-      }
-    });
+  if (physics) {
+    node = svg.selectAll('.node')
+      .data(force.nodes())
+      .enter()
+      .append('g')
+      .attr('id', function (d) {
+        return d.id;  // Add an id element to each node
+      })
+      .attr('class', function (thisNode) {
+        // Add projectRoot class if the node is the project node
+        return thisNode.id === passedId || thisNode.id === -1 ? 'node projectRoot' : 'node';
+      })
+      .call(force.drag)
+      .on('click', function (d) {
+        if (clickedOnce) {
+          nodeDoubleClick(d);  // Call the single click function
+        } else {
+          timer = setTimeout(function () {
+            nodeClick(d); // Call the double click function
+          }, 175);
+          clickedOnce = true;
+        }
+      });
+  } else {
+    node = svg.selectAll('.node')
+      .data(force.nodes())
+      .enter()
+      .append('g')
+      .attr('id', function (d) {
+        return d.id;  // Add an id element to each node
+      })
+      .attr('class', function (thisNode) {
+        // Add projectRoot class if the node is the project node
+        return thisNode.id === passedId || thisNode.id === -1 ? 'node projectRoot' : 'node';
+      })
+      // .call(force.drag)
+      .on('click', function (d) {
+        if (clickedOnce) {
+          nodeDoubleClick(d);  // Call the single click function
+        } else {
+          timer = setTimeout(function () {
+            nodeClick(d); // Call the double click function
+          }, 175);
+          clickedOnce = true;
+        }
+      });
+  }
 
   projectNode.fixed = true;  // Set the project Node to be fixed and not moving
   projectNode.x = height / 2;
@@ -245,11 +278,11 @@ function updateGraph (passedId = -1) {
     .attr('y', '-14px')
     .attr('r', 13)
     .attr('stroke', function (n) {
-      return (n.downStream.length > 0 ? '#F2622B': "#ffffff");
+      return (n.downStream.length > 0 ? '#F2622B' : '#ffffff');
     })
     .attr('fill', function (n) {
-    return (n.downStream.length > 0 ? '#76D3F5' :'#76D3F5'); // Fill nodes with blue if they have downstream items
-  });
+      return (n.downStream.length > 0 ? '#76D3F5' : '#76D3F5'); // Fill nodes with blue if they have downstream items
+    });
 
   node.append('image') // Image in the node circle configuration
     .attr('xlink:href', function (n) {
@@ -263,15 +296,30 @@ function updateGraph (passedId = -1) {
       return (d.id + ' - ' + d.name);
     });
 
-  node.append('text') // Add the name of the node as text
-    // .attr('x', 20)
+  if (itemNames) {
+    node.append('text') // Add the name of the node as text
+    .attr('x', function (d) {
+      return d.downStream.length > 0 ? 0 : 20;
+    })
+    .attr('dy', function (d) {
+      return d.downStream.length > 0 ? 30 : 0;
+    })
+    .attr('text-anchor', function (d) {
+      return d.downStream.length > 0 ? 'middle' : 'right';
+    })
+    .text(function (d) { // Limit the length of the name text
+      return d.name.length > 18 ? d.name.substring(0, 15) + '...' : d.name;
+    });
+  } else {
+    node.append('text') // Add the name of the node as text
+  // .attr('x', 20)
     .attr('x', 0)
     .attr('dy', 30)
     .attr('text-anchor', 'middle')
     .text(function (d) { // Limit the length of the name text
       return d.name.length > 18 ? d.name.substring(0, 15) + '...' : d.name;
     });
-
+  }
   // ============= Node Path Definitions ==============
   /**
    * For every shift of the graph, this function gets called.
@@ -279,10 +327,13 @@ function updateGraph (passedId = -1) {
    *
    * @param {Object} e
    */
-  function tick () {
+  function tick (e) {
     path.attr('d', function (d) {
-      return straightEdges(d);
-      // return curvedEdges(d);
+      if (curves) {
+        return curvedEdges(d);
+      } else {
+        return straightEdges(d);
+      }
     });
 
     // Move the edge depending on node location
@@ -290,7 +341,7 @@ function updateGraph (passedId = -1) {
       return 'translate(' + d.x + ',' + d.y + ')';
     });
 
-    // floatNodeRight(e);
+    floatNodeRight(e);
 
     // Set the node position
     node.attr('cx', function (d) { return 5 * d.x; })
@@ -302,14 +353,14 @@ function updateGraph (passedId = -1) {
    * @param d
    * @returns {string}
    */
-  // function curvedEdges (d) {
-  //   let dx = d.target.x - d.source.x;
-  //   let dy = d.target.y - d.source.y;
-  //   let dr = Math.sqrt(dx * dx + dy * dy);
-  //
-  //   return 'M' + d.source.x + ',' + d.source.y + 'A' +
-  //     dr + ',' + dr + ' 0 0,1 ' + d.target.x + ',' + d.target.y;
-  // }
+  function curvedEdges (d) {
+    let dx = d.target.x - d.source.x;
+    let dy = d.target.y - d.source.y;
+    let dr = Math.sqrt(dx * dx + dy * dy);
+
+    return 'M' + d.source.x + ',' + d.source.y + 'A' +
+      dr + ',' + dr + ' 0 0,1 ' + d.target.x + ',' + d.target.y;
+  }
 
   /**
    * Returns a straight line parameter for edge
@@ -325,18 +376,18 @@ function updateGraph (passedId = -1) {
   /**
    * Float the nodes to the right of their upstream node
    */
-  // function floatNodeRight (e) {
-  //   let k = 10 * e.alpha; // For the node offset
-  //
-  //   // This section pushes sources up and targets down to form a weak tree-like structure.
-  //   path.each(function (d) {
-  //     d.source.x -= k;
-  //     d.target.x += k;
-  //   }).attr('x1', function (d) { return d.source.x; })
-  //     .attr('y1', function (d) { return d.source.y; })
-  //     .attr('x2', function (d) { return d.target.x; })
-  //     .attr('y2', function (d) { return d.target.y; });
-  // }
+  function floatNodeRight (e) {
+    let k = 10 * e.alpha; // For the node offset
+
+    // This section pushes sources up and targets down to form a weak tree-like structure.
+    path.each(function (d) {
+      d.source.x -= k;
+      d.target.x += k;
+    }).attr('x1', function (d) { return d.source.x; })
+      .attr('y1', function (d) { return d.source.y; })
+      .attr('x2', function (d) { return d.target.x; })
+      .attr('y2', function (d) { return d.target.y; });
+  }
 
   //
   // ============ Toggle highlighting nodes on single click ===========
@@ -398,7 +449,6 @@ function updateGraph (passedId = -1) {
   function highlightNodes (d) {
     d.isHighlighted = true;
     node.style('opacity', function (curNode) {
-      let nodeOpacity = d3.select("[id='" + curNode.id + "']").style('opacity');
       if (!d.noRelations) {
         for (let i = 0; i < d.downStream.length; i++) {
           if (d.downStream[i] === curNode.id) {
@@ -573,7 +623,7 @@ function collapse (id, count) {
   thisNode.node.isCollapsed = true;
 }
 
-function unCollapse(id) {
+function unCollapse (id) {
   console.log('-- unCollapse() --');
   let thisNode = nodeToEdgeMap[id];
   console.log(thisNode);
