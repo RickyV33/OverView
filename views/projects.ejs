@@ -8,9 +8,7 @@
       <h1><%= title %></h1>
       <h3>Click on a project below to view it's traceability graph:</h3>
       <ul id="projectList">
-        <%if (projects === null) {%>
-          <p>Sorry, there are no projects to display.</p>
-        <%} else if (projects.length === 0){%>
+        <%if (projects === null || projects.length === 0) {%>
           <p>Sorry, there are no projects to display.</p>
         <%} else {%>
           <%projects.forEach(function (project) {%>
