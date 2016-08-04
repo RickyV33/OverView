@@ -16,14 +16,13 @@ document.addEventListener('DOMContentLoaded', () => {
  * @param selector CSS selector
  * @returns {*} Array of matched elements
  */
-function querySelectorAll(selector) {
+function querySelectorAll (selector) {
   return Array.prototype.slice.call(document.querySelectorAll(selector));
 }
 
 document.addEventListener('DOMContentLoaded', () => {
   querySelectorAll('#projects a').forEach(projectAnchor => {
     projectAnchor.addEventListener('click', event => {
-
       let selectedProject = event.target.getAttribute('data-id');
       let hierarchy = getHierarchyRequest('/hierarchy', selectedProject);
       let graph = getGraphRequest('/graph', selectedProject);

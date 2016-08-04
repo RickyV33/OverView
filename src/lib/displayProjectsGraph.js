@@ -2,6 +2,7 @@
 
 let fileName = 'js/ssProject.json'; // Sample JSON data
 let graphData = null;     // Global variable that contains all of the parse JSON data
+let rootID = null;
 
 let clickedOnce = false;  // For monitoring the click event on node
 let timer;                // For click event monitoring
