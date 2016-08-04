@@ -184,7 +184,7 @@ describe('projects.js module', function () {
 
   describe('getProjectItems function', () => {
     it('should return a promise with a name when there exists at least one item', () => {
-      data = [{'id': 10, 'name': 'item name', 'type': 99}];
+      data = [{'id': 10, 'fields': {'name': 'item name'}, 'type': 99}];
       projectquire = proxyquire('../../lib/projects', {'./pagination': resolvedPromise});
       projectquire.getProjectItems(projectId, url).then(item => {
         expect(item.id).to.equal(10);
