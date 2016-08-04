@@ -1,0 +1,615 @@
+[
+  {
+    "id": 2115,
+    "documentKey": "JCP1-SET-5",
+    "globalId": "GID-17209",
+    "itemType": 31,
+    "project": 33,
+    "createdDate": "2016-05-15T19:00:10.000+0000",
+    "modifiedDate": "2016-05-15T19:00:10.000+0000",
+    "lastActivityDate": "2016-05-15T19:00:12.000+0000",
+    "createdBy": 13,
+    "modifiedBy": 13,
+    "fields": {
+      "setKey": "REQ",
+      "globalId": "GID-17209",
+      "documentKey": "JCP1-SET-5",
+      "name": "Requirements",
+      "description": ""
+    },
+    "resources": {
+      "self": {
+        "allowed": [
+          "GET",
+          "PUT",
+          "DELETE"
+        ]
+      }
+    },
+    "location": {
+      "sortOrder": 1,
+      "globalSortOrder": 3006,
+      "sequence": "2",
+      "parent": {
+        "project": 33
+      }
+    },
+    "lock": {
+      "locked": false
+    },
+    "childItemType": 24,
+    "type": "items"
+  },
+  {
+    "id": 2313,
+    "documentKey": "JCP1-FLD-26",
+    "globalId": "GID-20701",
+    "itemType": 32,
+    "project": 33,
+    "createdDate": "2016-05-29T21:16:27.000+0000",
+    "modifiedDate": "2016-05-29T21:16:27.000+0000",
+    "lastActivityDate": "2016-05-29T21:16:57.000+0000",
+    "createdBy": 6,
+    "modifiedBy": 6,
+    "fields": {
+      "documentKey": "JCP1-FLD-26",
+      "globalId": "GID-20701",
+      "name": "User Login Home Page",
+      "description": ""
+    },
+    "resources": {
+      "self": {
+        "allowed": [
+          "GET",
+          "PUT",
+          "DELETE"
+        ]
+      }
+    },
+    "location": {
+      "sortOrder": 0,
+      "globalSortOrder": 3007,
+      "sequence": "2.1",
+      "parent": {
+        "item": 2115
+      }
+    },
+    "lock": {
+      "locked": false
+    },
+    "childItemType": 24,
+    "type": "items"
+  },
+  {
+    "id": 2140,
+    "documentKey": "JCP1-REQ-2",
+    "globalId": "GID-17701",
+    "itemType": 24,
+    "project": 33,
+    "createdDate": "2016-05-18T04:46:53.000+0000",
+    "modifiedDate": "2016-05-29T02:26:30.000+0000",
+    "lastActivityDate": "2016-07-20T20:14:39.000+0000",
+    "createdBy": 7,
+    "modifiedBy": 9,
+    "fields": {
+      "documentKey": "JCP1-REQ-2",
+      "globalId": "GID-17701",
+      "name": "Input a Username",
+      "description": "<p><span style=\"background-color:transparent; color:#000000; font-family:arial; font-size:14.666666666666666px; font-style:normal; font-variant:normal; font-weight:400; text-decoration:none; vertical-align:baseline\">JamaTrace shall provide a form field for users to input their username. </span></p>\n",
+      "prio$24": 302
+    },
+    "resources": {
+      "self": {
+        "allowed": [
+          "GET",
+          "PUT",
+          "DELETE"
+        ]
+      }
+    },
+    "location": {
+      "sortOrder": 0,
+      "globalSortOrder": 3008,
+      "sequence": "2.1.1",
+      "parent": {
+        "item": 2313
+      }
+    },
+    "lock": {
+      "locked": false,
+      "lastLockedDate": "2016-05-29T02:26:30.000+0000"
+    },
+    "type": "items"
+  },
+  {
+    "id": 2141,
+    "documentKey": "JCP1-REQ-3",
+    "globalId": "GID-17702",
+    "itemType": 24,
+    "project": 33,
+    "createdDate": "2016-05-18T04:49:30.000+0000",
+    "modifiedDate": "2016-06-28T07:34:54.000+0000",
+    "lastActivityDate": "2016-07-20T20:14:36.000+0000",
+    "createdBy": 7,
+    "modifiedBy": 6,
+    "fields": {
+      "documentKey": "JCP1-REQ-3",
+      "globalId": "GID-17702",
+      "name": "Input a Password",
+      "description": "<p><span id=\"docs-internal-guid-1e429063-c232-57b7-e8e1-42a437ed94c8\"><span style=\"background-color:transparent; font-family:arial; font-size:14.666666666666666px; font-variant-alternates:normal; font-variant-east-asian:normal; font-variant-ligatures:normal; font-variant-numeric:normal; font-variant-position:normal; vertical-align:baseline; white-space:pre-wrap\">JamaTrace shall provide a form field for users to input their password.</span></span></p>\n",
+      "prio$24": 302
+    },
+    "resources": {
+      "self": {
+        "allowed": [
+          "GET",
+          "PUT",
+          "DELETE"
+        ]
+      }
+    },
+    "location": {
+      "sortOrder": 1,
+      "globalSortOrder": 3009,
+      "sequence": "2.1.2",
+      "parent": {
+        "item": 2313
+      }
+    },
+    "lock": {
+      "locked": false,
+      "lastLockedDate": "2016-06-28T07:34:54.000+0000"
+    },
+    "type": "items"
+  },
+  {
+    "id": 2729,
+    "documentKey": "JCP1-REQ-24",
+    "globalId": "GID-26204",
+    "itemType": 24,
+    "project": 33,
+    "createdDate": "2016-06-28T07:41:18.000+0000",
+    "modifiedDate": "2016-06-28T07:42:04.000+0000",
+    "lastActivityDate": "2016-07-20T20:16:41.000+0000",
+    "createdBy": 6,
+    "modifiedBy": 6,
+    "fields": {
+      "documentKey": "JCP1-REQ-24",
+      "globalId": "GID-26204",
+      "name": "Add team name input",
+      "description": "<p><span style=\"color:rgb(0, 0, 0); font-family:arial; font-size:15px; white-space:pre-wrap\">JamaTrace shall provide a form field for users to input their team name</span></p>\n",
+      "prio$24": 447
+    },
+    "resources": {
+      "self": {
+        "allowed": [
+          "GET",
+          "PUT",
+          "DELETE"
+        ]
+      }
+    },
+    "location": {
+      "sortOrder": 2,
+      "globalSortOrder": 3010,
+      "sequence": "2.1.3",
+      "parent": {
+        "item": 2313
+      }
+    },
+    "lock": {
+      "locked": false,
+      "lastLockedDate": "2016-06-28T07:42:04.000+0000"
+    },
+    "type": "items"
+  },
+  {
+    "id": 2175,
+    "documentKey": "JCP1-REQ-14",
+    "globalId": "GID-19516",
+    "itemType": 24,
+    "project": 33,
+    "createdDate": "2016-05-26T05:04:08.000+0000",
+    "modifiedDate": "2016-05-29T02:26:50.000+0000",
+    "lastActivityDate": "2016-06-09T16:21:07.000+0000",
+    "createdBy": 7,
+    "modifiedBy": 9,
+    "fields": {
+      "documentKey": "JCP1-REQ-14",
+      "globalId": "GID-19516",
+      "name": "Submit username and password",
+      "description": "<p><span style=\"background-color:transparent; color:#000000; font-family:arial; font-size:14.666666666666666px; font-style:normal; font-variant:normal; font-weight:400; text-decoration:none; vertical-align:baseline\">JamaTrace shall provide a submit button for users to click to access their account</span></p>\n",
+      "prio$24": 302
+    },
+    "resources": {
+      "self": {
+        "allowed": [
+          "GET",
+          "PUT",
+          "DELETE"
+        ]
+      }
+    },
+    "location": {
+      "sortOrder": 3,
+      "globalSortOrder": 3011,
+      "sequence": "2.1.4",
+      "parent": {
+        "item": 2313
+      }
+    },
+    "lock": {
+      "locked": false,
+      "lastLockedDate": "2016-05-29T02:26:50.000+0000"
+    },
+    "type": "items"
+  },
+  {
+    "id": 2315,
+    "documentKey": "JCP1-FLD-27",
+    "globalId": "GID-20702",
+    "itemType": 32,
+    "project": 33,
+    "createdDate": "2016-05-29T21:17:21.000+0000",
+    "modifiedDate": "2016-06-09T20:43:39.000+0000",
+    "lastActivityDate": "2016-06-09T20:43:39.000+0000",
+    "createdBy": 6,
+    "modifiedBy": 11,
+    "fields": {
+      "documentKey": "JCP1-FLD-27",
+      "globalId": "GID-20702",
+      "name": "Gather and Display Project Item Hierarchy",
+      "description": ""
+    },
+    "resources": {
+      "self": {
+        "allowed": [
+          "GET",
+          "PUT",
+          "DELETE"
+        ]
+      }
+    },
+    "location": {
+      "sortOrder": 1,
+      "globalSortOrder": 3013,
+      "sequence": "2.2",
+      "parent": {
+        "item": 2115
+      }
+    },
+    "lock": {
+      "locked": false,
+      "lastLockedDate": "2016-06-09T20:43:40.000+0000"
+    },
+    "childItemType": 24,
+    "type": "items"
+  },
+  {
+    "id": 2200,
+    "documentKey": "JCP1-REQ-17",
+    "globalId": "GID-19536",
+    "itemType": 24,
+    "project": 33,
+    "createdDate": "2016-05-26T05:28:57.000+0000",
+    "modifiedDate": "2016-06-03T23:18:49.000+0000",
+    "lastActivityDate": "2016-06-09T22:13:27.000+0000",
+    "createdBy": 7,
+    "modifiedBy": 9,
+    "fields": {
+      "documentKey": "JCP1-REQ-17",
+      "globalId": "GID-19536",
+      "name": "Display a Project's Item Hierarchy",
+      "description": "<p>JamaTrace shall provide a tree view of a project&#39;s item hierarchy within the user&#39;s selected project</p>\n",
+      "prio$24": 302
+    },
+    "resources": {
+      "self": {
+        "allowed": [
+          "GET",
+          "PUT",
+          "DELETE"
+        ]
+      }
+    },
+    "location": {
+      "sortOrder": 0,
+      "globalSortOrder": 3014,
+      "sequence": "2.2.1",
+      "parent": {
+        "item": 2315
+      }
+    },
+    "lock": {
+      "locked": false,
+      "lastLockedDate": "2016-06-03T23:18:49.000+0000"
+    },
+    "type": "items"
+  },
+  {
+    "id": 2151,
+    "documentKey": "JCP1-REQ-11",
+    "globalId": "GID-18201",
+    "itemType": 24,
+    "project": 33,
+    "createdDate": "2016-05-19T01:09:00.000+0000",
+    "modifiedDate": "2016-06-01T19:10:38.000+0000",
+    "lastActivityDate": "2016-06-09T22:15:25.000+0000",
+    "createdBy": 11,
+    "modifiedBy": 9,
+    "fields": {
+      "documentKey": "JCP1-REQ-11",
+      "globalId": "GID-18201",
+      "name": "Relationship Graph JSON Specification",
+      "description": "<p><span style=\"background-color:transparent; font-family:arial; font-size:14.6667px; font-style:normal; font-variant:normal; font-weight:400; text-decoration:none; vertical-align:baseline\">JamaTrace shall provide a common JSON format to model item relationship graphs.</span></p>\n",
+      "prio$24": 302
+    },
+    "resources": {
+      "self": {
+        "allowed": [
+          "GET",
+          "PUT",
+          "DELETE"
+        ]
+      }
+    },
+    "location": {
+      "sortOrder": 1,
+      "globalSortOrder": 3015,
+      "sequence": "2.2.2",
+      "parent": {
+        "item": 2315
+      }
+    },
+    "lock": {
+      "locked": false,
+      "lastLockedDate": "2016-06-01T19:10:38.000+0000"
+    },
+    "type": "items"
+  },
+  {
+    "id": 2216,
+    "documentKey": "JCP1-REQ-18",
+    "globalId": "GID-19552",
+    "itemType": 24,
+    "project": 33,
+    "createdDate": "2016-05-26T05:36:36.000+0000",
+    "modifiedDate": "2016-06-01T18:43:33.000+0000",
+    "lastActivityDate": "2016-06-09T22:12:21.000+0000",
+    "createdBy": 7,
+    "modifiedBy": 9,
+    "fields": {
+      "documentKey": "JCP1-REQ-18",
+      "globalId": "GID-19552",
+      "name": "Capture User's Selected Root Item",
+      "description": "<p><span id=\"docs-internal-guid-6fc112a2-eb90-721f-9f60-8bb7c0bc7a6b\"><span style=\"background-color:transparent; font-family:arial; font-size:14.666666666666666px; font-variant-alternates:normal; font-variant-east-asian:normal; font-variant-ligatures:normal; font-variant-numeric:normal; font-variant-position:normal; vertical-align:baseline; white-space:pre-wrap\">JamaTrace shall capture the user&#39;s selected root item from which to display a relationship graph.</span></span></p>\n",
+      "prio$24": 302
+    },
+    "resources": {
+      "self": {
+        "allowed": [
+          "GET",
+          "PUT",
+          "DELETE"
+        ]
+      }
+    },
+    "location": {
+      "sortOrder": 2,
+      "globalSortOrder": 3016,
+      "sequence": "2.2.3",
+      "parent": {
+        "item": 2315
+      }
+    },
+    "lock": {
+      "locked": false,
+      "lastLockedDate": "2016-06-01T18:43:33.000+0000"
+    },
+    "type": "items"
+  },
+  {
+    "id": 2217,
+    "documentKey": "JCP1-REQ-19",
+    "globalId": "GID-19553",
+    "itemType": 24,
+    "project": 33,
+    "createdDate": "2016-05-26T05:37:40.000+0000",
+    "modifiedDate": "2016-06-03T21:33:09.000+0000",
+    "lastActivityDate": "2016-06-09T22:13:19.000+0000",
+    "createdBy": 7,
+    "modifiedBy": 9,
+    "fields": {
+      "documentKey": "JCP1-REQ-19",
+      "globalId": "GID-19553",
+      "name": "Gather a Project's Item Hierarchy from jama",
+      "description": "<p><span><span style=\"background-color:transparent; font-family:arial; font-size:14.666666666666666px; font-variant-alternates:normal; font-variant-east-asian:normal; font-variant-ligatures:normal; font-variant-numeric:normal; font-variant-position:normal; vertical-align:baseline; white-space:pre-wrap\">JamaTrace shall retrieve item hierarchy of user&#39;s selected project as JSON from jama</span></span></p>\n\n<p>&nbsp;</p>\n",
+      "prio$24": 302
+    },
+    "resources": {
+      "self": {
+        "allowed": [
+          "GET",
+          "PUT",
+          "DELETE"
+        ]
+      }
+    },
+    "location": {
+      "sortOrder": 3,
+      "globalSortOrder": 3017,
+      "sequence": "2.2.4",
+      "parent": {
+        "item": 2315
+      }
+    },
+    "lock": {
+      "locked": false,
+      "lastLockedDate": "2016-06-03T21:33:09.000+0000"
+    },
+    "type": "items"
+  },
+  {
+    "id": 2439,
+    "documentKey": "JCP1-REQ-22",
+    "globalId": "GID-22002",
+    "itemType": 24,
+    "project": 33,
+    "createdDate": "2016-06-01T18:28:08.000+0000",
+    "modifiedDate": "2016-06-01T19:10:50.000+0000",
+    "lastActivityDate": "2016-06-09T22:15:19.000+0000",
+    "createdBy": 9,
+    "modifiedBy": 9,
+    "fields": {
+      "documentKey": "JCP1-REQ-22",
+      "globalId": "GID-22002",
+      "name": "Item Hierarchy Tree JSON Specification",
+      "description": "<p><span style=\"background-color:transparent; font-family:arial; font-size:14.6667px; font-style:normal; font-variant:normal; font-weight:400; text-decoration:none; vertical-align:baseline\">JamaTrace shall provide a common JSON format to model item relationship graphs.</span></p>\n",
+      "prio$24": 302
+    },
+    "resources": {
+      "self": {
+        "allowed": [
+          "GET",
+          "PUT",
+          "DELETE"
+        ]
+      }
+    },
+    "location": {
+      "sortOrder": 4,
+      "globalSortOrder": 3018,
+      "sequence": "2.2.5",
+      "parent": {
+        "item": 2315
+      }
+    },
+    "lock": {
+      "locked": false,
+      "lastLockedDate": "2016-06-01T19:10:50.000+0000"
+    },
+    "type": "items"
+  },
+  {
+    "id": 2317,
+    "documentKey": "JCP1-FLD-29",
+    "globalId": "GID-20704",
+    "itemType": 32,
+    "project": 33,
+    "createdDate": "2016-05-29T21:17:51.000+0000",
+    "modifiedDate": "2016-05-29T21:17:51.000+0000",
+    "lastActivityDate": "2016-06-09T22:09:05.000+0000",
+    "createdBy": 6,
+    "modifiedBy": 6,
+    "fields": {
+      "documentKey": "JCP1-FLD-29",
+      "globalId": "GID-20704",
+      "name": "Collect and Display User Projects from Jama",
+      "description": ""
+    },
+    "resources": {
+      "self": {
+        "allowed": [
+          "GET",
+          "PUT",
+          "DELETE"
+        ]
+      }
+    },
+    "location": {
+      "sortOrder": 2,
+      "globalSortOrder": 3019,
+      "sequence": "2.3",
+      "parent": {
+        "item": 2115
+      }
+    },
+    "lock": {
+      "locked": false
+    },
+    "childItemType": 24,
+    "type": "items"
+  },
+  {
+    "id": 2143,
+    "documentKey": "JCP1-REQ-4",
+    "globalId": "GID-17704",
+    "itemType": 24,
+    "project": 33,
+    "createdDate": "2016-05-18T04:52:02.000+0000",
+    "modifiedDate": "2016-05-31T22:39:38.000+0000",
+    "lastActivityDate": "2016-07-20T20:21:47.000+0000",
+    "createdBy": 7,
+    "modifiedBy": 9,
+    "fields": {
+      "documentKey": "JCP1-REQ-4",
+      "globalId": "GID-17704",
+      "name": "Gather User's List of Projects",
+      "description": "<p><span id=\"docs-internal-guid-1e429063-c234-8bf6-6c43-4be3f65242cc\"><span style=\"background-color:transparent; font-family:arial; font-size:14.666666666666666px; font-variant-alternates:normal; font-variant-east-asian:normal; font-variant-ligatures:normal; font-variant-numeric:normal; font-variant-position:normal; vertical-align:baseline; white-space:pre-wrap\">JamaTrace shall collect all user projects from jama </span></span></p>\n",
+      "prio$24": 302
+    },
+    "resources": {
+      "self": {
+        "allowed": [
+          "GET",
+          "PUT",
+          "DELETE"
+        ]
+      }
+    },
+    "location": {
+      "sortOrder": 0,
+      "globalSortOrder": 3020,
+      "sequence": "2.3.1",
+      "parent": {
+        "item": 2317
+      }
+    },
+    "lock": {
+      "locked": false,
+      "lastLockedDate": "2016-05-31T22:39:38.000+0000"
+    },
+    "type": "items"
+  },
+  {
+    "id": 2196,
+    "documentKey": "JCP1-REQ-16",
+    "globalId": "GID-19533",
+    "itemType": 24,
+    "project": 33,
+    "createdDate": "2016-05-26T05:25:00.000+0000",
+    "modifiedDate": "2016-05-31T22:39:18.000+0000",
+    "lastActivityDate": "2016-06-09T22:09:05.000+0000",
+    "createdBy": 7,
+    "modifiedBy": 9,
+    "fields": {
+      "documentKey": "JCP1-REQ-16",
+      "globalId": "GID-19533",
+      "name": "Display User's List of Projects",
+      "description": "<p><span id=\"docs-internal-guid-6fc112a2-eb85-cca7-8691-0dec90bb66a7\"><span style=\"background-color:transparent; font-family:arial; font-size:14.666666666666666px; font-variant-alternates:normal; font-variant-east-asian:normal; font-variant-ligatures:normal; font-variant-numeric:normal; font-variant-position:normal; vertical-align:baseline; white-space:pre-wrap\">JamaTrace shall display all available projects to the user in list select from</span></span></p>\n",
+      "prio$24": 302
+    },
+    "resources": {
+      "self": {
+        "allowed": [
+          "GET",
+          "PUT",
+          "DELETE"
+        ]
+      }
+    },
+    "location": {
+      "sortOrder": 1,
+      "globalSortOrder": 3021,
+      "sequence": "2.3.2",
+      "parent": {
+        "item": 2317
+      }
+    },
+    "lock": {
+      "locked": false,
+      "lastLockedDate": "2016-05-31T22:39:18.000+0000"
+    },
+    "type": "items"
+  }
+]

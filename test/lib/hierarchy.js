@@ -7,12 +7,14 @@ let expect = chai.expect;
 let dirtyChai = require('dirty-chai');
 let proxyquire = require('proxyquire');
 let chaiAsPromised = require('chai-as-promised');
+let mockHierarchy = require('./mockHierarchy.json');
 
 chai.use(dirtyChai);
 chai.use(chaiAsPromised);
 
 let hierarchy = null;
-let data = '';
+let mergeChildren = null;
+let data = null;
 let username = 'invalidUsername';
 let password = 'invalidPassword';
 let teamName = 'invalidTeamName';
@@ -34,7 +36,18 @@ let resolvedPromise = () => {
   });
 };
 
+let mergeChildrenStub = () => {
+  let children = hierarchy.children;
+
+
+};
+
+let pushChildrenStub = () => {
+
+};
+
 describe('Hierarchy Module', function () {
+
   describe('getAllItems function', function () {
     it('should return a rejected promise when the login credentials are invalid',
       function () {
@@ -77,5 +90,20 @@ describe('Hierarchy Module', function () {
             expect(item).to.equal(data);
           });
       });
+  });
+  describe('parseItemHierarchy function', function() {
+
+    describe('parseItemHierarchy function', function() {
+      it('should return an empty array when the json blob argument is empty', function () {
+        projectId = 33;
+        hierarchy = proxyquire('../../lib/hierarchy', {
+          'mergeChildren': mergeChildrenStub,
+          'pushChildrenToRoots': pushChildrenStub
+        });
+        return (expect(hierarchy.parseItemHierarchy(mockHierarchy))
+          .to.return()).then((item) => {
+        });
+      });
+    });
   });
 });
