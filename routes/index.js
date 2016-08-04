@@ -20,7 +20,7 @@ router.post('/', function (req, res, next) {
           // TODO Session save Error message
           res.render('index', { title: err });
         }
-        res.redirect('/projects');
+        res.redirect('/graph');
       });
     }, function () {
       res.render('index', { title: 'Error: Incorrect credentials, please try again.' });
