@@ -248,7 +248,7 @@ function updateGraph (passedId = -1) {
       return (n.downStream.length > 0 ? '#F2622B': "#ffffff");
     })
     .attr('fill', function (n) {
-    return (n.downStream.length > 0 ? '#76D3F5' :'#777777'); // Fill nodes with blue if they have downstream items
+    return (n.downStream.length > 0 ? '#76D3F5' :'#76D3F5'); // Fill nodes with blue if they have downstream items
   });
 
   node.append('image') // Image in the node circle configuration
