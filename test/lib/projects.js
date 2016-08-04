@@ -22,7 +22,7 @@ let validate = ajv.compile(projectListSchema);
 let projectId = 1;
 let url = 'url';
 let data;
-let projectquire;
+let projectsStub;
 
 let resolvedPromise = () => {
   return new Promise((resolve, reject) => {
@@ -171,38 +171,38 @@ describe('projects.js module', function () {
   describe('getProjectName function', () => {
     it('should return a promise with a name when there exists a project', () => {
       data = [{'fields': {'name': 'mocked project name'}}];
-      projectquire = proxyquire('../../lib/projects', {'./pagination': resolvedPromise});
-      projectquire.getProjectName(projectId, url).then(name => {
+      projectsStub = proxyquire('../../lib/projects', {'./pagination': resolvedPromise});
+      projectsStub.getProjectName(projectId, url).then(name => {
         expect(name).to.equal('mocked project name');
       });
     });
     it('should return a rejected promise when no project name exists.', () => {
-      projectquire = proxyquire('../../lib/projects', {'./pagination': rejectedPromise});
-      return expect(projectquire.getProjectName(projectId, url)).to.eventually.be.rejected();
+      projectsStub = proxyquire('../../lib/projects', {'./pagination': rejectedPromise});
+      return expect(projectsStub.getProjectName(projectId, url)).to.eventually.be.rejected();
     });
   });
 
   describe('getProjectItems function', () => {
     it('should return a promise with a name when there exists at least one item', () => {
       data = [{'id': 10, 'fields': {'name': 'item name'}, 'type': 99}];
-      projectquire = proxyquire('../../lib/projects', {'./pagination': resolvedPromise});
-      projectquire.getProjectItems(projectId, url).then(item => {
+      projectsStub = proxyquire('../../lib/projects', {'./pagination': resolvedPromise});
+      projectsStub.getProjectItems(projectId, url).then(item => {
         expect(item.id).to.equal(10);
         expect(item.name).to.equal('item name');
         expect(item.type).to.equal(99);
       });
     });
     it('should return a rejected promise when no items exist.', () => {
-      projectquire = proxyquire('../../lib/projects', {'./pagination': rejectedPromise});
-      return expect(projectquire.getProjectItems(projectId, url)).to.eventually.be.rejected();
+      projectsStub = proxyquire('../../lib/projects', {'./pagination': rejectedPromise});
+      return expect(projectsStub.getProjectItems(projectId, url)).to.eventually.be.rejected();
     });
   });
 
   describe('getProjectRelationships function', () => {
     it('should return a resolved promise with relationships if there exists at least one item relationship.', () => {
       data = [{'id': 10, 'fromItem': 1, 'toItem': 2, 'type': 99}];
-      projectquire = proxyquire('../../lib/projects', {'./pagination': resolvedPromise});
-      projectquire.getProjectRelationships(projectId, url).then(item => {
+      projectsStub = proxyquire('../../lib/projects', {'./pagination': resolvedPromise});
+      projectsStub.getProjectRelationships(projectId, url).then(item => {
         expect(item.id).to.equal(10);
         expect(item.fromItem).to.equal(1);
         expect(item.toItem).to.equal(2);
@@ -210,8 +210,8 @@ describe('projects.js module', function () {
       });
     });
     it('should return a rejected promise when no item relationships exist.', () => {
-      projectquire = proxyquire('../../lib/projects', {'./pagination': rejectedPromise});
-      return expect(projectquire.getProjectRelationships(projectId, url)).to.eventually.be.rejected();
+      projectsStub = proxyquire('../../lib/projects', {'./pagination': rejectedPromise});
+      return expect(projectsStub.getProjectRelationships(projectId, url)).to.eventually.be.rejected();
     });
   });
 });

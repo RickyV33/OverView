@@ -17,7 +17,7 @@ describe('Graph class module', () => {
     let url = 'url';
     let stubs = {};
     let data = [];
-    let Graph = proxyquire('../../lib/graph', {'./projectquire': stubs});
+    let Graph = proxyquire('../../lib/graph', {'./projects': stubs});
     let newGraph;
     let resolvedNamePromise = () => {
       return new Promise((resolve, reject) => {
@@ -85,6 +85,7 @@ describe('Graph class module', () => {
       expect(newGraph.name).to.be.empty();
       expect(newGraph.nodes).to.be.empty();
       expect(newGraph.edges).to.be.empty();
+      console.log('------------------------------------------------');
     });
 
     it('should return a graph that contains nothing when a timeout has occurred for getProjectItems', () => {
