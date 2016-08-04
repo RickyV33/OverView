@@ -1,5 +1,5 @@
 /* global d3, rootID */
-let fileName = '../js/ssProject.json'; // Sample JSON data
+let fileName = 'js/ssProject.json'; // Sample JSON data
 let graphData = null;     // Global variable that contains all of the parse JSON data
 
 let clickedOnce = false;  // For monitoring the click event on node
