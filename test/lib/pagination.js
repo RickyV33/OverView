@@ -28,7 +28,7 @@ function pageArrayOfSizeN (n) {
   return array;
 }
 
-  //  function to create an array with all returned data items from all pages
+//  function to create an array with all returned data items from all pages
 function arrayOfPageData (resolvedObjects) {
   let array = [];
   let numOfPages = resolvedObjects.length;
@@ -195,3 +195,4 @@ describe('Pagination Module', function () {
     });
   });
 });
+
