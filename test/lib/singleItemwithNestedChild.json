@@ -1,0 +1,201 @@
+[
+  {
+    "id": 2104,
+    "documentKey": "JCP1-SET-2",
+    "globalId": "GID-17201",
+    "itemType": 31,
+    "project": 33,
+    "createdDate": "2016-05-15T18:53:46.000+0000",
+    "modifiedDate": "2016-05-15T18:53:46.000+0000",
+    "lastActivityDate": "2016-05-15T18:59:47.000+0000",
+    "createdBy": 13,
+    "modifiedBy": 13,
+    "fields": {
+      "setKey": "EP",
+      "globalId": "GID-17201",
+      "documentKey": "JCP1-SET-2",
+      "name": "Epics",
+      "description": ""
+    },
+    "resources": {
+      "self": {
+        "allowed": [
+          "GET",
+          "PUT",
+          "DELETE"
+        ]
+      }
+    },
+    "location": {
+      "sortOrder": 0,
+      "globalSortOrder": 2001,
+      "sequence": "1",
+      "parent": {
+        "project": 33
+      }
+    },
+    "lock": {
+      "locked": false
+    },
+    "childItemType": 99,
+    "type": "items"
+  },
+  {
+    "id": 2119,
+    "documentKey": "JCP1-EP-3",
+    "globalId": "GID-17210",
+    "itemType": 99,
+    "project": 33,
+    "createdDate": "2016-05-15T19:01:27.000+0000",
+    "modifiedDate": "2016-06-28T07:33:56.000+0000",
+    "lastActivityDate": "2016-06-28T07:41:18.000+0000",
+    "createdBy": 13,
+    "modifiedBy": 6,
+    "fields": {
+      "documentKey": "JCP1-EP-3",
+      "globalId": "GID-17210",
+      "name": "User Login Home Page",
+      "description": "<p>A means for users to enter their set of credentials that will grant them access into the application.</p>\n",
+      "prio$99": 302
+    },
+    "resources": {
+      "self": {
+        "allowed": [
+          "GET",
+          "PUT",
+          "DELETE"
+        ]
+      }
+    },
+    "location": {
+      "sortOrder": 0,
+      "globalSortOrder": 2002,
+      "sequence": "1.1",
+      "parent": {
+        "item": 2104
+      }
+    },
+    "lock": {
+      "locked": false,
+      "lastLockedDate": "2016-06-28T07:39:59.000+0000"
+    },
+    "type": "items"
+  },
+  {
+    "id": 2142,
+    "documentKey": "JCP1-EP-4",
+    "globalId": "GID-17703",
+    "itemType": 99,
+    "project": 33,
+    "createdDate": "2016-05-18T04:51:33.000+0000",
+    "modifiedDate": "2016-05-26T05:28:29.000+0000",
+    "lastActivityDate": "2016-06-03T21:29:35.000+0000",
+    "createdBy": 7,
+    "modifiedBy": 7,
+    "fields": {
+      "documentKey": "JCP1-EP-4",
+      "globalId": "GID-17703",
+      "name": "Collect and Display Project Item Hierarchy from Jama",
+      "description": "<p>Gathering items from the data set to produce a graph.</p>\n\n<p>&nbsp;</p>\n\n<p>This would occur after a user selects a project from the list of user projects and a root item. The dataset should contain all of the items from the selection for traceability and each item&#39;s relationship.</p>\n",
+      "prio$99": 447
+    },
+    "resources": {
+      "self": {
+        "allowed": [
+          "GET",
+          "PUT",
+          "DELETE"
+        ]
+      }
+    },
+    "location": {
+      "sortOrder": 1,
+      "globalSortOrder": 2003,
+      "sequence": "1.2",
+      "parent": {
+        "item": 2104
+      }
+    },
+    "lock": {
+      "locked": false,
+      "lastLockedDate": "2016-05-26T05:28:29.000+0000"
+    },
+    "type": "items"
+  },
+  {
+    "id": 2143,
+    "documentKey": "JCP1-REQ-4",
+    "globalId": "GID-17704",
+    "itemType": 24,
+    "project": 33,
+    "createdDate": "2016-05-18T04:52:02.000+0000",
+    "modifiedDate": "2016-05-31T22:39:38.000+0000",
+    "lastActivityDate": "2016-07-20T20:21:47.000+0000",
+    "createdBy": 7,
+    "modifiedBy": 9,
+    "fields": {
+      "documentKey": "JCP1-REQ-4",
+      "globalId": "GID-17704",
+      "name": "Gather User's List of Projects",
+      "description": "<p><span id=\"docs-internal-guid-1e429063-c234-8bf6-6c43-4be3f65242cc\"><span style=\"background-color:transparent; font-family:arial; font-size:14.666666666666666px; font-variant-alternates:normal; font-variant-east-asian:normal; font-variant-ligatures:normal; font-variant-numeric:normal; font-variant-position:normal; vertical-align:baseline; white-space:pre-wrap\">JamaTrace shall collect all user projects from jama </span></span></p>\n",
+      "prio$24": 302
+    },
+    "resources": {
+      "self": {
+        "allowed": [
+          "GET",
+          "PUT",
+          "DELETE"
+        ]
+      }
+    },
+    "location": {
+      "sortOrder": 0,
+      "globalSortOrder": 3020,
+      "sequence": "2.3.1",
+      "parent": {
+        "item": 2317
+      }
+    }
+  },
+  {
+    "id": 2317,
+    "documentKey": "JCP1-FLD-29",
+    "globalId": "GID-20704",
+    "itemType": 32,
+    "project": 33,
+    "createdDate": "2016-05-29T21:17:51.000+0000",
+    "modifiedDate": "2016-05-29T21:17:51.000+0000",
+    "lastActivityDate": "2016-06-09T22:09:05.000+0000",
+    "createdBy": 6,
+    "modifiedBy": 6,
+    "fields": {
+      "documentKey": "JCP1-FLD-29",
+      "globalId": "GID-20704",
+      "name": "Collect and Display User Projects from Jama",
+      "description": ""
+    },
+    "resources": {
+      "self": {
+        "allowed": [
+          "GET",
+          "PUT",
+          "DELETE"
+        ]
+      }
+    },
+    "location": {
+      "sortOrder": 2,
+      "globalSortOrder": 3019,
+      "sequence": "2.3",
+      "parent": {
+        "item": 2104
+      }
+    },
+    "lock": {
+      "locked": false
+    },
+    "childItemType": 24,
+    "type": "items"
+  }
+]
