@@ -6,6 +6,7 @@ let expect = chai.expect;
 let chaiHttp = require('chai-http');
 let dirtyChai = require('dirty-chai');
 let proxyquire = require('proxyquire');
+let chaiAsPromised = require('chai-as-promised');
 
 let Ajv = require('ajv');
 let projectListSchema = require('../../lib/schema/projectList.json');
@@ -14,6 +15,7 @@ let mockProjects = require('../routes/mockProjects.json');
 
 chai.use(dirtyChai);
 chai.use(chaiHttp);
+chai.use(chaiAsPromised);
 
 let ajv = new Ajv();
 let validate = ajv.compile(projectListSchema);
@@ -176,7 +178,7 @@ describe('projects.js module', function () {
     });
     it('should return a rejected promise when no project name exists.', () => {
       projectquire = proxyquire('../../lib/projects', {'./pagination': rejectedPromise});
-      expect(projectquire.getProjectName(projectId, url)).to.be.rejected();
+      return expect(projectquire.getProjectName(projectId, url)).to.eventually.be.rejected();
     });
   });
 
@@ -192,7 +194,7 @@ describe('projects.js module', function () {
     });
     it('should return a rejected promise when no items exist.', () => {
       projectquire = proxyquire('../../lib/projects', {'./pagination': rejectedPromise});
-      expect(projectquire.getProjectItems(projectId, url)).to.be.rejected();
+      return expect(projectquire.getProjectItems(projectId, url)).to.eventually.be.rejected();
     });
   });
 
@@ -209,7 +211,7 @@ describe('projects.js module', function () {
     });
     it('should return a rejected promise when no item relationships exist.', () => {
       projectquire = proxyquire('../../lib/projects', {'./pagination': rejectedPromise});
-      expect(projectquire.getProjectRelationships(projectId, url)).to.be.rejected();
+      return expect(projectquire.getProjectRelationships(projectId, url)).to.eventually.be.rejected();
     });
   });
 });
