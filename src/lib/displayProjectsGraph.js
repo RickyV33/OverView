@@ -1,6 +1,4 @@
-/* global rootID */
-
-import d3 from 'd3';
+/* global d3 */
 
 let fileName = 'js/ssProject.json'; // Sample JSON data
 let graphData = null;     // Global variable that contains all of the parse JSON data
