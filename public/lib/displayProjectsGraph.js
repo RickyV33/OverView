@@ -40,7 +40,7 @@ d3.json(fileName, function (error, gData) {
       itemRelations.push({id: -1, source: -1, target: rootID, type: -1});
     }
 
-    mapNodesToEdges();  // Preprocess data for faster data retrieval
+    mapNodesToEdges();  // Pre-process data for faster data retrieval
 
     // rootID is set in the graph view
     filterJSON(rootID); // Filters the JSON for only the downStream items from the selected item
@@ -76,7 +76,7 @@ d3.json(fileName, function (error, gData) {
     force = d3.layout.force()
       .size([width, height])
       .linkDistance(100);  // sets the target distance between linked nodes to the specified value
-      // .charge(-1000);       // - value results in node repulsion, while + value results in node attraction
+      // .charge(-2000);       // - value results in node repulsion, while + value results in node attraction
 
     updateGraph(rootID);  // Render the graph
     collapseAll();
@@ -91,6 +91,8 @@ function mapNodesToEdges () {
   items.forEach(function (item) {
     let thisItem = nodeToEdgeMap[item.id] = {};
     thisItem.node = item;
+    thisItem.node.isCollapsed = true;
+    thisItem.node.isVisible = false;
     thisItem.node.downStream = [];
 
     // thisItem.edges refers to the downStream nodes
@@ -220,7 +222,7 @@ function updateGraph (passedId = -1) {
       // Add projectRoot class if the node is the project node
       return thisNode.id === passedId || thisNode.id === -1 ? 'node projectRoot' : 'node';
     })
-    .call(force.drag)
+    // .call(force.drag)
     .on('click', function (d) {
       if (clickedOnce) {
         nodeDoubleClick(d);  // Call the single click function
@@ -241,7 +243,13 @@ function updateGraph (passedId = -1) {
   node.append('circle') // Circle at node behind icon configuration
     .attr('x', '-14px')
     .attr('y', '-14px')
-    .attr('r', 13);
+    .attr('r', 13)
+    .attr('stroke', function (n) {
+      return (n.downStream.length > 0 ? '#F2622B': "#ffffff");
+    })
+    .attr('fill', function (n) {
+    return (n.downStream.length > 0 ? '#76D3F5' :'#777777'); // Fill nodes with blue if they have downstream items
+  });
 
   node.append('image') // Image in the node circle configuration
     .attr('xlink:href', function (n) {
@@ -256,11 +264,11 @@ function updateGraph (passedId = -1) {
     });
 
   node.append('text') // Add the name of the node as text
+    // .attr('x', 20)
     .attr('x', 0)
     .attr('dy', 30)
     .attr('text-anchor', 'middle')
-    .text(function (d) {
-      // Limit the length of the name text
+    .text(function (d) { // Limit the length of the name text
       return d.name.length > 18 ? d.name.substring(0, 15) + '...' : d.name;
     });
 
@@ -271,7 +279,7 @@ function updateGraph (passedId = -1) {
    *
    * @param {Object} e
    */
-  function tick (e) {
+  function tick () {
     path.attr('d', function (d) {
       return straightEdges(d);
       // return curvedEdges(d);
@@ -390,6 +398,7 @@ function updateGraph (passedId = -1) {
   function highlightNodes (d) {
     d.isHighlighted = true;
     node.style('opacity', function (curNode) {
+      let nodeOpacity = d3.select("[id='" + curNode.id + "']").style('opacity');
       if (!d.noRelations) {
         for (let i = 0; i < d.downStream.length; i++) {
           if (d.downStream[i] === curNode.id) {
@@ -454,12 +463,12 @@ function updateGraph (passedId = -1) {
    * @param {Object} clickedNode is the node that was clicked on
    */
   function nodeDoubleClick (clickedNode) {
-    // console.log('>>>>>>> Double Click Fired =====');
-    // console.log(clickedNode);
+    console.log('>>>>>>> Double Click Fired =====');
+    console.log(clickedNode);
     clickedOnce = false;  // For resetting the clickedOnce flag
     clearTimeout(timer);  // Reset the timer for click event
 
-    collapsedownStream(clickedNode.id);   // Traverse down the graph
+    collapseDownStream(clickedNode.id);   // Traverse down the graph
     resetVisitedFlag();
   }
 
@@ -489,21 +498,32 @@ function updateGraph (passedId = -1) {
  * Collapse only the nodes downStream from the given node
  * @param {number} id - is the id of the object
  */
-function collapsedownStream (id) {
-  // console.log('======> collapsedownStream() ===');
+function collapseDownStream (id) {
+  console.log('======> collapseDownStream() ===');
   let thisNode = nodeToEdgeMap[id];
+  console.log(thisNode);
 
   if (thisNode.edges.length > 0) {
-    // console.log('\t--> Collapsing downStream edges...');
-    // Hide each downStream edge and recurse to downStream node
-    thisNode.edges.forEach(function (relItem) {
-      if (!relItem.visited) {
-        toggleOpacity(relItem.id);  // Toggle the opacity of the edge
-        relItem.visited = true; // Toggle the visited flag
-      }
+    if (thisNode.node.isCollapsed === true) {
+      unCollapse(id);
+      thisNode.node.isCollapsed = false;
+      console.log('unCollapse Completed');
+      console.log(thisNode);
+    } else {
+      console.log('\t--> collapseDownStream() ---> Collapsing downStream edges...');
+      // Hide each downStream edge and recurse to downStream node
+      thisNode.edges.forEach(function (relItem) {
+        collapse(relItem.target.id, 0);  // Traverse down the relations
+        if (!relItem.visited) {
+          setOpacity(relItem.id, 0);  // Toggle the opacity of the edge
+          relItem.visited = true; // Toggle the visited flag
+        }
+      });
 
-      collapse(relItem.target.id, 0);  // Traverse down the relations
-    });
+      thisNode.node.isCollapsed = true;
+      console.log('Collapse Completed');
+      console.log(thisNode);
+    }
   }
 }
 
@@ -513,37 +533,71 @@ function collapsedownStream (id) {
  * @param {number} id is the object that is selected and whose downStream items will be toggled
  */
 function collapse (id, count) {
-  // console.log('-- Collapse Initiated [' + count + '] --');
+  console.log('-- collapse() [' + count + '] --');
   let thisNode = nodeToEdgeMap[id];
+  console.log(thisNode);
 
   if (!thisNode.node.visited || thisNode.node.visited === 'undefined') {
     thisNode.node.visited = true;
     count++; // increment the count
 
-    if (thisNode.edgesUpstream.length > 0) {
-      // console.log('\t--> Collapsing upstream edges...');
-      // hide each upstream edge from this node
-      thisNode.edgesUpstream.forEach(function (relItem) {
-        if (!relItem.visited) {
-          toggleOpacity(relItem.id); // Toggle the opacity of the edge
-          relItem.visited = true;  // Toggle the visited flag
-        }
-      });
+    if (thisNode.node.isCollapsed === false) {
+      if (thisNode.edges.length > 0) {
+        console.log('\t--> collapse() --> Collapsing downStream edges...');
+        // Hide each downStream edge and recurse to downStream node
+        thisNode.edges.forEach(function (relItem) {
+          if (!relItem.visited) {
+            setOpacity(relItem.id, 0);  // Toggle the opacity of the edge
+            relItem.visited = true; // Toggle the visited flag
+          }
+
+          collapse(relItem.target.id, count);  // Traverse downstream nodes
+        });
+      }
+
+      if (thisNode.edgesUpstream.length > 0) {
+        console.log('\t--> collapse() --> Collapsing upstream edges...');
+        // hide each upstream edge from this node
+        thisNode.edgesUpstream.forEach(function (relItem) {
+          if (relItem.target.visited) {
+            setOpacity(relItem.id, 0); // set the opacity of the edge to 0
+            relItem.visited = true;  // Toggle the visited flag
+          }
+        });
+      }
     }
 
-    if (thisNode.edges.length > 0) {
-      // console.log('\t--> Collapsing downStream edges...');
-      // Hide each downStream edge and recurse to downStream node
-      thisNode.edges.forEach(function (relItem) {
-        if (!relItem.visited) {
-          toggleOpacity(relItem.id);  // Toggle the opacity of the edge
-          relItem.visited = true; // Toggle the visited flag
-        }
+    setOpacity(thisNode.node.id, 0);  // Toggle the visibility of the edge
+  }
 
-        collapse(relItem.target.id, count);  // Traverse down the relations
-      });
-    }
-    toggleOpacity(thisNode.node.id);  // Toggle the visibility of the edge
+  thisNode.node.isCollapsed = true;
+}
+
+function unCollapse(id) {
+  console.log('-- unCollapse() --');
+  let thisNode = nodeToEdgeMap[id];
+  console.log(thisNode);
+
+  if (thisNode.edges.length > 0) {
+    console.log('\t--> collapseDownStream() ---> Collapsing downStream edges...');
+    // Hide each downStream edge and recurse to downStream node
+    thisNode.edges.forEach(function (relItem) {
+      let foundRel = d3.select("[id='" + relItem.id + "']");
+      let foundNode = d3.select("[id='" + relItem.target.id + "']");
+
+      if (foundRel[0][0] !== null) {
+        foundRel.style('opacity', 1);
+      } else { console.log('item not found'); }
+
+      if (foundNode[0][0] !== null) {
+        foundNode.style('opacity', 1);
+      } else { console.log('item not found'); }
+
+      relItem.target.visited = true; // Toggle the visited flag
+    });
+
+    thisNode.node.isCollapsed = false;
+    console.log(thisNode);
   }
 }
 
@@ -551,19 +605,16 @@ function collapse (id, count) {
  * Hides all of the graph nodes except the root id
  */
 function collapseAll () {
-  svg.selectAll('.node').style('opacity', function (item) {
-    return item.id !== -1 ? 0 : 1;
-  });
-  projectNode.downStream.forEach(function (item) {
-    d3.select("[id='" + item.id + "']").style('opacity', 1);
-  });
-  d3.select("[id='" + rootID + "']").style('opacity', 1);  // Show the project node
+  // Set all nodes to be invisible
+  svg.selectAll('.node').style('opacity', 0);
 
-  let paths = svg.selectAll('path');
-  paths.style('opacity', 0);
-  projectNode.downStreamEdges.forEach(function (item) {
-    d3.select("[id='" + item.id + "']").style('opacity', 1);
-  });
+  // Set the root node to be visible
+  if (rootID) {
+    d3.select("[id='" + rootID + "']").style('opacity', 1);  // Show the project node
+  } else {
+    d3.select("[id='" + projectNode.id + "']").style('opacity', 1);  // Show the project node
+  }
+  path.style('opacity', 0);
 }
 
 /**
@@ -574,18 +625,30 @@ function resetVisitedFlag () {
   edgesToRender.forEach(function (item) { item.visited = false; });
 }
 
-/**
- * Toggles the opacity of a d3 svg item
- * @param {number} id
- */
-function toggleOpacity (id) {
+// /**
+//  * Toggles the opacity of a d3 svg item
+//  * @param {number} id
+//  */
+// function toggleOpacity (id) {
+//   // console.log('----- toggleOpacity() -----');
+//   let foundRel;
+//
+//   if (id && (typeof id === typeof 0)) {
+//     foundRel = d3.select("[id='" + id + "']");
+//     if (foundRel[0][0] !== null) {
+//       foundRel.style('opacity', (foundRel.style('opacity') > 0) ? 0 : 1);
+//     } else { console.log('toggleOpacity() - item not found'); }
+//   } else { console.log('toggleOpacity() - item is not a number'); }
+// }
+
+function setOpacity (id, opac) {
   // console.log('----- toggleOpacity() -----');
   let foundRel;
 
   if (id && (typeof id === typeof 0)) {
     foundRel = d3.select("[id='" + id + "']");
     if (foundRel[0][0] !== null) {
-      foundRel.style('opacity', (foundRel.style('opacity') === 0) ? 1 : 0);
-    } else { console.log('toggleOpacity() - item not found'); }
-  } else { console.log('toggleOpacity() - item is not a number'); }
+      foundRel.style('opacity', opac);
+    } else { console.log('setOpacity() - item not found'); }
+  } else { console.log('setOpacity() - item is not a number'); }
 }
