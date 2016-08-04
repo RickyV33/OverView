@@ -1,12 +1,12 @@
 <div id="projects">
-  <h3>Click on a project below to view it's traceability graph:</h3>
-  <ul>
     <%if (projects === null || projects.length === 0) {%>
-      <p>Sorry, there are no projects to display.</p>
+        <p>Sorry, there are no projects to display.</p>
     <%} else {%>
-      <%projects.forEach(function (project) {%>
-        <li><a href="#project=<%= project.id %>" data-id="<%= project.id %>"><%= project.name %></a></li>
-      <%});%>
+        <p>Click on a project below to view it's traceability graph:</p>
+        <ul>
+          <%projects.forEach(function (project) {%>
+            <li><a href="#project=<%= project.id %>" data-id="<%= project.id %>"><%= project.name %></a></li>
+          <%});%>
+        </ul>
     <%}%>
-  </ul>
 </div>
