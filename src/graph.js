@@ -24,10 +24,10 @@ document.addEventListener('DOMContentLoaded', () => {
   querySelectorAll('#projects a').forEach(projectAnchor => {
     projectAnchor.addEventListener('click', event => {
       let selectedProject = event.target.getAttribute('data-id');
-      let hierarchy = getHierarchyRequest('/hierarchy', selectedProject);
-      let graph = getGraphRequest('/graph', selectedProject);
-      // Temporary statement for linter
-      console.log(graph + hierarchy);
+      getHierarchyRequest('/hierarchy', selectedProject);
+      getGraphRequest('/graph', selectedProject, (graph) => {
+        console.log(graph);
+      });
       // TODO: change query parameter (dependent on hierarchy endpoint story)
     });
   });
@@ -64,23 +64,22 @@ function getHierarchyRequest (url, projectId) {
  *
  * @param url
  * @param projectId
+ * @param callback
  * @returns {*}
  */
-function getGraphRequest (url, projectId) {
-  let graph = {};
-  // TODO: Refactor to use the request module
+function getGraphRequest (url, projectId, callback) {
+  // TODO: Refactor to use the request module and promises
   let httpRequest = new XMLHttpRequest();
   httpRequest.onreadystatechange = () => {
     if (httpRequest.readyState === XMLHttpRequest.DONE) {
       if (httpRequest.status === 200) {
-        graph = JSON.parse(httpRequest.responseText);
+        callback(JSON.parse(httpRequest.responseText));
         console.log(httpRequest.responseText);
       } else {
         console.log('There was a problem requesting to the graph endpoint.');
       }
     }
   };
-  httpRequest.open('GET', url);
-  httpRequest.send('project=' + projectId);
-  return graph;
+  httpRequest.open('GET', url + '?project=' + projectId);
+  httpRequest.send();
 }
