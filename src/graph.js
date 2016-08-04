@@ -10,16 +10,27 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
+/**
+ * Query the page for a set of elements given a CSS selector.
+ *
+ * @param selector CSS selector
+ * @returns {*} Array of matched elements
+ */
+function querySelectorAll(selector) {
+  return Array.prototype.slice.call(document.querySelectorAll(selector));
+}
+
 document.addEventListener('DOMContentLoaded', () => {
-  document.getElementById('projectList').addEventListener('click', event => {
-    if (event.target.nodeName === 'A') {
-      let selectedProject = event.target.getAttributeNode('data-id').nodeValue;
+  querySelectorAll('#projects a').forEach(projectAnchor => {
+    projectAnchor.addEventListener('click', event => {
+
+      let selectedProject = event.target.getAttribute('data-id');
       let hierarchy = getHierarchyRequest('/hierarchy', selectedProject);
       let graph = getGraphRequest('/graph', selectedProject);
       // Temporary statement for linter
       console.log(graph + hierarchy);
       // TODO: change query parameter (dependent on hierarchy endpoint story)
-    }
+    });
   });
 });
 
@@ -32,6 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
  */
 function getHierarchyRequest (url, projectId) {
   let hierarchy = {};
+  // TODO: Refactor to use the request module
   let httpRequest = new XMLHttpRequest();
   httpRequest.onreadystatechange = () => {
     if (httpRequest.readyState === XMLHttpRequest.DONE) {
@@ -57,6 +69,7 @@ function getHierarchyRequest (url, projectId) {
  */
 function getGraphRequest (url, projectId) {
   let graph = {};
+  // TODO: Refactor to use the request module
   let httpRequest = new XMLHttpRequest();
   httpRequest.onreadystatechange = () => {
     if (httpRequest.readyState === XMLHttpRequest.DONE) {
