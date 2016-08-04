@@ -1,5 +1,7 @@
 /* eslint-env browser */
 
+import './lib/displayProjectsGraph';
+
 // TODO: Hook this up to the log out button on the graph view. It is currently not hooked up to anything,
 // but functions properly
 document.addEventListener('DOMContentLoaded', () => {
