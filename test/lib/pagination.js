@@ -47,10 +47,12 @@ let startAt = 0;
 // variables to be used for testing within all resolved request stubs
 let page = 0;
 
-let rejectedRequestStub = function (options, callback) {
-  process.nextTick(function () {
-    callback('this is an error');
-  });
+let rejectedRequestStub = function (error = 'this is an error', status = {statusCode: 200}) {
+  return function (options, callback) {
+    process.nextTick(function () {
+      callback(error, status);
+    });
+  };
 };
 
 function createResolvedObject (startingIndex, resultingCount, dataSupplied) {
@@ -95,28 +97,28 @@ describe('Pagination Module', function () {
     //  Test #1: username is invalid
     //  returned promise from pagination should be rejected
     it('should reject if the username is invalid', function () {
-      pagination = proxyquire('../../lib/pagination', { 'request': rejectedRequestStub });
+      pagination = proxyquire('../../lib/pagination', { 'request': rejectedRequestStub() });
       return expect(pagination('http://notdummy:password@sevensource.jamacloud.com/rest/latest/projects', startAt,
         Number.MAX_SAFE_INTEGER)).to.eventually.be.rejected();
     });
     //  Test #2: password is invalid
     //  returned promise from pagination should be rejected
     it('should reject if the password is invalid', function () {
-      pagination = proxyquire('../../lib/pagination', { 'request': rejectedRequestStub });
+      pagination = proxyquire('../../lib/pagination', { 'request': rejectedRequestStub() });
       return expect(pagination('http://dummy:invalidPassword@sevensource.jamacloud.com/rest/latest/projects', startAt,
         Number.MAX_SAFE_INTEGER)).to.eventually.be.rejected();
     });
     //  Test #3: URL contains a typo (is invalid)
     //  returned promise from pagination should be rejected
     it('should reject if the URL is invalid', function () {
-      pagination = proxyquire('../../lib/pagination', { 'request': rejectedRequestStub });
+      pagination = proxyquire('../../lib/pagination', { 'request': rejectedRequestStub() });
       return expect(pagination('http://dummy:dummy@sevensourcejamacloud.com/rest/latest/projects', startAt, Number.MAX_SAFE_INTEGER))
         .to.eventually.be.rejected();
     });
     //  Test #4: startAt value is invalid (less than zero)
     //  returned promise from pagination should be rejected
     it('should reject if the startAt value is invalid (less than zero)', function () {
-      pagination = proxyquire('../../lib/pagination', { 'request': rejectedRequestStub });
+      pagination = proxyquire('../../lib/pagination', { 'request': rejectedRequestStub() });
       return expect(pagination('http://dummy:dummy@sevensourcejamacloud.com/rest/latest/projects', -1, Number.MAX_SAFE_INTEGER))
         .to.eventually.be.rejected();
     });
@@ -125,7 +127,6 @@ describe('Pagination Module', function () {
     it('should return an empty page when URL is valid, startAt is valid, and maxResultsAllowed is 0 ', function () {
       // total results: 0, maximum results per page: 3
       let pages = resolvedRequest(0, 20);
-      console.dir(pages);
       page = 0;
       let requestStub = function (options, callback) {
         process.nextTick(function () {
@@ -217,6 +218,12 @@ describe('Pagination Module', function () {
       pagination = proxyquire('../../lib/pagination', { 'request': requestStub });
       return expect(pagination('http://dummy:dummy@sevensource.jamacloud.com/rest/latest/items?project=1'))
         .to.eventually.be.fulfilled();
+    });
+    it('should reject if the status code is not 200', function () {
+      let statusCode = {statusCode: 404, body: {meta: {status: 'Not Found'}}};
+      pagination = proxyquire('../../lib/pagination', { 'request': rejectedRequestStub('', statusCode) });
+      return expect(pagination('http://notdummy:password@sevensource.jamacloud.com/rest/latest/projects', startAt,
+        Number.MAX_SAFE_INTEGER)).to.eventually.be.rejected();
     });
   });
 });
