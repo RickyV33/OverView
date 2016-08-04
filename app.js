@@ -7,7 +7,6 @@ let bodyParser = require('body-parser');
 
 // TODO: Refactor these into a single routes module
 let routes = require('./routes/index');
-let projects = require('./routes/projects');
 let logout = require('./routes/logout');
 let hierarchy = require('./routes/hierarchy');
 let graph = require('./routes/graph');
@@ -31,7 +30,6 @@ app.use(session({
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
-app.use('/projects', projects);
 app.use('/logout', logout);
 app.use('/hierarchy', hierarchy);
 app.use('/graph', graph);
