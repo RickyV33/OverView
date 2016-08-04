@@ -8,6 +8,8 @@
     <!-- Goes to d3 -->
     <h1><%= title %></h1>
     <h3><%= subtitle + ' ' + projectId %></h3>
+    <% include partials/projects.ejs %>
+    <% include partials/hierarchy.ejs %>
     <script>
         let rootID = <%= rootId %>;
         let typeID = <%= typeId %>;
