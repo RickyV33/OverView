@@ -6,7 +6,7 @@ router.get('/', function (req, res) {
   res.render('graph', {
     title: 'Jama Software Capstone',
     subtitle: 'Project',
-    projectId: req.query.projectId,
+    projectId: req.query.id,
     rootId: (req.query.rootId ? req.query.rootId : 'null'),
     typeId: (req.query.typeId ? req.query.typeId : 'null')
   });
