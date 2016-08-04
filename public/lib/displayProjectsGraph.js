@@ -1,3 +1,4 @@
+/* global d3, rootID */
 let fileName = '../js/ssProject.json'; // Sample JSON data
 let graphData = null;     // Global variable that contains all of the parse JSON data
 
@@ -293,14 +294,14 @@ function updateGraph (passedId = -1) {
    * @param d
    * @returns {string}
    */
-  function curvedEdges (d) {
-    let dx = d.target.x - d.source.x;
-    let dy = d.target.y - d.source.y;
-    let dr = Math.sqrt(dx * dx + dy * dy);
-
-    return 'M' + d.source.x + ',' + d.source.y + 'A' +
-      dr + ',' + dr + ' 0 0,1 ' + d.target.x + ',' + d.target.y;
-  }
+  // function curvedEdges (d) {
+  //   let dx = d.target.x - d.source.x;
+  //   let dy = d.target.y - d.source.y;
+  //   let dr = Math.sqrt(dx * dx + dy * dy);
+  //
+  //   return 'M' + d.source.x + ',' + d.source.y + 'A' +
+  //     dr + ',' + dr + ' 0 0,1 ' + d.target.x + ',' + d.target.y;
+  // }
 
   /**
    * Returns a straight line parameter for edge
@@ -316,18 +317,18 @@ function updateGraph (passedId = -1) {
   /**
    * Float the nodes to the right of their upstream node
    */
-  function floatNodeRight (e) {
-    let k = 10 * e.alpha; // For the node offset
-
-    // This section pushes sources up and targets down to form a weak tree-like structure.
-    path.each(function (d) {
-      d.source.x -= k;
-      d.target.x += k;
-    }).attr('x1', function (d) { return d.source.x; })
-      .attr('y1', function (d) { return d.source.y; })
-      .attr('x2', function (d) { return d.target.x; })
-      .attr('y2', function (d) { return d.target.y; });
-  }
+  // function floatNodeRight (e) {
+  //   let k = 10 * e.alpha; // For the node offset
+  //
+  //   // This section pushes sources up and targets down to form a weak tree-like structure.
+  //   path.each(function (d) {
+  //     d.source.x -= k;
+  //     d.target.x += k;
+  //   }).attr('x1', function (d) { return d.source.x; })
+  //     .attr('y1', function (d) { return d.source.y; })
+  //     .attr('x2', function (d) { return d.target.x; })
+  //     .attr('y2', function (d) { return d.target.y; });
+  // }
 
   //
   // ============ Toggle highlighting nodes on single click ===========
