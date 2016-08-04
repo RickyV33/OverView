@@ -20,6 +20,10 @@ function querySelectorAll (selector) {
   return Array.prototype.slice.call(document.querySelectorAll(selector));
 }
 
+querySelectorAll('#projects, #hierarchy').forEach(elem => {
+  elem.style.display = 'none';
+});
+
 document.addEventListener('DOMContentLoaded', () => {
   querySelectorAll('#projects a').forEach(projectAnchor => {
     projectAnchor.addEventListener('click', event => {
