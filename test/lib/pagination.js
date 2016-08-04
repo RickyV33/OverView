@@ -225,5 +225,17 @@ describe('Pagination Module', function () {
       return expect(pagination('http://notdummy:password@sevensource.jamacloud.com/rest/latest/projects', startAt,
         Number.MAX_SAFE_INTEGER)).to.eventually.be.rejected();
     });
+    it('should resolve a single page when the response is not an array', function () {
+      let pages = resolvedRequest(0, 1);
+      pages[0].body.data = 1;
+      let requestStub = function (options, callback) {
+        process.nextTick(function () {
+          callback(null, pages[0]);
+        });
+      };
+      pagination = proxyquire('../../lib/pagination', { 'request': requestStub });
+      return expect(pagination('http://notdummy:password@sevensource.jamacloud.com/rest/latest/projects', startAt,
+        Number.MAX_SAFE_INTEGER)).to.eventually.be.fulfilled();
+    });
   });
 });
