@@ -96,8 +96,8 @@ describe('Hierarchy Module', function () {
   describe('parseItemHierarchy function', function () {
     describe('parseItemHierarchy function', function () {
       it('should return an empty array when the json blob argument is empty', function () {
-        data = [];
         let results;
+        data = [];
         hierarchy = rewire('../../lib/hierarchy');
         hierarchy.__set__('mergeChildren', () => mergeChildrenStub());
         hierarchy.__set__('pushChildrenToRoots', () => pushChildrenStub());
@@ -109,10 +109,10 @@ describe('Hierarchy Module', function () {
     });
     it('should return a single item with no children when the json blob argument contains a single root item' +
       'with no children', function () {
+      let results;
       data = require('./singleItemHierarchy.json');
       roots = [{'id': 2140, 'type': 24, 'name': 'Input a Username', 'parent': 33, 'children': []}];
       mergedChildren = [];
-      let results;
       hierarchy = rewire('../../lib/hierarchy');
       hierarchy.__set__('mergeChildren', () => mergeChildrenStub());
       hierarchy.__set__('pushChildrenToRoots', () => pushChildrenStub());
@@ -123,6 +123,7 @@ describe('Hierarchy Module', function () {
     });
     it('should return a root item with one direct child and one nested child when the json ' +
       'blob argument contains a single root item with one child and one nested child', function () {
+      let results;
       data = require('./singleItemwithNestedChild.json');
       roots = [{'id': 2104, 'type': 24, 'name': 'Input a Username', 'parent': 33, 'children': [
         {'id': 2119, 'type': 99, 'name': 'User Login Home Page', 'parent': 2104, 'children': []},
@@ -146,7 +147,6 @@ describe('Hierarchy Module', function () {
         {'id': 2143, 'type': 99, 'name': 'Gather User\'s List of Projects', 'parent': 2317, 'children': []},
         {'id': 2317, 'type': 99, 'name': 'Collect and Display User Projects from Jama',
           'parent': 2104, 'children': []}];
-      let results;
       hierarchy = rewire('../../lib/hierarchy');
       hierarchy.__set__('mergeChildren', () => {
         hierarchy.__set__('children', mergedChildren);
@@ -161,12 +161,14 @@ describe('Hierarchy Module', function () {
     });
     it('should console error message due to an invalid id type for one of the items in the JSON ' +
       'argument blob argument', function () {
+      let invalidData = require('./invalidItemHierarchy.json');
       data = require('./invalidItemHierarchy.json');
       hierarchy = rewire('../../lib/hierarchy');
       try {
         hierarchy.parseItemHierarchy(data);
       } catch (err) {
-        expect(err).to.equal('INVALID JSON RECEIVED');
+        console.dir(err);
+        expect(err).to.equal(invalidData[0]);
       }
     });
   });
