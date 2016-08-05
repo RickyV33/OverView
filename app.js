@@ -8,11 +8,8 @@ let bodyParser = require('body-parser');
 // TODO: Refactor these into a single routes module
 let routes = require('./routes/index');
 let projects = require('./routes/projects');
-<<<<<<< HEAD
 let logout = require('./routes/logout');
-=======
 let hierarchy = require('./routes/hierarchy');
->>>>>>> hierarchy-endpoint
 
 let app = express();
 
