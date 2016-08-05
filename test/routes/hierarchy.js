@@ -9,7 +9,7 @@ let chaiAsPromised = require('chai-as-promised');
 let app = require('../../app'); // express();
 // let router = express.Router();
 let chaiHttp = require('chai-http');
-let proxyquire = require('proxyquire');
+// let proxyquire = require('proxyquire');
 
 let mockHierarchy = require('../lib/mockHierarchy.json');
 
@@ -39,7 +39,7 @@ function initializeRoute (object) {
     testModule.parseItemHierarchy(() => {
       return object.itemHierarchy;
     });
-  /*router.get('/hierarchy', function (req, res) {
+  /* router.get('/hierarchy', function (req, res) {
     testModule.getAllItems(username, password, teamName, projectId).then(allItems => {
       let results = testModule.parseItemHierarchy(allItems);
       res.json(results);
@@ -102,13 +102,13 @@ let hierarchyTestCases = [
 
 describe('hierarchy', function () {
   describe('GET /hierarchy', function () {
-    let link;
+  //  let link;
     hierarchyTestCases.forEach(function (item) {
       it(item.testcase, function () {
         initializeRoute(item.body);
-        link = proxyquire('../../routes/hierarchy', {
-          './hierarchy': testModule
-        });
+  //      link = proxyquire('../../routes/hierarchy', {
+  //        './hierarchy': testModule
+  //      });
         chai.request(app)
         //   app.use(router);
      //   request(app)
