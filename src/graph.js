@@ -23,7 +23,7 @@ function querySelectorAll (selector) {
 let projects = document.querySelector('#projects');
 let hierarchy = document.querySelector('#hierarchy');
 
-function toggleHierarchy() {
+function toggleHierarchy () {
   if (hierarchy.classList.contains('hidden')) {
     hierarchy.classList.remove('hidden');
   } else {
@@ -31,7 +31,7 @@ function toggleHierarchy() {
   }
 }
 
-function hideProjects() {
+function hideProjects () {
   projects.classList.add('hidden');
 }
 
@@ -67,7 +67,7 @@ function getHierarchy (projectId) {
     httpRequest.onreadystatechange = () => {
       if (httpRequest.readyState === XMLHttpRequest.DONE) {
         if (httpRequest.status === 200) {
-           resolve(JSON.parse(httpRequest.responseText));
+          resolve(JSON.parse(httpRequest.responseText));
         } else {
           console.log('There was a problem requesting to the hierarchy endpoint.');
           reject({status: httpRequest.status, response: httpRequest.responseText});
@@ -85,7 +85,7 @@ function getHierarchy (projectId) {
  * @param projectId
  * @returns {*}
  */
-function getGraph(projectId) {
+function getGraph (projectId) {
   // TODO: Refactor to use the request module and promises
   return new Promise((resolve, reject) => {
     let httpRequest = new XMLHttpRequest();
