@@ -5,7 +5,7 @@ let dirtyChai = require('dirty-chai');
 let chaiAsPromised = require('chai-as-promised');
 let Ajv = require('ajv');
 
-let schema = require('../../../lib/schema/relationshipGraphSpec');
+let schema = require('../../../lib/schema/relationshipGraph');
 
 chai.use(dirtyChai);
 chai.use(chaiAsPromised);
@@ -15,7 +15,7 @@ Ajv.addSchema(schema, 'graphSchema');
 let validate = Ajv.compile(schema);
 let validJSON = false;
 
-describe('Relatinship Graph JSON', function () {
+describe('Relationship Graph JSON', function () {
   // Failing test cases for relationship graph JSON
   let failingTestCases = [
       // test cases for items missing a field [id, name, type]

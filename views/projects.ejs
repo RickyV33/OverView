@@ -8,14 +8,14 @@
       <h1><%= title %></h1>
       <h3>Click on a project below to view it's traceability graph:</h3>
       <ul id="projectList">
-        <%if (projects != null) {%>
+        <%if (projects === null || projects.length === 0) {%>
+          <p>Sorry, there are no projects to display.</p>
+        <%} else {%>
           <%projects.forEach(function (project) {%>
             <li><a href="/graph?id=<%= project.id %>" data-id="<%= project.id %>"><%= project.name %></a></li>
           <%});%>
-        <%} else {%>
-          <p>Sorry, there are no projects to display.</p>
         <%}%>
       </ul>
-      <script src="js/project.js"></script>
+      <script src="js/graph.js"></script>
     </body>
   </html>
