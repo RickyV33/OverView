@@ -32,8 +32,6 @@ path.link-dot {
 }
 
 .node circle {
-  fill: #dfdfdf;
-  stroke: #F2622B;
   stroke-width: 2px;
   fill-opacity: 0.80;
 }
