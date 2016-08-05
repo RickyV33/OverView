@@ -39,8 +39,14 @@ document.addEventListener('DOMContentLoaded', () => {
   querySelectorAll('#projects a').forEach(projectAnchor => {
     projectAnchor.addEventListener('click', event => {
       let selectedProject = event.target.getAttribute('data-id');
-      getHierarchyRequest('/hierarchy', selectedProject);
-      getGraphRequest('/graph', selectedProject, (graph) => {
+
+      hideProjects();
+      toggleHierarchy();
+
+      getHierarchy(selectedProject).then(hierarchy => {
+        console.log(hierarchy);
+      });
+      getGraph(selectedProject).then(graph => {
         console.log(graph);
       });
       // TODO: change query parameter (dependent on hierarchy endpoint story)
@@ -51,50 +57,50 @@ document.addEventListener('DOMContentLoaded', () => {
 /**
  * Makes an AJAX request to the provided endpoint for the item hierarchy tree.
  *
- * @param url
  * @param projectId
  * @returns {*}
  */
-function getHierarchyRequest (url, projectId) {
-  let hierarchy = {};
-  // TODO: Refactor to use the request module
-  let httpRequest = new XMLHttpRequest();
-  httpRequest.onreadystatechange = () => {
-    if (httpRequest.readyState === XMLHttpRequest.DONE) {
-      if (httpRequest.status === 200) {
-        hierarchy = JSON.parse(httpRequest.responseText);
-        console.log(httpRequest.responseText);
-      } else {
-        console.log('There was a problem requesting to the hierarchy endpoint.');
+function getHierarchy (projectId) {
+  // TODO: Refactor to use the request module?
+  return new Promise((resolve, reject) => {
+    let httpRequest = new XMLHttpRequest();
+    httpRequest.onreadystatechange = () => {
+      if (httpRequest.readyState === XMLHttpRequest.DONE) {
+        if (httpRequest.status === 200) {
+           resolve(JSON.parse(httpRequest.responseText));
+        } else {
+          console.log('There was a problem requesting to the hierarchy endpoint.');
+          reject({status: httpRequest.status, response: httpRequest.responseText});
+        }
       }
-    }
-  };
-  httpRequest.open('GET', url);
-  httpRequest.send('project=' + projectId);
-  return hierarchy;
+    };
+    httpRequest.open('GET', '/hierarchy?project=' + projectId);
+    httpRequest.send();
+  });
 }
 
 /**
  * Makes an AJAX request to the provided endpoint for the project graph.
  *
- * @param url
  * @param projectId
- * @param callback
  * @returns {*}
  */
-function getGraphRequest (url, projectId, callback) {
+function getGraph(projectId) {
   // TODO: Refactor to use the request module and promises
-  let httpRequest = new XMLHttpRequest();
-  httpRequest.onreadystatechange = () => {
-    if (httpRequest.readyState === XMLHttpRequest.DONE) {
-      if (httpRequest.status === 200) {
-        callback(JSON.parse(httpRequest.responseText));
-        console.log(httpRequest.responseText);
-      } else {
-        console.log('There was a problem requesting to the graph endpoint.');
+  return new Promise((resolve, reject) => {
+    let httpRequest = new XMLHttpRequest();
+    httpRequest.onreadystatechange = () => {
+      if (httpRequest.readyState === XMLHttpRequest.DONE) {
+        if (httpRequest.status === 200) {
+          resolve(JSON.parse(httpRequest.responseText));
+          console.log(httpRequest.responseText);
+        } else {
+          console.log('There was a problem requesting to the graph endpoint.');
+          reject({status: httpRequest.status, response: httpRequest.responseText});
+        }
       }
-    }
-  };
-  httpRequest.open('GET', url + '?project=' + projectId);
-  httpRequest.send();
+    };
+    httpRequest.open('GET', '/graph?project=' + projectId);
+    httpRequest.send();
+  });
 }
