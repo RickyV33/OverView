@@ -3,15 +3,16 @@ let hierarchy = require('../lib/hierarchy');
 let router = express.Router();
 
 router.get('/', function (req, res, next) {
-  hierarchy.getItemHierarchy(req.session.username, req.session.password, req.session.teamName, 33)
+  hierarchy.getItemHierarchy(req.session.username, req.session.password, req.session.teamName, req.session.projectId)
     .then(function (allItems) {
       req.session.itemHierarchy = hierarchy.parseItemHierarchy(allItems);
-      res.render('hierarchy', {
+      res.json(req.session.itemHierarchy);
+ /*     res.render('hierarchy', {
         title: 'Select a Root Item (Optional) ',
         itemHierarchy: req.session.itemHierarchy
-      });
+      });*/
     });
-  req.session.save(function (err) {
+ /* req.session.save(function (err) {
     if (err) {
       // TODO Session save Error message
     } else {
@@ -20,7 +21,7 @@ router.get('/', function (req, res, next) {
         itemHierarchy: req.session.itemHierarchy ? req.session.itemHierarchy : []
       });
     }
-  });
+  });*/
 });
 
 module.exports = router;
