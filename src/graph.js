@@ -20,9 +20,20 @@ function querySelectorAll (selector) {
   return Array.prototype.slice.call(document.querySelectorAll(selector));
 }
 
-querySelectorAll('#projects, #hierarchy').forEach(elem => {
-  elem.style.display = 'none';
-});
+let projects = document.querySelector('#projects');
+let hierarchy = document.querySelector('#hierarchy');
+
+function toggleHierarchy() {
+  if (hierarchy.classList.contains('hidden')) {
+    hierarchy.classList.remove('hidden');
+  } else {
+    hierarchy.classList.add('hidden');
+  }
+}
+
+function hideProjects() {
+  projects.classList.add('hidden');
+}
 
 document.addEventListener('DOMContentLoaded', () => {
   querySelectorAll('#projects a').forEach(projectAnchor => {
