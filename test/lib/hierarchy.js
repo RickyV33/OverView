@@ -173,7 +173,7 @@ describe('Hierarchy Module', function () {
     });
   });
   describe('mergeChildren function', function() {
-    it('should result in children array being empty as their aren\'t any items in the children array to begin with',
+    it('should result in children array being empty as there aren\'t any items in the children array to begin with',
       function () {
         data = [];
         mergedChildren = [];
