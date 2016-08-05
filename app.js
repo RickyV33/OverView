@@ -9,6 +9,8 @@ let bodyParser = require('body-parser');
 let routes = require('./routes/index');
 let projects = require('./routes/projects');
 let project = require('./routes/graph');
+let logout = require('./routes/logout');
+let hierarchy = require('./routes/hierarchy');
 
 let app = express();
 
@@ -30,6 +32,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
 app.use('/projects', projects);
+app.use('/logout', logout);
+app.use('/hierarchy', hierarchy);
 app.use('/graph', project);
 
 // catch 404 and forward to error handler
