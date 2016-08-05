@@ -7,7 +7,6 @@ let expect = chai.expect;
 let dirtyChai = require('dirty-chai');
 let proxyquire = require('proxyquire');
 let chaiAsPromised = require('chai-as-promised');
-let mockHierarchy = require('./mockHierarchy.json');
 let rewire = require('rewire');
 
 chai.use(dirtyChai);
@@ -59,8 +58,8 @@ describe('Hierarchy Module', function () {
         hierarchy = proxyquire('../../lib/hierarchy', {'./pagination': rejectedPromise});
         return (expect(hierarchy.getAllItems(username, password, teamName, projectId))
           .to.eventually.be.rejected()).then((item) => {
-          expect(item).to.equal(data);
-        });
+            expect(item).to.equal(data);
+          });
       });
     it('should return a rejected promise when the login credentials are valid, but projectId is invalid',
       function () {
@@ -69,8 +68,8 @@ describe('Hierarchy Module', function () {
         hierarchy = proxyquire('../../lib/hierarchy', {'./pagination': rejectedPromise});
         return (expect(hierarchy.getAllItems(username, password, teamName, projectId))
           .to.eventually.be.rejected()).then((item) => {
-          expect(item).to.equal(data);
-        });
+            expect(item).to.equal(data);
+          });
       });
     it('should return an empty JSON blob when login credentials and projectId are valid',
       function () {
@@ -79,8 +78,8 @@ describe('Hierarchy Module', function () {
         hierarchy = proxyquire('../../lib/hierarchy', {'./pagination': resolvedPromise});
         return (expect(hierarchy.getAllItems(username, password, teamName, projectId))
           .to.eventually.be.fulfilled()).then((item) => {
-          expect(item).to.equal(data);
-        });
+            expect(item).to.equal(data);
+          });
       });
     it('should return a valid JSON blob with one item and one sub item ' +
       'when login credentials and projectId are valid, and the project contains one item and one sub item',
@@ -90,12 +89,12 @@ describe('Hierarchy Module', function () {
         hierarchy = proxyquire('../../lib/hierarchy', {'./pagination': resolvedPromise});
         return (expect(hierarchy.getAllItems(username, password, teamName, projectId))
           .to.eventually.be.fulfilled()).then((item) => {
-          expect(item).to.equal(data);
-        });
+            expect(item).to.equal(data);
+          });
       });
   });
-  describe('parseItemHierarchy function', function() {
-    describe('parseItemHierarchy function', function() {
+  describe('parseItemHierarchy function', function () {
+    describe('parseItemHierarchy function', function () {
       it('should return an empty array when the json blob argument is empty', function () {
         data = [];
         let results;
@@ -132,7 +131,7 @@ describe('Hierarchy Module', function () {
         {'id': 2317, 'type': 99, 'name': 'Collect and Display User Projects from Jama',
           'parent': 2104, 'children': [
           {'id': 2143, 'type': 99, 'name': 'Gather User\'s List of Projects', 'parent': 2317, 'children': []}
-        ]}
+          ]}
       ]}];
       mergedChildren = [{'id': 2104, 'type': 24, 'name': 'Input a Username', 'parent': 33, 'children': [
         {'id': 2119, 'type': 99, 'name': 'User Login Home Page', 'parent': 2104, 'children': []},
@@ -166,13 +165,12 @@ describe('Hierarchy Module', function () {
       hierarchy = rewire('../../lib/hierarchy');
       try {
         hierarchy.parseItemHierarchy(data);
-      }
-      catch(err) {
+      } catch (err) {
         expect(err).to.equal('INVALID JSON RECEIVED');
       }
     });
   });
-  describe('mergeChildren function', function() {
+  describe('mergeChildren function', function () {
     it('should result in children array being empty as there aren\'t any items in the children array to begin with',
       function () {
         data = [];
@@ -190,7 +188,7 @@ describe('Hierarchy Module', function () {
           'type': 31,
           'name': 'Parent: requirements',
           'parent': 33,
-          'children': [],
+          'children': []
         },
         {
           'id': 2117,
@@ -213,29 +211,29 @@ describe('Hierarchy Module', function () {
         'type': 31,
         'name': 'Parent: requirements',
         'parent': 33,
-        'children': [],
+        'children': []
       },
-        {
-          'id': 2116,
-          'type': 34,
-          'name': 'child of requirements',
-          'parent': 2115,
-          'children': []
-        },
-        {
-          'id': 2117,
-          'type': 35,
-          'name': 'Parent: epics',
-          'parent': 33,
-          'children': []
-        },
-        {
-          'id': 2118,
-          'type': 39,
-          'name': 'child of epics',
-          'parent': 2117,
-          'children': []
-        }
+      {
+        'id': 2116,
+        'type': 34,
+        'name': 'child of requirements',
+        'parent': 2115,
+        'children': []
+      },
+      {
+        'id': 2117,
+        'type': 35,
+        'name': 'Parent: epics',
+        'parent': 33,
+        'children': []
+      },
+      {
+        'id': 2118,
+        'type': 39,
+        'name': 'child of epics',
+        'parent': 2117,
+        'children': []
+      }
       ];
       mergedChildren = [
         {'id': 2115,
@@ -284,7 +282,7 @@ describe('Hierarchy Module', function () {
       expect(hierarchy.__get__('children')).to.deep.equal(mergedChildren);
     });
   });
-  describe('pushChildrenToRoots function', function() {
+  describe('pushChildrenToRoots function', function () {
     it('should result in rootItems array being empty as their aren\'t any items in the roots array to begin with',
       function () {
         data = [];
@@ -302,7 +300,7 @@ describe('Hierarchy Module', function () {
           'type': 31,
           'name': 'Parent: requirements',
           'parent': 33,
-          'children': [],
+          'children': []
         },
         {
           'id': 2117,
@@ -324,7 +322,7 @@ describe('Hierarchy Module', function () {
           'type': 31,
           'name': 'Parent: requirements',
           'parent': 33,
-          'children': [],
+          'children': []
         },
         {
           'id': 2117,
@@ -339,29 +337,29 @@ describe('Hierarchy Module', function () {
         'type': 31,
         'name': 'Parent: requirements',
         'parent': 33,
-        'children': [],
+        'children': []
       },
-        {
-          'id': 2116,
-          'type': 34,
-          'name': 'child of requirements',
-          'parent': 2115,
-          'children': []
-        },
-        {
-          'id': 2117,
-          'type': 35,
-          'name': 'Parent: epics',
-          'parent': 33,
-          'children': []
-        },
-        {
-          'id': 2118,
-          'type': 39,
-          'name': 'child of epics',
-          'parent': 2117,
-          'children': []
-        }
+      {
+        'id': 2116,
+        'type': 34,
+        'name': 'child of requirements',
+        'parent': 2115,
+        'children': []
+      },
+      {
+        'id': 2117,
+        'type': 35,
+        'name': 'Parent: epics',
+        'parent': 33,
+        'children': []
+      },
+      {
+        'id': 2118,
+        'type': 39,
+        'name': 'child of epics',
+        'parent': 2117,
+        'children': []
+      }
       ];
       mergedChildren = [
         {'id': 2115,
