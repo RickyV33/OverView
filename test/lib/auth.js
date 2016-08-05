@@ -181,12 +181,13 @@ describe('Auth module', function () {
       credentialsFixture.session = fixture;
       credentialsFixture.body = fixture;
       auth = proxyquire('../../lib/auth', {
-        './validate': validateStub,
-        './jamaServerAuth': jamaServerAuthStub
+        './isServerAuthenticated': isServerAuthenticatedStub
       });
+
       let callback = sinon.spy();
       let req = httpMocks.createRequest();
       let res = httpMocks.createResponse();
+
       req.session = {};
       req.body = {};
       req.session.username = fixture.username;
@@ -196,6 +197,7 @@ describe('Auth module', function () {
       req.body.username = fixture.username;
       req.body.password = fixture.password;
       req.body.teamName = fixture.teamName;
+
       if (fixture.name === 'dummy' && fixture.password === 'password' && fixture.teamName === 'sevensource') {
         it('should return true when ' + fixture.description, function (done) {
           auth.isAuthenticated(req, res, callback);
@@ -209,20 +211,9 @@ describe('Auth module', function () {
           done();
         });
       }
-
-      function validateStub (req) {
-        'use strict';
-
-        let username = req.body.username;
-        let password = req.body.password;
-        let teamName = req.body.teamName;
-
-        return (username !== '' && username.length <= 200 &&
-        password.length >= 6 && password.length <= 200 &&
-        teamName !== '');
-      }
     });
-    function jamaServerAuthStub (username, password, teamName) {
+
+    function isServerAuthenticatedStub (username, password, teamName) {
       return (username === 'dummy' && password === 'password' && teamName === 'sevensource');
     }
   });
