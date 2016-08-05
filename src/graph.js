@@ -52,6 +52,11 @@ document.addEventListener('DOMContentLoaded', () => {
       // TODO: change query parameter (dependent on hierarchy endpoint story)
     });
   });
+
+  document.getElementById('renderButton').addEventListener('click', event => {
+    toggleHierarchy();
+    document.querySelector('svg').style.display = 'block';
+  });
 });
 
 /**
