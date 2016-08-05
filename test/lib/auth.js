@@ -5,8 +5,9 @@ let expect = chai.expect;
 let dirtyChai = require('dirty-chai');
 let proxyquire = require('proxyquire');
 let chaiAsPromised = require('chai-as-promised');
-
 let auth = require('../../lib/auth');
+let httpMocks = require('node-mocks-http');
+let sinon = require('sinon');
 
 chai.use(dirtyChai);
 chai.use(chaiAsPromised);
@@ -17,42 +18,50 @@ describe('Auth module', function () {
     {
       username: '',
       password: '',
-      teamName: ''
+      teamName: '',
+      description: 'all fields are empty'
     },
     {
       username: 'dummy',
       password: '',
-      teamName: ''
+      teamName: '',
+      description: 'username is correct and password/teamname are empty'
     },
     {
       username: '',
       password: 'dumber',
-      teamName: ''
+      teamName: '',
+      description: 'password is incorrect and username/teamname are empty'
     },
     {
       username: '',
       password: '',
-      teamName: 'dummy'
+      teamName: 'dummy',
+      description: 'teamname is incorrect and password/username are empty'
     },
     {
       username: 'dummy',
       password: 'password',
-      teamName: ''
+      teamName: '',
+      description: 'username is incorrect and password/teamname are empty'
     },
     {
       username: '',
       password: 'password',
-      teamName: 'sevensource'
+      teamName: 'sevensource',
+      description: 'username is empty'
     },
     {
       username: 'dummy',
       password: '',
-      teamName: 'sevensource'
+      teamName: 'sevensource',
+      description: 'username is incorrect and password is empty'
     },
     {
       username: 'dummy',
       password: 'password',
-      teamName: 'sevensource'
+      teamName: 'sevensource',
+      description: 'all fields are valid'
     }
   ];
   describe('validate function', function () {
@@ -161,5 +170,51 @@ describe('Auth module', function () {
       auth = proxyquire('../../lib/auth', { './pagination': rejectedPromise });
       expect(auth.authenticate(username, password, teamName)).to.be.rejected();
     });
+  });
+
+  describe('isAuthenticated function', () => {
+    credentialFixtureCases.forEach(function (fixture) {
+      let credentialsFixture = {
+        session: {},
+        body: {}
+      };
+      credentialsFixture.session = fixture;
+      credentialsFixture.body = fixture;
+      auth = proxyquire('../../lib/auth', {
+        './isServerAuthenticated': isServerAuthenticatedStub
+      });
+
+      let callback = sinon.spy();
+      let req = httpMocks.createRequest();
+      let res = httpMocks.createResponse();
+
+      req.session = {};
+      req.body = {};
+      req.session.username = fixture.username;
+      req.session.password = fixture.password;
+      req.session.teamName = fixture.teamName;
+      req.session.isAuthenticated = false;
+      req.body.username = fixture.username;
+      req.body.password = fixture.password;
+      req.body.teamName = fixture.teamName;
+
+      if (fixture.name === 'dummy' && fixture.password === 'password' && fixture.teamName === 'sevensource') {
+        it('should return true when ' + fixture.description, function (done) {
+          auth.isAuthenticated(req, res, callback);
+          expect(req.session.isAuthenticated).to.be.true();
+          done();
+        });
+      } else {
+        it('should be false when ' + fixture.description, function (done) {
+          auth.isAuthenticated(req, res, callback);
+          expect(req.session.isAuthenticated).to.be.false();
+          done();
+        });
+      }
+    });
+
+    function isServerAuthenticatedStub (username, password, teamName) {
+      return (username === 'dummy' && password === 'password' && teamName === 'sevensource');
+    }
   });
 });

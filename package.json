@@ -41,8 +41,11 @@
     "istanbul": "^0.4.4",
     "mocha": "^2.5.3",
     "mocha-lcov-reporter": "^1.2.0",
+    "node-mocks-http": "^1.5.2",
     "proxyquire": "^1.7.10",
     "semistandard": "^8.0.0",
+    "sinon": "^1.17.4",
+    "sinon-chai": "^2.8.0",
     "snazzy": "^4.0.0",
     "supertest": "^2.0.0",
     "watchify": "^3.7.0"
