@@ -5,7 +5,7 @@ let router = express.Router();
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
-  res.render('index', { title: 'JamaTrace' });
+  res.render('index', { title: 'JamaTrace', error: 'false' });
 });
 
 router.post('/', function (req, res, next) {
@@ -23,10 +23,14 @@ router.post('/', function (req, res, next) {
         res.redirect('/projects');
       });
     }, function () {
-      res.render('index', { title: 'Error: Incorrect credentials, please try again.' });
+      res.render('index', { title: 'JamaTrace',
+                            error: 'Error: Incorrect credentials, please try again.'
+                          });
     });
   } else {
-    res.render('index', { title: 'Error: Incorrect credentials, please try again.' });
+    res.render('index', { title: 'JamaTrace',
+                          error: 'Error: Incorrect credentials, please try again.'
+                        });
   }
 });
 
