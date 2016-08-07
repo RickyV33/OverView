@@ -20,7 +20,7 @@
         <input id="password" type="password" name="password" required maxlength="200" minlength="6" />
       </div>
       <input type="submit" value="Submit" />
-      <%if (error && error !== "false"){%>
+      <%if (error !== undefined && error !== "false"){%>
       <!--TODO: use proper CSS class when CSS is complete-->
       <div style="color:red">
         <%= error%>
