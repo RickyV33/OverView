@@ -24,12 +24,12 @@ router.post('/', function (req, res, next) {
       });
     }, function () {
       res.render('index', { title: 'JamaTrace',
-                            error: 'Error: Incorrect credentials, please try again.'
+                            error: 'Your login attempt was not successful. The user credentials you entered were not valid, please try again.'
                           });
     });
   } else {
     res.render('index', { title: 'JamaTrace',
-                          error: 'Error: Incorrect credentials, please try again.'
+                          error: 'Your login attempt was not successful. The user credentials you entered were not valid, please try again.'
                         });
   }
 });
