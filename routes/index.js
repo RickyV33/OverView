@@ -18,7 +18,7 @@ router.post('/', function (req, res, next) {
       req.session.save(function (err) {
         if (err) {
           // TODO Session save Error message
-          res.render('index', { title: err });
+          res.render('index', { title: 'JamaTrace', error: err });
         }
         res.redirect('/projects');
       });
