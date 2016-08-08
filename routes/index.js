@@ -23,15 +23,11 @@ router.post('/', function (req, res, next) {
         res.redirect('/projects');
       });
     }, function () {
-      res.render('index', { title: 'JamaTrace',
-                            error: 'true'
+      res.render('index', { title: 'JamaTrace', error: 'true'
                           });
     });
   } else {
-    res.render('index', { title: 'JamaTrace',
-                          error: 'true',
-                          error: 'Your login attempt was not successful. The user credentials you entered were not valid, please try again.'
-                        });
+    res.render('index', { title: 'JamaTrace', error: 'true'});
   }
 });
 
