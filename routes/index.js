@@ -18,19 +18,15 @@ router.post('/', function (req, res, next) {
       req.session.save(function (err) {
         if (err) {
           // TODO Session save Error message
-          res.render('index', { title: 'JamaTrace', error: true });
+          res.render('index', { title: 'JamaTrace', teamName: req.body.teamName, error: true });
         }
         res.redirect('/projects');
       });
     }, function () {
-      res.render('index', { title: 'JamaTrace',
-                            error: true
-                          });
+      res.render('index', { title: 'JamaTrace', teamName: req.body.teamName, error: true });
     });
   } else {
-    res.render('index', { title: 'JamaTrace',
-                          error: true
-                        });
+    res.render('index', { title: 'JamaTrace', teamName: req.body.teamName, error: true });
   }
 });
 
