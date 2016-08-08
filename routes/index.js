@@ -5,9 +5,7 @@ let router = express.Router();
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
-
-  res.render('index', {title: 'JamaTrace', teamName: req.session.teamName,  error: 'false'});
-
+  res.render('index', {title: 'JamaTrace', teamName: req.session.teamName, error: false});
 });
 
 router.post('/', function (req, res, next) {
@@ -20,19 +18,18 @@ router.post('/', function (req, res, next) {
       req.session.save(function (err) {
         if (err) {
           // TODO Session save Error message
-          res.render('index', { title: 'JamaTrace', error: 'true' });
+          res.render('index', { title: 'JamaTrace', error: true });
         }
         res.redirect('/projects');
       });
     }, function () {
       res.render('index', { title: 'JamaTrace',
-                            error: 'true'
+                            error: true
                           });
     });
   } else {
     res.render('index', { title: 'JamaTrace',
-                          error: 'true',
-                          error: 'Your login attempt was not successful. The user credentials you entered were not valid, please try again.'
+                          error: true
                         });
   }
 });
