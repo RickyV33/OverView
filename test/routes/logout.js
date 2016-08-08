@@ -26,7 +26,7 @@ describe('logout', () => {
               expect(res).to.redirect('/');
               expect(res).to.have.property('text');
               path = join(__dirname, '../../views/index.ejs');
-              data = {title: 'JamaTrace'};
+              data = {title: 'JamaTrace', teamName: 'sevensource'};
               renderedView = ejs.compile(read(path, 'utf8'), {filename: path})(data);
               expect(res.text).to.equal(renderedView);
               done();
