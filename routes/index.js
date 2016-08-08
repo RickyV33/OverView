@@ -5,11 +5,7 @@ let router = express.Router();
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
-<<<<<<< HEAD
   res.render('index', {title: 'JamaTrace', teamName: req.session.teamName, error: false});
-=======
-  res.render('index', {title: 'JamaTrace', teamName: req.session.teamName,  error: 'false'});
->>>>>>> c55288e5884f355f00788f7cfd5489dc90a5a03d
 });
 
 router.post('/', function (req, res, next) {
