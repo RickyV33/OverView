@@ -8,7 +8,6 @@ let hierarchy = document.querySelector('#hierarchy');
 let selectedProject;
 let selectedHierarchyItem;
 let graph;
-let usedRoot = false;
 
 // TODO: Hook this up to the log out button on the graph view. It is currently not hooked up to anything,
 // but functions properly
@@ -17,35 +16,44 @@ document.addEventListener('DOMContentLoaded', () => {
     document.location.href = '/logout';
   });
 
-  // Manage the selection of a project
-  buildProjectAnchors();
+  // Manage the selection of a project and item hierarchy
+  buildProjectAnchors().then(() => {
+    getGraph(selectedProject).then(graphJSON => {
+      graph = graphJSON;
+    });
+  });
   buildItemHierarchyAnchors();
 });
-
 
 /**
  * Listens for mouse clicks on the Item hierarchy list and sets the selected
  * variable to that items ID
  */
 function buildItemHierarchyAnchors() {
-  querySelectorAll('#hierarchy a').forEach(hierarchyAnchor => {
-    hierarchyAnchor.addEventListener('click', event => {
-      selectedHierarchyItem = event.target.getAttribute('data-id');
+  return new Promise(resolve => {
+    querySelectorAll('#hierarchy a').forEach(hierarchyAnchor => {
+      hierarchyAnchor.addEventListener('click', event => {
+        selectedHierarchyItem = event.target.getAttribute('data-id');
+        document.body.style.cursor='wait';
+      });
     });
   });
 }
 
 function buildProjectAnchors() {
-  querySelectorAll('#projects a').forEach(projectAnchor => {
-    projectAnchor.addEventListener('click', event => {
-      selectedProject = event.target.getAttribute('data-id');
-      // Wait until loadHierarchy retrieves the new partial view and updates it with the item hierarchy
-      // to display the hierarchy selection div and toggle projects view
-      document.body.style.cursor='wait';
-      loadHierarchy().then(() => {
-        toggle(projects);
-        toggle(hierarchy);
-        document.body.style.cursor='default';
+  return new Promise((resolve) => {
+    querySelectorAll('#projects a').forEach(projectAnchor => {
+      projectAnchor.addEventListener('click', event => {
+        selectedProject = event.target.getAttribute('data-id');
+        // Wait until loadHierarchy retrieves the new partial view and updates it with the item hierarchy
+        // to display the hierarchy selection div and toggle projects view
+        document.body.style.cursor = 'wait';
+        loadHierarchy().then(() => {
+          toggle(projects);
+          toggle(hierarchy);
+          document.body.style.cursor = 'default';
+          resolve();
+        });
       });
     });
   });
