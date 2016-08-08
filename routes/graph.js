@@ -15,11 +15,19 @@ router.get('/', function (req, res) {
     }
   } else {
     res.render('graph', {
-      title: 'Jama Software Capstone',
+      title: 'JamaTrace',
       subtitle: 'Graph',
-      projects: req.session.projects ? req.session.projects : null
+      projects: req.session.projects ? req.session.projects : null,
+      itemHierarchy: null
     });
   }
 });
+
+router.post('/update-hierarchy', function (req, res) {
+  res.render('partials/hierarchy', { itemHierarchy: req.body }, (err, html) => {
+    res.status(200).send(html).end();
+  });
+});
+
 
 module.exports = router;
