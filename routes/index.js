@@ -23,8 +23,7 @@ router.post('/', function (req, res, next) {
         res.redirect('/projects');
       });
     }, function () {
-      res.render('index', { title: 'JamaTrace', error: 'true'
-                          });
+      res.render('index', { title: 'JamaTrace', error: 'true' });
     });
   } else {
     res.render('index', { title: 'JamaTrace', error: 'true'});
