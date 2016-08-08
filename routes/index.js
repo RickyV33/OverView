@@ -5,15 +5,15 @@ let router = express.Router();
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
-  res.render('index', { title: 'JamaTrace' });
+  res.render('index', {title: 'JamaTrace', teamName: req.session.teamName});
 });
 
 router.post('/', function (req, res, next) {
+  req.body.teamName = req.session.teamName;
   if (auth.validate(req)) {
     auth.authenticate(req.body.username, req.body.password, req.body.teamName).then(function (sessionProjects) {
       req.session.username = req.body.username;
       req.session.password = req.body.password;
-      req.session.teamName = req.body.teamName;
       req.session.projects = projects.parseProjectList(sessionProjects);
       req.session.save(function (err) {
         if (err) {
