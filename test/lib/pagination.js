@@ -163,7 +163,7 @@ describe('Pagination Module', function () {
       pagination = proxyquire('../../lib/pagination', { 'request': requestStub });
       expect(pagination('http://dummy:password@sevensource.jamacloud.com/rest/latest/projects', startAt, maxPossible)).to.eventually.be.fulfilled().and.to.equal(arrayOfPageData(pages));
     });
-    //  Test #8: valid URL, startAt, maxResultsAllowed is <= 20, and there are less than maxResultsAllowed results (testing single page result)
+    //  Test #8: valid URL, startAt, maxResultsAllowed is <= 20, and there are less than maxResultsAllowed results (testing single page results)
     //  returned promise from pagination should be valid and equal to pages' data
     it('should return a single page of results when URL is valid, startAt is valid, maxResultsAllowed <= 20, and there are < 20 results to retrieve ', function () {
       // total results: 10, maximum results per page: 20
