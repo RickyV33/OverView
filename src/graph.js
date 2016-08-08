@@ -52,6 +52,7 @@ function buildProjectAnchors() {
           toggle(projects);
           toggle(hierarchy);
           document.body.style.cursor = 'default';
+          bindRenderButton();
           resolve();
         });
       });
@@ -161,7 +162,6 @@ function getGraph (projectId) {
       if (httpRequest.readyState === XMLHttpRequest.DONE) {
         if (httpRequest.status === 200) {
           resolve(JSON.parse(httpRequest.responseText));
-          console.log(httpRequest.responseText);
         } else {
           console.log('There was a problem requesting to the graph endpoint.');
           reject({status: httpRequest.status, response: httpRequest.responseText});
