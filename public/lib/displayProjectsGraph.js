@@ -31,10 +31,11 @@ let itemNames = true;
 // /////////////////////
 
 // Parse the JSON data
-d3.json(fileName, function (error, gData) {
-  if (error) {
-    console.log(error);
-  } else {
+// d3.json(fileName, function (error, gData) {
+function renderGraph (gData) {
+  // if (error) {
+  //   console.log(error);
+  // } else {
     graphData = gData; // Pass the value to a global
     items = graphData.nodes;
     itemRelations = graphData.edges;
@@ -88,8 +89,8 @@ d3.json(fileName, function (error, gData) {
 
     updateGraph(rootID);  // Render the graph
     collapseAll();
-  }
-});
+}
+// });
 
 /**
  * Maps each node to a node object and all of its upstream and downStream relationships

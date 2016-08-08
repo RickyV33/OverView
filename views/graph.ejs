@@ -10,6 +10,25 @@
 <h3><%= subtitle + ' ' + projectId %></h3>
 <script>
     let rootID = <%= rootId %>;
+
+    var request = new XMLHttpRequest();
+
+    request.onreadystatechange = function() {
+        console.log('Request Status: ' + request.status);
+        console.log('Request State: ' + request.readyState);
+        if (request.readyState === 4) {
+            if (request.status === 200) {
+                let projectData = request.responseText;
+                console.log('Request Status 200');
+                console.log(projectData);
+                // Call graph render
+                renderGraph(projectData);
+            }
+        }
+    };
+    request.open('GET', './graph/getGraphData', true);
+    request.send(null);
+
 </script>
 <script src='http://d3js.org/d3.v3.min.js'></script>
 <script src='../lib/displayProjectsGraph.js'></script>
