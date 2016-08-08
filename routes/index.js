@@ -31,7 +31,8 @@ router.post('/', function (req, res, next) {
     });
   } else {
     res.render('index', { title: 'JamaTrace',
-                          error: 'true'
+                          error: 'true',
+                          error: 'Your login attempt was not successful. The user credentials you entered were not valid, please try again.'
                         });
   }
 });

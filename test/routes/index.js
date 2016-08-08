@@ -70,9 +70,9 @@ describe('index', function () {
               }
               // Render the view using ejs
               let path = join(__dirname, '../../views/index.ejs');
-
+              
               let data = {title: 'JamaTrace', teamName: 'sevensource', error: "false"};
-
+              
               let rendHtml = ejs.compile(read(path, 'utf8'), {filename: path})(data);
 
               // Response rendered html
