@@ -11,8 +11,6 @@ let logout = require('./routes/logout');
 let hierarchy = require('./routes/hierarchy');
 let graph = require('./routes/graph');
 let projects = require('./routes/projects');
-let logout = require('./routes/logout');
-let hierarchy = require('./routes/hierarchy');
 
 let app = express();
 
