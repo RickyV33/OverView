@@ -5,52 +5,59 @@ import './lib/displayProjectsGraph';
 
 let projects = document.querySelector('#projects');
 let hierarchy = document.querySelector('#hierarchy');
+let selectedProject;
+let selectedHierarchyItem;
+let graph;
+let usedRoot = false;
 
 // TODO: Hook this up to the log out button on the graph view. It is currently not hooked up to anything,
 // but functions properly
 document.addEventListener('DOMContentLoaded', () => {
-  // let ejs = require('ejs');
-  // let read = require('fs').readFileSync;
-  // let join = require('path').join;
-  
   document.getElementById('logOut').addEventListener('click', () => {
     document.location.href = '/logout';
   });
-  
+
+  // Manage the selection of a project
+  buildProjectAnchors();
+  buildItemHierarchyAnchors();
+});
+
+
+/**
+ * Listens for mouse clicks on the Item hierarchy list and sets the selected
+ * variable to that items ID
+ */
+function buildItemHierarchyAnchors() {
+  querySelectorAll('#hierarchy a').forEach(hierarchyAnchor => {
+    hierarchyAnchor.addEventListener('click', event => {
+      selectedHierarchyItem = event.target.getAttribute('data-id');
+    });
+  });
+}
+
+function buildProjectAnchors() {
   querySelectorAll('#projects a').forEach(projectAnchor => {
     projectAnchor.addEventListener('click', event => {
-      let selectedProject = event.target.getAttribute('data-id');
-      console.log(selectedProject);
-      // Hides projects
-      // Shows hierarchy
-      // document.body.style.cursor='wait';
-      // toggleProjects();
-      // toggleHierarchy();
-      setTimeout(() => {document.body.style.cursor='default';toggleProjects();toggleHierarchy();}, 2000);
-
-      getHierarchy(selectedProject).then(hierarchyPayload => {
-        updateHierarchy(hierarchyPayload).then(updatedHtml => {
-          let div = document.createElement('div');
-          div.innerHTML = updatedHtml;
-          let newDiv = div.firstChild;
-          let childList = Array.from(newDiv.childNodes);
-          hierarchy.innerHTML = '';
-          childList.forEach(child => {
-            hierarchy.appendChild(child);
-          });
-          bindRenderButton();
-        });
+      selectedProject = event.target.getAttribute('data-id');
+      // Wait until loadHierarchy retrieves the new partial view and updates it with the item hierarchy
+      // to display the hierarchy selection div and toggle projects view
+      document.body.style.cursor='wait';
+      loadHierarchy().then(() => {
+        toggle(projects);
+        toggle(hierarchy);
+        document.body.style.cursor='default';
       });
     });
   });
-});
+}
 
 function bindRenderButton() {
   document.getElementById('renderButton').addEventListener('click', event => {
-    toggleHierarchy();
+    toggle(hierarchy);
     document.querySelector('svg').style.display = 'block';
   });
 }
+
 /**
  * Query the page for a set of elements given a CSS selector.
  *
@@ -58,24 +65,14 @@ function bindRenderButton() {
  * @returns {*} Array of matched elements
  */
 function querySelectorAll (selector) {
-  return Array.prototype.slice.call(document.querySelectorAll(selector));
+  return Array.from(document.querySelectorAll(selector));
 }
 
-function toggleHierarchy () {
-  if (hierarchy.classList.contains('hidden')) {
-    console.log('SHOW');
-    hierarchy.classList.remove('hidden');
+function toggle (element) {
+  if (element.classList.contains('hidden')) {
+    element.classList.remove('hidden');
   } else {
-    console.log('Hidden');
-    hierarchy.classList.add('hidden');
-  }
-}
-
-function toggleProjects () {
-  if (projects.classList.contains('hidden')) {
-    projects.classList.remove('hidden');
-  } else {
-    projects.classList.add('hidden');
+    element.classList.add('hidden');
   }
 }
 
@@ -122,6 +119,24 @@ function updateHierarchy (payload) {
     httpRequest.send(JSON.stringify(payload));
   });
 
+}
+
+function loadHierarchy () {
+  return new Promise((resolve) => {
+    getHierarchy(selectedProject).then(hierarchyPayload => {
+      updateHierarchy(hierarchyPayload).then(updatedHtml => {
+        let hierarchyContainer = document.createElement('div');
+        hierarchyContainer.innerHTML = updatedHtml;
+        let childList = Array.from(hierarchyContainer.firstChild.childNodes);
+        hierarchy.innerHTML = '';
+        childList.forEach(child => {
+          hierarchy.appendChild(child);
+        });
+        bindRenderButton();
+        resolve();
+      });
+    });
+  });
 }
 
 /**
