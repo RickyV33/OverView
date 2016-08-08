@@ -5,7 +5,7 @@ let router = express.Router();
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
-  res.render('index', {title: 'JamaTrace', teamName: req.session.teamName});
+  res.render('index', {title: 'JamaTrace', teamName: req.session.teamName, error: false});
 });
 
 router.post('/', function (req, res, next) {
@@ -18,15 +18,15 @@ router.post('/', function (req, res, next) {
       req.session.save(function (err) {
         if (err) {
           // TODO Session save Error message
-          res.render('index', { title: err });
+          res.render('index', { title: 'JamaTrace', teamName: req.body.teamName, error: true });
         }
         res.redirect('/graph');
       });
     }, function () {
-      res.render('index', { title: 'Error: Incorrect credentials, please try again.' });
+      res.render('index', { title: 'JamaTrace', teamName: req.body.teamName, error: true });
     });
   } else {
-    res.render('index', { title: 'Error: Incorrect credentials, please try again.' });
+    res.render('index', { title: 'JamaTrace', teamName: req.body.teamName, error: true });
   }
 });
 

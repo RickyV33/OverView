@@ -17,9 +17,12 @@
           },
           "type": {
             "type": "integer"
+          },
+          "image": {
+            "type": "string"
           }
         },
-        "required": ["id", "name", "type"],
+        "required": ["id", "name", "type", "image"],
         "additionalProperties": false
       }
 
@@ -33,17 +36,20 @@
           "id": {
             "type": "integer"
           },
-          "fromItem": {
+          "source": {
             "type": "integer"
           },
-          "toItem": {
+          "target": {
             "type": "integer"
           },
           "type": {
             "type": "integer"
+          },
+          "suspect": {
+            "type": "boolean"
           }
         },
-        "required": ["id", "fromItem", "toItem", "type"],
+        "required": ["id", "source", "target", "type", "suspect"],
         "additionalProperties": false
       }
     }
