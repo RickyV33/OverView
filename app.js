@@ -27,8 +27,17 @@ app.use(session({
   resave: false,
   saveUninitialized: false
 }));
-app.use(express.static(path.join(__dirname, 'public')));
 
+// Middleware to add the teamName to the session from the .env config file
+app.use(function (req, res, next) {
+  var teamName = req.session.teamName;
+  if (!teamName) {
+    req.session.teamName = process.env.TEAM_NAME || 'sevensource';
+  }
+  next();
+});
+
+app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', routes);
 app.use('/projects', projects);
 app.use('/logout', logout);
