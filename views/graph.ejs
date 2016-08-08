@@ -19,14 +19,12 @@
         if (request.readyState === 4) {
             if (request.status === 200) {
                 let projectData = request.responseText;
-                console.log('Request Status 200');
-                console.log(projectData);
                 // Call graph render
-                renderGraph(projectData);
+                renderGraph(JSON.parse(projectData));
             }
         }
     };
-    request.open('GET', './graph/getGraphData', true);
+    request.open('GET', './graph/getGraphData?id=' + <%= projectId %>, true);
     request.send(null);
 
 </script>

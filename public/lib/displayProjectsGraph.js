@@ -36,6 +36,7 @@ function renderGraph (gData) {
   // if (error) {
   //   console.log(error);
   // } else {
+    console.log(gData);
     graphData = gData; // Pass the value to a global
     items = graphData.nodes;
     itemRelations = graphData.edges;
@@ -53,6 +54,8 @@ function renderGraph (gData) {
 
     // rootID is set in the graph view
     filterJSON(rootID); // Filters the JSON for only the downStream items from the selected item
+    console.log(nodesToRender);
+    console.log(edgesToRender);
     resetVisitedFlag(); // Sets all of the visited flags to false
 
     // Append the SVG object to the body
