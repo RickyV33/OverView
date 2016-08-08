@@ -18,18 +18,18 @@ router.post('/', function (req, res, next) {
       req.session.save(function (err) {
         if (err) {
           // TODO Session save Error message
-          res.render('index', { title: 'JamaTrace', error: err });
+          res.render('index', { title: 'JamaTrace', error: 'true' });
         }
         res.redirect('/projects');
       });
     }, function () {
       res.render('index', { title: 'JamaTrace',
-                            error: 'Error: Incorrect credentials, please try again.'
+                            error: 'true'
                           });
     });
   } else {
     res.render('index', { title: 'JamaTrace',
-                          error: 'Error: Incorrect credentials, please try again.'
+                          error: 'true'
                         });
   }
 });
