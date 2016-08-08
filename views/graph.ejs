@@ -14,8 +14,6 @@
     var request = new XMLHttpRequest();
 
     request.onreadystatechange = function() {
-        console.log('Request Status: ' + request.status);
-        console.log('Request State: ' + request.readyState);
         if (request.readyState === 4) {
             if (request.status === 200) {
                 let projectData = request.responseText;

@@ -1,6 +1,6 @@
 let express = require('express');
 let router = express.Router();
-let graph = require('../lib/graph');
+let Graph = require('../lib/graph');
 
 /* GET Project */
 router.get('/', function (req, res) {
@@ -13,12 +13,10 @@ router.get('/', function (req, res) {
 });
 
 router.get('/getGraphData', function (req, res) {
-  console.log('*** getGraphData ***');
   let url = 'http://' + req.session.username + ':' + req.session.password + '@' + req.session.teamName + '.jamacloud.com/rest/latest/';
-  console.log('Project id: ' + req.query.id);
   try {
-    let graphObj = new graph(req.query.id, url);
-    graphObj.buildGraph().then( function (value) {
+    let graphObj = new Graph(req.query.id, url);
+    graphObj.buildGraph().then(function (value) {
       return res.json(graphObj);
     }, function (error) {
       return res.json(error);

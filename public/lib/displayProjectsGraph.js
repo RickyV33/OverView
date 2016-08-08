@@ -1,5 +1,5 @@
 /* global d3, rootID */
-let fileName = '../js/ssProject.json'; // Sample JSON data
+// let fileName = '../js/ssProject.json'; // Sample JSON data
 let graphData = null;     // Global variable that contains all of the parse JSON data
 
 let clickedOnce = false;  // For monitoring the click event on node
@@ -33,65 +33,59 @@ let itemNames = true;
 // Parse the JSON data
 // d3.json(fileName, function (error, gData) {
 function renderGraph (gData) {
-  // if (error) {
-  //   console.log(error);
-  // } else {
-    console.log(gData);
-    graphData = gData; // Pass the value to a global
-    items = graphData.nodes;
-    itemRelations = graphData.edges;
+  graphData = gData; // Pass the value to a global
+  items = graphData.nodes;
+  itemRelations = graphData.edges;
 
-    // Create a project node and add it to the items list
-    projectNode = {id: -1, name: graphData.name, image: '', type: -1};
-    items.unshift(projectNode);
+  // Create a project node and add it to the items list
+  projectNode = {id: -1, name: graphData.name, image: '', type: -1};
+  items.unshift(projectNode);
 
-    // Check if a root id was passed
-    if (rootID !== -1 && rootID !== null) {
-      itemRelations.push({id: -1, source: -1, target: rootID, type: -1});
-    }
+  // Check if a root id was passed
+  if (rootID !== -1 && rootID !== null) {
+    itemRelations.push({id: -1, source: -1, target: rootID, type: -1});
+  }
 
-    mapNodesToEdges();  // Pre-process data for faster data retrieval
+  mapNodesToEdges();  // Pre-process data for faster data retrieval
 
-    // rootID is set in the graph view
-    filterJSON(rootID); // Filters the JSON for only the downStream items from the selected item
-    console.log(nodesToRender);
-    console.log(edgesToRender);
-    resetVisitedFlag(); // Sets all of the visited flags to false
+  // rootID is set in the graph view
+  filterJSON(rootID); // Filters the JSON for only the downStream items from the selected item
+  resetVisitedFlag(); // Sets all of the visited flags to false
 
-    // Append the SVG object to the body
-    // Add a group element within it to encompass all the nodes - this fixes the chrome
-    svg = d3.select('body').append('svg')
-      .attr('width', '100%')
-      .attr('height', height)
-      .call(d3.behavior.zoom().scaleExtent([1, 10])
-        .on('zoom', function () {
-          svg.attr('transform', 'translate(' + d3.event.translate + ')' + ' scale(' + d3.event.scale + ')');
-        }))
-      .on('dblclick.zoom', null)  // To remove the double click zoom function
-      .append('g');
+  // Append the SVG object to the body
+  // Add a group element within it to encompass all the nodes - this fixes the chrome
+  svg = d3.select('body').append('svg')
+    .attr('width', '100%')
+    .attr('height', height)
+    .call(d3.behavior.zoom().scaleExtent([1, 10])
+      .on('zoom', function () {
+        svg.attr('transform', 'translate(' + d3.event.translate + ')' + ' scale(' + d3.event.scale + ')');
+      }))
+    .on('dblclick.zoom', null)  // To remove the double click zoom function
+    .append('g');
 
-    // ============ build the arrows ================
-    svg.append('svg:defs').selectAll('marker')
-      .data(['end'])      // Different link/path types can be defined here
-      .enter().append('svg:marker')    // This section adds in the arrows
-      .attr('id', String)
-      .attr('viewBox', '0 -5 10 10')
-      .attr('refX', 21)
-      .attr('refY', -0.5)
-      .attr('markerWidth', 6)
-      .attr('markerHeight', 6)
-      .attr('orient', 'auto')
-      .append('svg:path')
-      .attr('d', 'M0,-5L10,0L0,5')
-      .attr('class', 'arrow');
+  // ============ build the arrows ================
+  svg.append('svg:defs').selectAll('marker')
+    .data(['end'])      // Different link/path types can be defined here
+    .enter().append('svg:marker')    // This section adds in the arrows
+    .attr('id', String)
+    .attr('viewBox', '0 -5 10 10')
+    .attr('refX', 21)
+    .attr('refY', -0.5)
+    .attr('markerWidth', 6)
+    .attr('markerHeight', 6)
+    .attr('orient', 'auto')
+    .append('svg:path')
+    .attr('d', 'M0,-5L10,0L0,5')
+    .attr('class', 'arrow');
 
-    force = d3.layout.force()
-      .size([width, height])
-      .linkDistance(100);  // sets the target distance between linked nodes to the specified value
-      // .charge(-2000);       // - value results in node repulsion, while + value results in node attraction
+  force = d3.layout.force()
+    .size([width, height])
+    .linkDistance(100);  // sets the target distance between linked nodes to the specified value
+    // .charge(-2000);       // - value results in node repulsion, while + value results in node attraction
 
-    updateGraph(rootID);  // Render the graph
-    collapseAll();
+  updateGraph(rootID);  // Render the graph
+  collapseAll();
 }
 // });
 
