@@ -1,7 +1,3 @@
-/* global d3, rootID */
-// let fileName = '../js/ssProject.json'; // Sample JSON data
-let graphData = null;     // Global variable that contains all of the parse JSON data
-
 let clickedOnce = false;  // For monitoring the click event on node
 let timer;                // For click event monitoring
 
@@ -12,8 +8,7 @@ let reducedOpacity = 0.2; // highlight opacity to reduce to
 let nodesToRender = [];   // Gets passed into the D3 force nodes function
 let edgesToRender = [];   // Gets passed into the D3 force links function
 let nodeToEdgeMap = {};   // Hold the mapping of node to edges
-let items;
-let itemRelations;
+
 let projectNode = null;   // The project name node
 let node = null;          // The collection of node html objects
 let path = null;          // The collection of path html objects
@@ -21,37 +16,53 @@ let path = null;          // The collection of path html objects
 let svg = null;           // The svg window
 let force = null;         // The force layout for d3
 let relationsChecked = false;   // Flag to see if relations check was run
+
 // ////// DEMO VARS//////
 
 let curves = true;
-let physics = true;
+let physics = false;
 let itemNames = true;
 
 // /////////////////////
-// /////////////////////
 
-// Parse the JSON data
-// d3.json(fileName, function (error, gData) {
-function renderGraph (gData) {
-  graphData = gData; // Pass the value to a global
-  items = graphData.nodes;
-  itemRelations = graphData.edges;
+/**
+ * Base function to render the graph. It is invoked by the view through an AJAX call after the data has been retrieved.
+ * @param graphData
+ */
+function renderGraph (graphData) {
+  // console.log('---> Graph Data');
+  // console.log(graphData);
 
-  // Create a project node and add it to the items list
-  projectNode = {id: -1, name: graphData.name, image: '', type: -1};
-  items.unshift(projectNode);
+  insertProjectNode(graphData);
 
-  // Check if a root id was passed
-  if (rootID !== -1 && rootID !== null) {
-    itemRelations.push({id: -1, source: -1, target: rootID, type: -1});
-  }
-
-  mapNodesToEdges();  // Pre-process data for faster data retrieval
-
-  // rootID is set in the graph view
-  filterJSON(rootID); // Filters the JSON for only the downStream items from the selected item
+  mapNodesToEdges(graphData);  // Pre-process data for faster data retrieval
+  filterJSON(rootID, graphData); // Filters the JSON for only the downStream nodes from the selected item
   resetVisitedFlag(); // Sets all of the visited flags to false
 
+  configureD3Graph();
+  updateGraph(rootID, graphData);  // Render the graph
+  collapseAll();  // Collapses all the nodes except the root node
+}
+
+/**
+ * Adds a project node to the graph
+ * @param graphData
+ */
+function insertProjectNode (graphData) {
+  // Create a project node and add it to the nodes list
+  projectNode = {id: -1, name: graphData.name, image: '', type: -1};
+  graphData.nodes.unshift(projectNode);
+
+  // Add a relationship from project node to root id if one was passed in
+  if (rootID !== -1 && rootID !== null) {
+    graphData.edges.push({id: -1, source: -1, target: rootID, type: -1});
+  }
+}
+
+/**
+ * Configures the D3 force layout graph by appending it to the body and setting its properties
+ */
+function configureD3Graph () {
   // Append the SVG object to the body
   // Add a group element within it to encompass all the nodes - this fixes the chrome
   svg = d3.select('body').append('svg')
@@ -82,19 +93,16 @@ function renderGraph (gData) {
   force = d3.layout.force()
     .size([width, height])
     .linkDistance(100);  // sets the target distance between linked nodes to the specified value
-    // .charge(-2000);       // - value results in node repulsion, while + value results in node attraction
-
-  updateGraph(rootID);  // Render the graph
-  collapseAll();
+  // .charge(-2000);       // - value results in node repulsion, while + value results in node attraction
 }
-// });
 
 /**
  * Maps each node to a node object and all of its upstream and downStream relationships
  * NOTE - nodeToEdgeMap is an array that uses id as the index for direct access
+ * @param {object} graphData
  */
-function mapNodesToEdges () {
-  items.forEach(function (item) {
+function mapNodesToEdges (graphData) {
+  graphData.nodes.forEach(function (item) {
     let thisItem = nodeToEdgeMap[item.id] = {};
     thisItem.node = item;
     thisItem.node.isCollapsed = true;
@@ -102,15 +110,15 @@ function mapNodesToEdges () {
     thisItem.node.downStream = [];
 
     // thisItem.edges refers to the downStream nodes
-    thisItem.edges = itemRelations.filter(function (relItem) {
+    thisItem.edges = graphData.edges.filter(function (relItem) {
       relItem.visited = false;
       if (relItem.source === item.id) {
-        thisItem.node.downStream.push(relItem.target);  // Add the target to the downStream items
+        thisItem.node.downStream.push(relItem.target);  // Add the target to the downStream nodes
         return relItem; // Filter all of the edges that have this item source id
       }
     });
 
-    thisItem.edgesUpstream = itemRelations.filter(function (relItem) {
+    thisItem.edgesUpstream = graphData.edges.filter(function (relItem) {
       if (relItem.target === item.id) {
         return relItem; // Filter all of the edges that have this item source id
       }
@@ -124,9 +132,10 @@ function mapNodesToEdges () {
 
 /**
  * Filters the graph input to be filtered by the rootId and all its downStream nodes
- * @param id
+ * @param {number} id
+ * @param {object} graphData
  */
-function filterJSON (id) {
+function filterJSON (id, graphData) {
   if (id !== -1 && id !== null) {
     let thisNode = nodeToEdgeMap[id];
     if (!thisNode.node.visited || thisNode.node.visited === 'undefined') {
@@ -141,20 +150,20 @@ function filterJSON (id) {
       }
     }
   } else {
-    nodesToRender = items;
-    edgesToRender = itemRelations;
+    nodesToRender = graphData.nodes;
+    edgesToRender = graphData.edges;
   }
 }
 
 /**
- * Updates the graph visuals
- *
- * @param {Integer} passedId is the id of the element that is to be the root node coming off the project node
+ * Updates the graph visuals by setting the data and configuring the nodes and edges
+ * @param {integer} passedId is the id of the element that is to be the root node coming off the project node
+ * @param {object} graphData
  */
-function updateGraph (passedId = -1) {
+function updateGraph (passedId = -1, graphData) {
   if (!relationsChecked) {
     // For each relationship, add the target to the source node
-    itemRelations.forEach(function (relItem) {
+    graphData.edges.forEach(function (relItem) {
       // Find node object based on the relationship source id
       let srcNode = nodeToEdgeMap[relItem.source];
       let trgNode = nodeToEdgeMap[relItem.target];
@@ -164,12 +173,12 @@ function updateGraph (passedId = -1) {
       if (srcNode && trgNode) {
         relItem.source = srcNode.node;
         relItem.target = trgNode.node;
-        adddownStreamItemToNode(srcNode, relItem);  // Check if downStream items array exists
+        adddownStreamItemToNode(srcNode, relItem);  // Check if downStream nodes array exists
       }
     });
 
     // Check if there are relations for each node and set a flag
-    items.forEach(function (item) {
+    graphData.nodes.forEach(function (item) {
       if (typeof item.downStream === 'undefined') {
         item.noRelations = true;
       } else {
@@ -217,52 +226,31 @@ function updateGraph (passedId = -1) {
     });
 
   // ============ Node Properties Definition ===========
+  node = svg.selectAll('.node')
+    .data(force.nodes())
+    .enter()
+    .append('g')
+    .attr('id', function (d) {
+      return d.id;  // Add an id element to each node
+    })
+    .attr('class', function (thisNode) {
+      // Add projectRoot class if the node is the project node
+      return thisNode.id === passedId || thisNode.id === -1 ? 'node projectRoot' : 'node';
+    })
+    .on('click', function (d) {
+      if (clickedOnce) {
+        nodeDoubleClick(d);  // Call the single click function
+      } else {
+        timer = setTimeout(function () {
+          nodeClick(d); // Call the double click function
+        }, 175);
+        clickedOnce = true;
+      }
+    });
+
+  // Activate the physics if the physics flag is set
   if (physics) {
-    node = svg.selectAll('.node')
-      .data(force.nodes())
-      .enter()
-      .append('g')
-      .attr('id', function (d) {
-        return d.id;  // Add an id element to each node
-      })
-      .attr('class', function (thisNode) {
-        // Add projectRoot class if the node is the project node
-        return thisNode.id === passedId || thisNode.id === -1 ? 'node projectRoot' : 'node';
-      })
-      .call(force.drag)
-      .on('click', function (d) {
-        if (clickedOnce) {
-          nodeDoubleClick(d);  // Call the single click function
-        } else {
-          timer = setTimeout(function () {
-            nodeClick(d); // Call the double click function
-          }, 175);
-          clickedOnce = true;
-        }
-      });
-  } else {
-    node = svg.selectAll('.node')
-      .data(force.nodes())
-      .enter()
-      .append('g')
-      .attr('id', function (d) {
-        return d.id;  // Add an id element to each node
-      })
-      .attr('class', function (thisNode) {
-        // Add projectRoot class if the node is the project node
-        return thisNode.id === passedId || thisNode.id === -1 ? 'node projectRoot' : 'node';
-      })
-      // .call(force.drag)
-      .on('click', function (d) {
-        if (clickedOnce) {
-          nodeDoubleClick(d);  // Call the single click function
-        } else {
-          timer = setTimeout(function () {
-            nodeClick(d); // Call the double click function
-          }, 175);
-          clickedOnce = true;
-        }
-      });
+    node.call(force.drag);
   }
 
   projectNode.fixed = true;  // Set the project Node to be fixed and not moving
@@ -279,7 +267,7 @@ function updateGraph (passedId = -1) {
       return (n.downStream.length > 0 ? '#F2622B' : '#ffffff');
     })
     .attr('fill', function (n) {
-      return (n.downStream.length > 0 ? '#76D3F5' : '#76D3F5'); // Fill nodes with blue if they have downstream items
+      return (n.downStream.length > 0 ? '#76D3F5' : '#76D3F5'); // Fill nodes with blue if they have downstream nodes
     });
 
   node.append('image') // Image in the node circle configuration
@@ -297,10 +285,10 @@ function updateGraph (passedId = -1) {
   if (itemNames) {
     node.append('text') // Add the name of the node as text
     .attr('x', function (d) {
-      return d.downStream.length > 0 ? 0 : 20;
+      return d.downStream.length > 0 ? 0 : 20; // Move text to right if the node has downstream items
     })
     .attr('dy', function (d) {
-      return d.downStream.length > 0 ? 30 : 0;
+      return d.downStream.length > 0 ? 30 : 0; // Move text down if the node has downstream items
     })
     .attr('text-anchor', function (d) {
       return d.downStream.length > 0 ? 'middle' : 'right';
@@ -318,6 +306,7 @@ function updateGraph (passedId = -1) {
       return d.name.length > 18 ? d.name.substring(0, 15) + '...' : d.name;
     });
   }
+
   // ============= Node Path Definitions ==============
   /**
    * For every shift of the graph, this function gets called.
@@ -391,14 +380,14 @@ function updateGraph (passedId = -1) {
   // ============ Toggle highlighting nodes on single click ===========
   //
   /**
-   * This function handles the logic for highlighting and un-highlighting nodes on single-click
+   * Handles the logic for highlighting and un-highlighting nodes on single-click
    * @param {Object} d is the node that was just clicked
    */
   function nodeClick (d) {
     d.isSelected = true; // Sets the node you clicked on to have a "selected" flag.
     let highlightedCount = -1; // this will count how many downStream nodes are highlighted.
     highlightedCount = downStreamHighlightCheck(d, highlightedCount);
-    // If there are no downStream items and d is highlighted, un-highlight it.
+    // If there are no downStream nodes and d is highlighted, un-highlight it.
     if (d.isHighlighted) {
       if (d.downStream.length > 0 && (highlightedCount !== d.downStream.length)) {
         highlightNodes(d);
@@ -413,7 +402,7 @@ function updateGraph (passedId = -1) {
   }
 
   /**
-   * This function will un-highlight d and the array of downStream nodes for d. This will NOT
+   * Un-highlight the clicked node (d) and the array of downStream nodes for it. This will NOT
    * un-highlight a node if all of it's children are highlighted (cycle checking)
    * @param {object} d is the node that was just clicked
    */
@@ -425,7 +414,7 @@ function updateGraph (passedId = -1) {
       if (d.downStream) {
         for (let i = 0; i < d.downStream.length; i++) {
           if (d.downStream[i] === curNode.id) {
-            count = downStreamHighlightCheck(curNode, count); // check downStream items for highlighting
+            count = downStreamHighlightCheck(curNode, count); // check downStream nodes for highlighting
           }
           if (count !== curNode.downStream.length && d.downStream[i] === curNode.id) {
             curNode.isHighlighted = false;
@@ -441,7 +430,7 @@ function updateGraph (passedId = -1) {
   }
 
   /**
-   * This function will highlight the selected node "d" then highlight the nodes in it's downStream array
+   * Highlight the selected node "d" then highlight the nodes in it's downStream array
    * @param {object} d
    */
   function highlightNodes (d) {
@@ -463,7 +452,7 @@ function updateGraph (passedId = -1) {
   }
 
   /**
-   * This function checks all the downStream items of your array to see if they are highlighted. This prevents
+   * Check all the downStream nodes of your array to see if they are highlighted. This prevents
    * issues when we have a cycle and are un-highlighting nodes.
    * @param {object} d
    * @param {int} count
@@ -489,7 +478,7 @@ function updateGraph (passedId = -1) {
   }
 
   /**
-   * This function is to check if all the nodes are un-highlighted. If they are, highlight all the nodes on the graph.
+   * Check if all the nodes are un-highlighted. If they are, highlight all the nodes on the graph.
    */
   function checkOpacity () {
     let highlight = false; // flag to see if anyone is highlighted.
@@ -527,17 +516,17 @@ function updateGraph (passedId = -1) {
    * @param {Object} edge is an edge object that is going to be added to the nodeItem
    */
   function adddownStreamItemToNode (nodeItem, edge) {
-    // Check if downStream items array exists
+    // Check if downStream nodes array exists
     if (typeof nodeItem.downStream === 'undefined') {
       nodeItem.downStream = [];
     }
-    nodeItem.downStream.push(edge.target);  // Add the target ID to list of downStream items
+    nodeItem.downStream.push(edge.target);  // Add the target ID to list of downStream nodes
 
     // Check if downStream Edges array exists
     if (typeof nodeItem.downStreamEdges === 'undefined') {
       nodeItem.downStreamEdges = [];
     }
-    nodeItem.downStreamEdges.push(edge);  // Add the target ID to list of downStream items
+    nodeItem.downStreamEdges.push(edge);  // Add the target ID to list of downStream nodes
     nodeItem.noRelations = false;
   }
 }
@@ -577,8 +566,7 @@ function collapseDownStream (id) {
 
 /**
  * Collapses all of the graph nodes downStream from the selected node
- *
- * @param {number} id is the object that is selected and whose downStream items will be toggled
+ * @param {number} id is the object that is selected and whose downStream nodes will be toggled
  */
 function collapse (id, count) {
   console.log('-- collapse() [' + count + '] --');
