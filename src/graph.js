@@ -18,11 +18,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Manage the selection of a project and item hierarchy
   buildProjectAnchors().then(() => {
-    getGraph(selectedProject).then(graphJSON => {
-      graph = graphJSON;
-    });
+  //   getGraph(selectedProject).then(graphJSON => {
+  //     graph = graphJSON;
+  //   });
   });
-  //buildItemHierarchyAnchors();
+  buildItemHierarchyAnchors();
+
+  document.getElementById('renderButton').addEventListener('click', event => {
+    toggle(hierarchy);
+    document.querySelector('svg').style.display = 'block';
+  });
 });
 
 /**
@@ -44,27 +49,20 @@ function buildProjectAnchors() {
   return new Promise((resolve) => {
     querySelectorAll('#projects a').forEach(projectAnchor => {
       projectAnchor.addEventListener('click', event => {
-        console.log('CLICKED');
         selectedProject = event.target.getAttribute('data-id');
+
         // Wait until loadHierarchy retrieves the new partial view and updates it with the item hierarchy
         // to display the hierarchy selection div and toggle projects view
         document.body.style.cursor = 'wait';
-        loadHierarchy().then(() => {
+        getHierarchy(selectedProject).then(hierarchyPayload => {
+          renderHierarchy(hierarchyPayload);
           toggle(projects);
           toggle(hierarchy);
           document.body.style.cursor = 'default';
-          bindRenderButton();
           resolve();
         });
       });
     });
-  });
-}
-
-function bindRenderButton() {
-  document.getElementById('renderButton').addEventListener('click', event => {
-    toggle(hierarchy);
-    document.querySelector('svg').style.display = 'block';
   });
 }
 
@@ -111,48 +109,32 @@ function getHierarchy (projectId) {
   });
 }
 
-function updateHierarchy (payload) {
-  return new Promise((resolve, reject) => {
-    let httpRequest = new XMLHttpRequest();
-    httpRequest.onreadystatechange = () => {
-      if (httpRequest.readyState === XMLHttpRequest.DONE) {
-        if (httpRequest.status === 200) {
-          resolve(httpRequest.responseText);
-        } else {
-          console.log('There was a problem requesting to the hierarchy endpoint.');
-          console.log(httpRequest.status);
-          reject({status: httpRequest.status, response: httpRequest.responseText});
-        }
-      }
-    };
-    httpRequest.open('POST', '/graph/update-hierarchy');
-    httpRequest.setRequestHeader('Content-Type', 'application/json');
-    httpRequest.send(JSON.stringify(payload));
-  });
-
+function renderHierarchy (hierarchyPayload) {
+  let itemHierarchyList = document.getElementById('itemHierarchyList');
+  if (hierarchyPayload) {
+    hierarchyPayload.forEach(item => {
+      itemHierarchyList.appendChild(getHierarchyItemWithChildren(item));
+    });
+  } else {
+    itemHierarchyList.appendChild(document.createTextNode('Sorry, this project has no items to display.'))
+  }
 }
 
-function loadHierarchy () {
-  try {
-    return new Promise((resolve) => {
-      console.log(selectedProject);
-      getHierarchy(selectedProject).then(hierarchyPayload => {
-        updateHierarchy(hierarchyPayload).then(updatedHtml => {
-          let hierarchyContainer = document.createElement('div');
-          hierarchyContainer.innerHTML = updatedHtml;
-          let childList = Array.from(hierarchyContainer.firstChild.childNodes);
-          hierarchy.innerHTML = '';
-          childList.forEach(child => {
-            hierarchy.appendChild(child);
-          });
-          bindRenderButton();
-          resolve();
-        });
-      });
-    });  
-  } catch (err) {
-    console.log(err);
+function getHierarchyItemWithChildren(item) {
+  let listItem = document.createElement('li');
+  let itemAnchor = document.createElement('a');
+  itemAnchor.setAttribute('href', '#rootId=' + item.id);
+  itemAnchor.appendChild(document.createTextNode(item.name));
+  itemAnchor.setAttribute('data-id', item.id);
+  listItem.appendChild(itemAnchor);
+  if (item.children) {
+    let unorderedList = document.createElement('ul');
+    item.children.forEach(function (subItem) {
+      unorderedList.appendChild(getHierarchyItemWithChildren(subItem));
+    });
+    listItem.appendChild(unorderedList);
   }
+  return listItem
 }
 
 /**
@@ -175,7 +157,7 @@ function getGraph (projectId) {
         }
       }
     };
-    httpRequest.open('GET', '/graph?project=' + projectId);
+    httpRequest.open('GET', 'graph/getGraphData/' + projectId);
     httpRequest.send();
   });
 }
