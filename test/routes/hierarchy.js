@@ -100,7 +100,7 @@ let hierarchyTestCases = [
             children: [{name: 'Nested child of root 2', children: []}]}]}]}}
 ];
 
-describe('hierarchy', function () {
+describe.skip('hierarchy', function () {
   describe('GET /hierarchy', function () {
   //  let link;
     hierarchyTestCases.forEach(function (item) {
