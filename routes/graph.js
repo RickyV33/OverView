@@ -4,12 +4,12 @@ let router = express.Router();
 let Graph = require('./../lib/graph');
 
 router.get('/', function (req, res) {
-    res.render('graph', {
-      title: 'JamaTrace',
-      subtitle: 'Graph',
-      projects: req.session.projects ? req.session.projects : null,
-      itemHierarchy: null
-    });
+  res.render('graph', {
+    title: 'JamaTrace',
+    subtitle: 'Graph',
+    projects: req.session.projects ? req.session.projects : null,
+    itemHierarchy: null
+  });
 });
 
 router.get('/getGraphData/:id', function (req, res) {

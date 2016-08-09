@@ -2,7 +2,6 @@
 
 import './lib/displayProjectsGraph';
 
-
 let projects = document.querySelector('#projects');
 let hierarchy = document.querySelector('#hierarchy');
 let selectedProject;
@@ -18,12 +17,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Manage the selection of a project and item hierarchy
   buildProjectAnchors().then(() => {
-  //   getGraph(selectedProject).then(graphJSON => {
-  //     graph = graphJSON;
-  //   });
+    getGraph(selectedProject).then(graphJSON => {
+      graph = graphJSON;
+      console.log(graph);
+    });
   });
   buildItemHierarchyAnchors();
-
   document.getElementById('renderButton').addEventListener('click', event => {
     toggle(hierarchy);
     document.querySelector('svg').style.display = 'block';
@@ -34,18 +33,19 @@ document.addEventListener('DOMContentLoaded', () => {
  * Listens for mouse clicks on the Item hierarchy list and sets the selected
  * variable to that items ID
  */
-function buildItemHierarchyAnchors() {
+function buildItemHierarchyAnchors () {
   return new Promise(resolve => {
     querySelectorAll('#hierarchy a').forEach(hierarchyAnchor => {
       hierarchyAnchor.addEventListener('click', event => {
         selectedHierarchyItem = event.target.getAttribute('data-id');
-        document.body.style.cursor='wait';
+        document.body.style.cursor = 'wait';
+        console.log(selectedHierarchyItem);
       });
     });
   });
 }
 
-function buildProjectAnchors() {
+function buildProjectAnchors () {
   return new Promise((resolve) => {
     querySelectorAll('#projects a').forEach(projectAnchor => {
       projectAnchor.addEventListener('click', event => {
@@ -116,11 +116,11 @@ function renderHierarchy (hierarchyPayload) {
       itemHierarchyList.appendChild(getHierarchyItemWithChildren(item));
     });
   } else {
-    itemHierarchyList.appendChild(document.createTextNode('Sorry, this project has no items to display.'))
+    itemHierarchyList.appendChild(document.createTextNode('Sorry, this project has no items to display.'));
   }
 }
 
-function getHierarchyItemWithChildren(item) {
+function getHierarchyItemWithChildren (item) {
   let listItem = document.createElement('li');
   let itemAnchor = document.createElement('a');
   itemAnchor.setAttribute('href', '#rootId=' + item.id);
@@ -134,7 +134,7 @@ function getHierarchyItemWithChildren(item) {
     });
     listItem.appendChild(unorderedList);
   }
-  return listItem
+  return listItem;
 }
 
 /**
