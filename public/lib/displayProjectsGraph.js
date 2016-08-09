@@ -20,8 +20,9 @@ let relationsChecked = false;   // Flag to see if relations check was run
 // ////// DEMO VARS//////
 
 let curves = true;
-let physics = false;
+let physics = true;
 let itemNames = true;
+let floatDown = true;
 
 // /////////////////////
 
@@ -328,7 +329,7 @@ function updateGraph (passedId = -1, graphData) {
       return 'translate(' + d.x + ',' + d.y + ')';
     });
 
-    floatNodeRight(e);
+    floatDown ? floatNodesDown(e) : floatNodesRight(e);  // Toggle the float down and the float right
 
     // Set the node position
     node.attr('cx', function (d) { return 5 * d.x; })
@@ -363,17 +364,35 @@ function updateGraph (passedId = -1, graphData) {
   /**
    * Float the nodes to the right of their upstream node
    */
-  function floatNodeRight (e) {
-    let k = 10 * e.alpha; // For the node offset
+  function floatNodesRight (e) {
+    let offset = 10 * e.alpha; // For the node offset
 
     // This section pushes sources up and targets down to form a weak tree-like structure.
     path.each(function (d) {
-      d.source.x -= k;
-      d.target.x += k;
+      d.source.x -= offset;  // Offset sources left
+      d.target.x += offset;  // Offset target right
     }).attr('x1', function (d) { return d.source.x; })
       .attr('y1', function (d) { return d.source.y; })
       .attr('x2', function (d) { return d.target.x; })
       .attr('y2', function (d) { return d.target.y; });
+  }
+
+  /**
+   * Float the nodes to the bottom of their upstream node
+   */
+  function floatNodesDown (e) {
+    var offset = 10 * e.alpha; // For the node offset
+
+    path.each(function(d) {
+      d.source.y -= offset;  // Offset sources up
+      d.target.y += offset;  // Offset targets down
+    }).attr("x1", function(d) { return d.source.x; })
+      .attr("y1", function(d) { return d.source.y; })
+      .attr("x2", function(d) { return d.target.x; })
+      .attr("y2", function(d) { return d.target.y; });
+
+    node.attr("cx", function(d) { return d.x; })
+        .attr("cy", function(d) { return d.y; });
   }
 
   //
