@@ -313,6 +313,23 @@ function updateGraph (passedId = -1, graphData) {
     });
   }
 
+  // Add a downstream item count circle to each node that has downstream items
+  let downStreamNodes = d3.selectAll('.node.hasDownstream')
+    .append('g')
+      .attr('class', 'downsteamCount');
+  downStreamNodes.append('circle')
+      .attr('cx', '9px')
+      .attr('cy', '-10px')
+      .attr('r', 8);
+  downStreamNodes.append('text')
+      .attr('class', 'downstreamCountText')
+      .attr('x', '9px')
+      .attr('dy', '-6px')
+      .attr('text-anchor', 'middle')
+      .text(function (d) {
+        return d.downStream.length;
+      });
+
   // ============= Node Path Definitions ==============
   /**
    * For every shift of the graph, this function gets called.
