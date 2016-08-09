@@ -10,14 +10,14 @@
 <h3><%= subtitle + ' ' + projectId %></h3>
 <script>
     let rootID = <%= rootId %>;
-
     var request = new XMLHttpRequest();
 
     request.onreadystatechange = function() {
         if (request.readyState === 4) {
+            // console.log('AJAX Ready State: ' + request.readyState);
+            // console.log('AJAX Status: ' + request.status);
             if (request.status === 200) {
                 let projectData = request.responseText;
-                // Call graph render
                 renderGraph(JSON.parse(projectData));
             }
         }
