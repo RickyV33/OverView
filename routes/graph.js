@@ -23,10 +23,16 @@ router.get('/', function (req, res) {
 });
 
 router.post('/update-hierarchy', function (req, res) {
+  console.log('post');
   res.render('partials/hierarchy', { itemHierarchy: req.body }, (err, html) => {
-    res.status(200).send(html).end();
+    console.log(err);
+    console.log(html);
+    if (err){
+      console.error(err);
+    } else {
+      res.status(200).send(html).end();
+    }
   });
 });
-
 
 module.exports = router;

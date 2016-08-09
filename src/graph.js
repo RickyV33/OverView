@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
       graph = graphJSON;
     });
   });
-  buildItemHierarchyAnchors();
+  //buildItemHierarchyAnchors();
 });
 
 /**
@@ -44,6 +44,7 @@ function buildProjectAnchors() {
   return new Promise((resolve) => {
     querySelectorAll('#projects a').forEach(projectAnchor => {
       projectAnchor.addEventListener('click', event => {
+        console.log('CLICKED');
         selectedProject = event.target.getAttribute('data-id');
         // Wait until loadHierarchy retrieves the new partial view and updates it with the item hierarchy
         // to display the hierarchy selection div and toggle projects view
@@ -119,6 +120,7 @@ function updateHierarchy (payload) {
           resolve(httpRequest.responseText);
         } else {
           console.log('There was a problem requesting to the hierarchy endpoint.');
+          console.log(httpRequest.status);
           reject({status: httpRequest.status, response: httpRequest.responseText});
         }
       }
@@ -131,21 +133,26 @@ function updateHierarchy (payload) {
 }
 
 function loadHierarchy () {
-  return new Promise((resolve) => {
-    getHierarchy(selectedProject).then(hierarchyPayload => {
-      updateHierarchy(hierarchyPayload).then(updatedHtml => {
-        let hierarchyContainer = document.createElement('div');
-        hierarchyContainer.innerHTML = updatedHtml;
-        let childList = Array.from(hierarchyContainer.firstChild.childNodes);
-        hierarchy.innerHTML = '';
-        childList.forEach(child => {
-          hierarchy.appendChild(child);
+  try {
+    return new Promise((resolve) => {
+      console.log(selectedProject);
+      getHierarchy(selectedProject).then(hierarchyPayload => {
+        updateHierarchy(hierarchyPayload).then(updatedHtml => {
+          let hierarchyContainer = document.createElement('div');
+          hierarchyContainer.innerHTML = updatedHtml;
+          let childList = Array.from(hierarchyContainer.firstChild.childNodes);
+          hierarchy.innerHTML = '';
+          childList.forEach(child => {
+            hierarchy.appendChild(child);
+          });
+          bindRenderButton();
+          resolve();
         });
-        bindRenderButton();
-        resolve();
       });
-    });
-  });
+    });  
+  } catch (err) {
+    console.log(err);
+  }
 }
 
 /**
