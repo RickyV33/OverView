@@ -236,7 +236,16 @@ function updateGraph (passedId = -1, graphData) {
     })
     .attr('class', function (thisNode) {
       // Add projectRoot class if the node is the project node
-      return thisNode.id === passedId || thisNode.id === -1 ? 'node projectRoot' : 'node';
+      let strClass = 'node';
+
+      if (thisNode.id === passedId || thisNode.id === -1) {
+        strClass = strClass + ' projectRoot';
+      }
+
+      if (thisNode.downStream && thisNode.downStream.length > 0) {
+        strClass = strClass + ' hasDownstream';
+      }
+      return strClass;
     })
     .on('click', function (d) {
       if (clickedOnce) {
@@ -263,13 +272,7 @@ function updateGraph (passedId = -1, graphData) {
   node.append('circle') // Circle at node behind icon configuration
     .attr('x', '-14px')
     .attr('y', '-14px')
-    .attr('r', 13)
-    .attr('stroke', function (n) {
-      return (n.downStream.length > 0 ? '#F2622B' : '#ffffff');
-    })
-    .attr('fill', function (n) {
-      return (n.downStream.length > 0 ? '#76D3F5' : '#76D3F5'); // Fill nodes with blue if they have downstream nodes
-    });
+    .attr('r', 13);
 
   node.append('image') // Image in the node circle configuration
     .attr('xlink:href', function (n) {
@@ -285,6 +288,7 @@ function updateGraph (passedId = -1, graphData) {
 
   if (itemNames) {
     node.append('text') // Add the name of the node as text
+    .attr('class', 'nodeText')
     .attr('x', function (d) {
       return d.downStream.length > 0 ? 0 : 20; // Move text to right if the node has downstream items
     })
@@ -302,6 +306,7 @@ function updateGraph (passedId = -1, graphData) {
   // .attr('x', 20)
     .attr('x', 0)
     .attr('dy', 30)
+    .attr('class', 'nodeText')
     .attr('text-anchor', 'middle')
     .text(function (d) { // Limit the length of the name text
       return d.name.length > 18 ? d.name.substring(0, 15) + '...' : d.name;

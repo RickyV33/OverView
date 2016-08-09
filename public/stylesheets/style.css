@@ -19,6 +19,10 @@ path.link-dash {
   stroke-dasharray: 5;
 }
 
+path.suspect {
+  stroke: red !important;
+}
+
 path.link-dot {
   stroke: #F2622B;
   stroke-dasharray: 5,5;
@@ -31,15 +35,25 @@ path.link-dot {
   stroke-width: 2px !important;
 }
 
-.node circle {
-  stroke-width: 2px;
+.node {
   fill-opacity: 0.80;
 }
 
-circle.active {
-  fill: #efefef;
-  stroke: #0a1d64;
+.node circle {
   stroke-width: 2px;
+  fill-opacity: 0.80;
+  fill: #76D3F5;
+  stroke: #fff;
+}
+
+.hasDownstream circle {
+  fill: #efefef;
+  stroke: #F2622B;
+  stroke-width: 2px;
+}
+
+.downstreamCountText {
+  fill: #efefef;
 }
 
 rect {
