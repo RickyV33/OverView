@@ -70,4 +70,19 @@ describe('Projectquire module', () => {
       expect(projectquire.getProjectRelationships(projectId, url)).to.be.rejected();
     });
   });
+
+  describe('getProjectItemTypes function', () => {
+    it('should return a resolved promise with item types.', () => {
+      data = [{'id': 10, 'image': 'URL'}];
+      projectquire = proxyquire('../../lib/projectquire', {'./pagination': resolvedPromise});
+      projectquire.getProjectItemTypes(url).then(item => {
+        expect(item.id).to.equal(10);
+        expect(item.image).to.equal('URL');
+      });
+    });
+    it('should return a rejected promise when no item types exist.', () => {
+      projectquire = proxyquire('../../lib/projectquire', {'./pagination': rejectedPromise});
+      expect(projectquire.getProjectItemTypes(url)).to.be.rejected();
+    });
+  });
 });
