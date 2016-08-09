@@ -16,7 +16,7 @@ router.get('/getGraphData/:id', function (req, res) {
   if (req.session.username && req.session.password && req.session.teamName) {
     let graph = new Graph(req.params.id, 'http://' + req.session.username + ':' +
       req.session.password + '@' + req.session.teamName + '.jamacloud.com/rest/latest/');
-    graph.buildGraph(() => {
+    graph.buildGraph().then(() => {
       res.status(200).json(graph.toJson());
     });
   }
