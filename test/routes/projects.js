@@ -1,26 +1,26 @@
 /* eslint-env mocha */
+
 'use strict';
 
 let chai = require('chai');
 let expect = chai.expect;
 let chaiHttp = require('chai-http');
 let server = require('../../app');
-
 let ejs = require('ejs');
 let read = require('fs').readFileSync;
 let join = require('path').join;
 
 chai.use(chaiHttp);
 
-describe('projects', function () {
-  describe.skip('get request', function () {
+describe('projects', () => {
+  describe.skip('get request', () => {
     // Test #1: verify projects list view is rendered successfully as is documented in views/projects.ejs
-    it('should render successfully with status 200', function (done) {
+    it('should render successfully with status 200', (done) => {
       let path, data, renderedView;
       chai.request(server)
             .post('/')
             .send({teamName: 'sevensource', username: 'dummy', password: 'password'})
-            .end(function (err, res) {
+            .end((err, res) => {
               if (err) {
                 console.log(err);
               }

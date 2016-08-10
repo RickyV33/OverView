@@ -1,11 +1,11 @@
 /* eslint-env mocha */
+
 'use strict';
 
 let chai = require('chai');
 let expect = chai.expect;
 let chaiHttp = require('chai-http');
 let server = require('../../app');
-
 let ejs = require('ejs');
 let read = require('fs').readFileSync;
 let join = require('path').join;
