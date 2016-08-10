@@ -1,3 +1,4 @@
+/* global d3 */
 let clickedOnce = false;  // For monitoring the click event on node
 let timer;                // For click event monitoring
 
