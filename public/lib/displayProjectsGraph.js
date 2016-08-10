@@ -19,7 +19,7 @@ let relationsChecked = false;   // Flag to see if relations check was run
 
 // ////// DEMO VARS//////
 
-let curves = true;
+let curves = false;
 let physics = true;
 let itemNames = true;
 let floatDown = true;
@@ -213,9 +213,7 @@ function updateGraph (passedId = -1, graphData) {
     })
     .attr('class', thisPath => {
       let result = 'link';
-      // Check the type and add a style according to type
-      result = (thisPath.type === -1) ? result + ' link-dot' : result;
-      result = (thisPath.type === 8) ? result + ' link-dash' : result;
+      result = (thisPath.suspect) ? result + ' suspect' : result;  // Check the type and add a style according to type
 
       return result;
     })
@@ -223,7 +221,11 @@ function updateGraph (passedId = -1, graphData) {
 
   path.append('svg:title')  // Added a string to edge hover
     .text(function (d) {
-      return (d.type);
+      let strTitle = d.type;
+      if (d.suspect) {
+        strTitle = strTitle + ' - Suspect';
+      }
+      return strTitle;
     });
 
   // ============ Node Properties Definition ===========

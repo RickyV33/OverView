@@ -20,7 +20,7 @@ path.link-dash {
 }
 
 path.suspect {
-  stroke: red !important;
+  stroke: #73a8cf !important;
 }
 
 path.link-dot {
