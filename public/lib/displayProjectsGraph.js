@@ -1,4 +1,5 @@
 /* global d3 */
+/* exported renderGraph */
 let clickedOnce = false;  // For monitoring the click event on node
 let timer;                // For click event monitoring
 
@@ -31,6 +32,7 @@ let floatDown = true;
  * Base function to render the graph. It is invoked by the view through an AJAX call after the data has been retrieved.
  * @param graphData
  */
+// eslint-disable-next-line no-unused-vars
 function renderGraph (graphData, rootId) {
   // console.log('---> Graph Data');
   // console.log(graphData);
