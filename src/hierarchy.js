@@ -4,7 +4,7 @@
  * Event listeners for hierarchy.ejs view handles selection on item hierarchy
  * and sends the selected item, via its ID, to the render_graph function
  */
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', () => {
   let selected;
   /**
    * Listens for mouse clicks on the Item hierarchy list and sets the selected

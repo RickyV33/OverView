@@ -11,11 +11,11 @@ router.get('/', function (req, res, next) {
 router.post('/', function (req, res, next) {
   req.body.teamName = req.session.teamName;
   if (auth.validate(req)) {
-    auth.authenticate(req.body.username, req.body.password, req.body.teamName).then(function (sessionProjects) {
+    auth.authenticate(req.body.username, req.body.password, req.body.teamName).then(sessionProjects => {
       req.session.username = req.body.username;
       req.session.password = req.body.password;
       req.session.projects = projects.parseProjectList(sessionProjects);
-      req.session.save(function (err) {
+      req.session.save(err => {
         if (err) {
           // TODO Session save Error message
           res.render('index', { title: 'JamaTrace', teamName: req.body.teamName, error: true });
