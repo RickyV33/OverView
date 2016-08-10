@@ -1,10 +1,12 @@
 /* eslint-env mocha */
+
+'use strict';
+
 let chai = require('chai');
 let expect = chai.expect;
 let dirtyChai = require('dirty-chai');
 let chaiAsPromised = require('chai-as-promised');
 let Ajv = require('ajv');
-
 let schema = require('../../../lib/schema/relationshipGraph');
 
 chai.use(dirtyChai);
@@ -15,7 +17,7 @@ Ajv.addSchema(schema, 'graphSchema');
 let validate = Ajv.compile(schema);
 let validJSON = false;
 
-describe('Relationship Graph JSON', function () {
+describe('Relationship Graph JSON', () => {
   // Failing test cases for relationship graph JSON
   let failingTestCases = [
       // test cases for items missing a field [id, name, type, image]
@@ -73,14 +75,14 @@ describe('Relationship Graph JSON', function () {
            {id: 5, source: 5, target: 3, type: 38, suspect: false}, {id: 6, source: 4, target: 3, type: 39, suspect: false}]}}
   ];
   // Validating all incorrect JSON are rejected
-  failingTestCases.forEach(function (item) {
-    it(item.title, function () {
+  failingTestCases.forEach(item => {
+    it(item.title, () => {
       validJSON = validate(item.body);
       expect(validJSON).to.be.false();
     });
   });
   // Validating all correct JSON are accepted
-  passingTestCases.forEach(function (item) {
+  passingTestCases.forEach(item => {
     it(item.title, function () {
       validJSON = validate(item.body);
       expect(validJSON).to.be.true();

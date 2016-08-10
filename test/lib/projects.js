@@ -1,16 +1,16 @@
 /* eslint-env mocha */
+
 'use strict';
 
 let chai = require('chai');
 let expect = chai.expect;
 let chaiHttp = require('chai-http');
-
 let Ajv = require('ajv');
 let projectListSchema = require('../../lib/schema/projectList.json');
 let projects = require('../../lib/projects');
+let mockProjects = require('../routes/mockProjects.json');
 
 chai.use(chaiHttp);
-let mockProjects = require('../routes/mockProjects.json');
 
 let projectFixtureCases = [
   [
@@ -72,23 +72,24 @@ let projectFixtureCases = [
 let ajv = new Ajv();
 let validate = ajv.compile(projectListSchema);
 
-describe('projects.js module', function () {
-  describe('Schema Validation', function () {
-    projectFixtureCases.forEach(function (fixture) {
+describe('projects.js module', () => {
+  describe('Schema Validation', () => {
+    projectFixtureCases.forEach(fixture => {
       let result = validate(fixture);
       if (result === true) {
-        it('should return true when the JSON schema object is VALID\n', function () {
+        it('should return true when the JSON schema object is VALID\n', () => {
           expect(result).to.be.true();
         });
       } else {
-        it('JSON schema object should be INVALID with the credentials\n \tname: ' + fixture[0].name + ' and ID: ' + fixture[0].id + '\n', function () {
+        it('JSON schema object should be INVALID with the credentials\n \tname: ' + fixture[0].name +
+          ' and ID: ' + fixture[0].id + '\n', () => {
           expect(result).to.not.be.true();
         });
       }
     });
   });
 
-  describe('parseProjectsList function', function () {
+  describe('parseProjectsList function', () => {
     // Array 0 is for checking against completely valid JSON
     // Array 1 is for checking against JSON with an invalid entry in the first set
     let filterJSON = [
@@ -102,7 +103,7 @@ describe('projects.js module', function () {
       ]
     ];
 
-    it('should return a valid JSON with all three projects when all three projects are valid schema format', function () {
+    it('should return a valid JSON with all three projects when all three projects are valid schema format', () => {
       // When all projects have valid ids and names
       let parsed = projects.parseProjectList(mockProjects);
       let result = validate(parsed);
@@ -110,7 +111,7 @@ describe('projects.js module', function () {
       expect(result).to.be.true();
     });
 
-    it('should return a valid JSON with two of three projects when name is null in the first project', function () {
+    it('should return a valid JSON with two of three projects when name is null in the first project', () => {
       // When id is valid and name is invalid
       mockProjects[0].fields.name = null;
       let parsed = projects.parseProjectList(mockProjects);
@@ -119,7 +120,7 @@ describe('projects.js module', function () {
       expect(result).to.be.true();
     });
 
-    it('should return a valid JSON with two of three projects when id is null in the first project', function () {
+    it('should return a valid JSON with two of three projects when id is null in the first project', () => {
       // When id is invalid and name is valid
       mockProjects[0].id = null;
       mockProjects[0].fields.name = 'Chatty';
@@ -129,7 +130,7 @@ describe('projects.js module', function () {
       expect(result).to.be.true();
     });
 
-    it('should return a valid JSON with two of three projects when name and id are null in the first project', function () {
+    it('should return a valid JSON with two of three projects when name and id are null in the first project', () => {
       // When id and name are invalid
       mockProjects[0].id = null;
       mockProjects[0].fields.name = null;
@@ -139,7 +140,7 @@ describe('projects.js module', function () {
       expect(result).to.be.true();
     });
 
-    it('should return an empty array of projects when passed a null', function () {
+    it('should return an empty array of projects when passed a null', () => {
       // When projects are null
       let empty = [];
       let parsed = projects.parseProjectList(null);
