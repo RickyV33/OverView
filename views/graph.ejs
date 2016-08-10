@@ -9,7 +9,6 @@
 <h1><%= title %></h1>
 <h3><%= subtitle + ' ' + projectId %></h3>
 <script>
-    let rootID = <%= rootId %>;
     var request = new XMLHttpRequest();
 
     request.onreadystatechange = function() {
@@ -18,7 +17,7 @@
             // console.log('AJAX Status: ' + request.status);
             if (request.status === 200) {
                 let projectData = request.responseText;
-                renderGraph(JSON.parse(projectData));
+                renderGraph(JSON.parse(projectData), <%= rootId %>);
             }
         }
     };

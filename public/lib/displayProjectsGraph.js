@@ -30,18 +30,18 @@ let floatDown = true;
  * Base function to render the graph. It is invoked by the view through an AJAX call after the data has been retrieved.
  * @param graphData
  */
-function renderGraph (graphData) {
+function renderGraph (graphData, rootId) {
   // console.log('---> Graph Data');
   // console.log(graphData);
 
-  insertProjectNode(graphData);
+  insertProjectNode(graphData, rootId);
 
   mapNodesToEdges(graphData);  // Pre-process data for faster data retrieval
-  filterJSON(rootID, graphData); // Filters the JSON for only the downStream nodes from the selected item
+  filterJSON(graphData, rootId); // Filters the JSON for only the downStream nodes from the selected item
   resetVisitedFlag(); // Sets all of the visited flags to false
 
   configureD3Graph();
-  updateGraph(rootID, graphData);  // Render the graph
+  updateGraph(graphData, rootId);  // Render the graph
   collapseAll();  // Collapses all the nodes except the root node
 }
 
@@ -49,14 +49,14 @@ function renderGraph (graphData) {
  * Adds a project node to the graph
  * @param graphData
  */
-function insertProjectNode (graphData) {
+function insertProjectNode (graphData, rootId) {
   // Create a project node and add it to the nodes list
   projectNode = {id: -1, name: graphData.name, image: '', type: -1};
   graphData.nodes.unshift(projectNode);
 
   // Add a relationship from project node to root id if one was passed in
-  if (rootID !== -1 && rootID !== null) {
-    graphData.edges.push({id: -1, source: -1, target: rootID, type: -1});
+  if (rootId !== -1 && rootId !== null) {
+    graphData.edges.push({id: -1, source: -1, target: rootId, type: -1});
   }
 }
 
@@ -136,9 +136,9 @@ function mapNodesToEdges (graphData) {
  * @param {number} id
  * @param {object} graphData
  */
-function filterJSON (id, graphData) {
-  if (id !== -1 && id !== null) {
-    let thisNode = nodeToEdgeMap[id];
+function filterJSON (graphData, rootId) {
+  if (rootId !== -1 && rootId !== null) {
+    let thisNode = nodeToEdgeMap[rootId];
     if (!thisNode.node.visited || thisNode.node.visited === 'undefined') {
       thisNode.node.visited = true;
       nodesToRender.push(thisNode.node);
@@ -158,10 +158,10 @@ function filterJSON (id, graphData) {
 
 /**
  * Updates the graph visuals by setting the data and configuring the nodes and edges
- * @param {integer} passedId is the id of the element that is to be the root node coming off the project node
  * @param {object} graphData
+ * @param {integer} rootId is the id of the element that is to be the root node coming off the project node
  */
-function updateGraph (passedId = -1, graphData) {
+function updateGraph (graphData, rootId = -1) {
   if (!relationsChecked) {
     // For each relationship, add the target to the source node
     graphData.edges.forEach(function (relItem) {
@@ -240,7 +240,7 @@ function updateGraph (passedId = -1, graphData) {
       // Add projectRoot class if the node is the project node
       let strClass = 'node';
 
-      if (thisNode.id === passedId || thisNode.id === -1) {
+      if (thisNode.id === rootId || thisNode.id === -1) {
         strClass = strClass + ' projectRoot';
       }
 
@@ -407,16 +407,16 @@ function updateGraph (passedId = -1, graphData) {
   function floatNodesDown (e) {
     var offset = 10 * e.alpha; // For the node offset
 
-    path.each(function(d) {
+    path.each(function (d) {
       d.source.y -= offset;  // Offset sources up
       d.target.y += offset;  // Offset targets down
-    }).attr("x1", function(d) { return d.source.x; })
-      .attr("y1", function(d) { return d.source.y; })
-      .attr("x2", function(d) { return d.target.x; })
-      .attr("y2", function(d) { return d.target.y; });
+    }).attr('x1', function (d) { return d.source.x; })
+      .attr('y1', function (d) { return d.source.y; })
+      .attr('x2', function (d) { return d.target.x; })
+      .attr('y2', function (d) { return d.target.y; });
 
-    node.attr("cx", function(d) { return d.x; })
-        .attr("cy", function(d) { return d.y; });
+    node.attr('cx', function (d) { return d.x; })
+        .attr('cy', function (d) { return d.y; });
   }
 
   //
@@ -686,13 +686,7 @@ function unCollapse (id) {
 function collapseAll () {
   // Set all nodes to be invisible
   svg.selectAll('.node').style('opacity', 0);
-
-  // Set the root node to be visible
-  if (rootID) {
-    d3.select("[id='" + rootID + "']").style('opacity', 1);  // Show the project node
-  } else {
-    d3.select("[id='" + projectNode.id + "']").style('opacity', 1);  // Show the project node
-  }
+  d3.select('.projectRoot').style('opacity', 1);  // Set the root node to be visible
   path.style('opacity', 0);
 }
 
