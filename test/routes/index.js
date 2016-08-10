@@ -14,30 +14,32 @@ let proxyquire = require('proxyquire');
 var express = require('express');
 var supertest = require('supertest');
 var sinon = require('sinon');
+let rewire = require('rewire');
 
+let index;
 
-
-
-let authStub = () => {
-  let validate = () => {
-    console.log('authStub')
-  };
+let validateStub = (req) => {
+  console.log('authStub' + req);
 };
 
-let projectsStub = () => {
-  console.log('projects Stub');
+let authenticateStub = (username, password, teamName) => {
+  console.log('authStub' + req);
 };
 
-let app = proxyquire('../../app',
-  {
-    'auth': authStub,
-    'projects': projectsStub
-  });
+let authStub = {
+  'validate': (req) => {
+    console.log('authStub' + req)
+  }
+};
 
+let projectsStub = {
+  'parseProjectList': () => {
+    console.log('projects Stub');
+  }
+};
 
+let app;
 
-//let app = require('../../app');
-//app.use('/', index);
 
 chai.use(dirtyChai);
 chai.use(chaiHttp);
@@ -113,70 +115,82 @@ describe('index route', function () {
   });
 
   describe('post request', function () {
-    chai.request(app)
-      .post('/')
-      .field('req.body.password', 'invalid')
-      .field('username', 'invalid')
-      .field('teamName', 'invalid')
-      .end(function (err, res) {
-        expect(err).to.be(null);
-        expect(res).to.have.status(200);
+    it('should validate user credentials, load validated user projects, and redirect to render projects to the' +
+      'user', function (done) {
+      index = require('../../routes/index', {
+        '../lib/auth': authStub,
+        '../lib/projects': projectsStub
+      });
+      app = require('../../app', {
+        './routes/index': index
       });
 
+      chai.request(app)
+        .post('/')
+        .send({username: 'invalid', password: 'invalid', teamName: 'invalid', projectId: 1000})
+        .end(function (err, res) {
+          expect(err).to.be(null);
+          expect(res).to.have.status(200);
+        });
 
 
-    /*    authStub = () => {
-     let validate = (req) => {
 
-     };
-     // Authenticate Stub
-     let authenticate = (username, password, teamName) => {
-     let url = 'http://' + username + ':' + password + '@' + teamName + '.jamacloud.com/rest/latest/projects';
-     console.log('authenticate stub hit');
-     };
-     };*/
-    /*  let authStub = sinon.stub();
-     app = express();
-     let index = proxyquire('../../routes/index', {
-     'auth': authStub,
-     });
+      /*    authStub = () => {
+       let validate = (req) => {
 
-     index(app);*/
+       };
+       // Authenticate Stub
+       let authenticate = (username, password, teamName) => {
+       let url = 'http://' + username + ':' + password + '@' + teamName + '.jamacloud.com/rest/latest/projects';
+       console.log('authenticate stub hit');
+       };
+       };*/
+      /*  let authStub = sinon.stub();
+       app = express();
+       let index = proxyquire('../../routes/index', {
+       'auth': authStub,
+       });
+
+       index(app);*/
 
 
-    // request = supertest(app);
-    /*
-     let response = (object) => {
-     // console.log('validate stub hit');
-     return (object.body.username !== '' && object.body.username.length <= 200 &&
-     object.body.password.length >= 6 && object.body.password.length <= 200 &&
-     teamName !== '');
-     };*/
-    //  validate.returns(response);
+      // request = supertest(app);
+      /*
+       let response = (object) => {
+       // console.log('validate stub hit');
+       return (object.body.username !== '' && object.body.username.length <= 200 &&
+       object.body.password.length >= 6 && object.body.password.length <= 200 &&
+       teamName !== '');
+       };*/
+      //  validate.returns(response);
 
-    /*    authStub.return('blobl');
-     credentialFixtureCases.forEach(function (fixture) {
-     if (fixture.username && fixture.password && fixture.teamName) {
-     it('should return true when all form fields are valid', function () {
+      /*    authStub.return('blobl');
+       credentialFixtureCases.forEach(function (fixture) {
+       if (fixture.username && fixture.password && fixture.teamName) {
+       it('should return true when all form fields are valid', function () {
 
-     return chai.request(index)
-     .post('/index')
-     .send({ username: fixture.username, password: fixture.password, teamName: fixture.teamName }).then(res => {
-     expect(res.body).to.deep.equal(response);
-     //expect(res).to.redirect();
-     }).catch(err => { throw err; });
-     });
-     } else {
-     it('should return false when any form field is invalid username is, "' + fixture.username + '" password is, "' +
-     fixture.password + '" team name is, "' + fixture.teamName + '".', function () {
-     return chai.request(index)
-     .post('/')
-     .send({ username: fixture.username, password: fixture.password, teamName: fixture.teamName }).then(res => {
-     expect(res).to.have.status(200);
-     }).catch(err => { throw err; });
-     });
-     }
-     });
-     });*/
+       return chai.request(index)
+       .post('/index')
+       .send({ username: fixture.username, password: fixture.password, teamName: fixture.teamName }).then(res => {
+       expect(res.body).to.deep.equal(response);
+       //expect(res).to.redirect();
+       }).catch(err => { throw err; });
+       });
+       } else {
+       it('should return false when any form field is invalid username is, "' + fixture.username + '" password is, "' +
+       fixture.password + '" team name is, "' + fixture.teamName + '".', function () {
+       return chai.request(index)
+       .post('/')
+       .send({ username: fixture.username, password: fixture.password, teamName: fixture.teamName }).then(res => {
+       expect(res).to.have.status(200);
+       }).catch(err => { throw err; });
+       });
+       }
+       });
+       });*/
+      done();
+
+    });
+
   });
 });
