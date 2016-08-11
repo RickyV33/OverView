@@ -1,4 +1,4 @@
-/* global d3, selectedProjectId */
+/* global d3, selectedProjectId, event */
 /* exported renderGraph */
 let clickedOnce = false;  // For monitoring the click event on node
 let timer;                // For click event monitoring
@@ -299,18 +299,16 @@ function updateGraph (graphData, rootId = -1) {
       return strClass;
     })
     .on('click', function (d) {
-
-      if (clickedOnce) {
-        nodeDoubleClick(d);  // Call the single click function
-      } else {
-        console.log(d3);
-        if(event.shiftKey){
-          nodeClick(d);
+      if (clickedOnce) {  // This only occurs if someone clicks twice before the timeout below
+        nodeDoubleClick(d);  // Call the double click function
+      } else {              // We've seen a single click
+        if (event.shiftKey) {  // If we see a click with a shift...
+          nodeClick(d);  // Call nodeClick() to check (un)highlighting
         } else {
-          timer = setTimeout(function () {
-            clickedOnce = false;
-        }, 175);
-          clickedOnce = true;
+          timer = setTimeout(function () { // If we just see a click check for double click
+            clickedOnce = false;  // We timed out after 175ms so we are NOT seeing a double click
+          }, 175);
+          clickedOnce = true; // We set clickedOnce to true, if we see another click before timeout, it's a double
         }
       }
     });
