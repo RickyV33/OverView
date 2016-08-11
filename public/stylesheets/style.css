@@ -1,62 +1,8 @@
 body {
-  display: flex;
-  flex-direction: column;
   padding: 50px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
 a {
-  color: #00B4FF;
-}
-
-#logo {
-  max-width: 28em;
-}
-
-h1 {
-  align-self: center;
-}
-
-#logIn {
-  align-self: center;
-  width: 20rem;
-  border-radius: 1rem;
-  background-color: RGB(230,230,230);
-  padding: 2rem;
-}
-
-#logIn > div:not(.error) {
-  display: flex;
-  flex-direction: column;
-  padding-bottom: 1rem;
-  font-size: 12pt;
-}
-
-#logIn input[type=text],
-#logIn input[type=password] {
-  height: 1.5rem;
-  margin-top: .75rem;
-  font-size: 11pt;
-}
-
-#logIn > input[type=submit] {
-  float: right;
-  font-size: 14pt;
-  background: #F2622C;
-  border: none;
-  color: #ffffff;
-  font-family: "Gill Sans", "Lucida Grande", Helvetica, Arial, sans-serif;
-  text-transform: uppercase;
-  text-shadow: 0 1px 0 #C94418;
-  cursor: pointer;
-}
-
-#logIn > .error {
-  clear: both;
-  margin-top: 2.5rem;
-}
-
-.error {
-  font-size: 10pt;
-  color: #C94418;
+  color: #00B7FF;
 }
