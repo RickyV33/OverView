@@ -299,13 +299,19 @@ function updateGraph (graphData, rootId = -1) {
       return strClass;
     })
     .on('click', function (d) {
+
       if (clickedOnce) {
         nodeDoubleClick(d);  // Call the single click function
       } else {
-        timer = setTimeout(function () {
-          nodeClick(d); // Call the double click function
+        console.log(d3);
+        if(event.shiftKey){
+          nodeClick(d);
+        } else {
+          timer = setTimeout(function () {
+            clickedOnce = false;
         }, 175);
-        clickedOnce = true;
+          clickedOnce = true;
+        }
       }
     });
 
@@ -490,7 +496,6 @@ function updateGraph (graphData, rootId = -1) {
     } else {
       highlightNodes(d);
     }
-    clickedOnce = false;  // This is for resetting the click flag
   }
 
   /**
