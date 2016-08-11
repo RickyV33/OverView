@@ -1,4 +1,4 @@
-/* global d3 */
+/* global d3, selectedProjectId */
 /* exported renderGraph */
 let clickedOnce = false;  // For monitoring the click event on node
 let timer;                // For click event monitoring
@@ -19,6 +19,9 @@ let svg = null;           // The svg window
 let force = null;         // The force layout for d3
 let relationsChecked = false;   // Flag to see if relations check was run
 
+let currentProjectId;
+let currentRootId;
+
 // ////// DEMO VARS//////
 
 let curves = false;
@@ -29,23 +32,43 @@ let floatDown = true;
 // /////////////////////
 
 /**
+ * Initialize by adding a project node and mapping the nodes and edges.
+ * @param graphData
+ * @param rootId
+ */
+function initializeGraphData (graphData, rootId) {
+  insertProjectNode(graphData, rootId);
+  mapNodesToEdges(graphData);  // Pre-process data for faster data retrieval
+}
+
+/**
  * Base function to render the graph. It is invoked by the view through an AJAX call after the data has been retrieved.
  * @param graphData
  */
 // eslint-disable-next-line no-unused-vars
 function renderGraph (graphData, rootId) {
-  // console.log('---> Graph Data');
-  // console.log(graphData);
+  console.log('---> Graph Data');
+  console.log('Root ID: ' + rootId + '  CurrentRootId: ' + currentRootId);
+  console.log('Project ID: ' + selectedProjectId + '  CurrentProjectId: ' + currentProjectId);
+  console.log(graphData);
 
-  insertProjectNode(graphData, rootId);
+  if (currentProjectId !== selectedProjectId) {
+    initializeGraphData(graphData, rootId);
+    currentProjectId = selectedProjectId;
+  }
 
-  mapNodesToEdges(graphData);  // Pre-process data for faster data retrieval
-  filterJSON(graphData, rootId); // Filters the JSON for only the downStream nodes from the selected item
-  resetVisitedFlag(); // Sets all of the visited flags to false
+  // console.log(nodeToEdgeMap[rootId]);
 
-  configureD3Graph();
-  updateGraph(graphData, rootId);  // Render the graph
-  collapseAll();  // Collapses all the nodes except the root node
+  if (rootId !== currentRootId) {
+    clearGraph(); // Clear all of the graph data
+    filterJSON(graphData, rootId); // Filters the JSON for only the downStream nodes from the selected item
+    resetVisitedFlag(); // Sets all of the visited flags to false
+
+    configureD3Graph();
+    updateGraph(graphData, rootId);  // Render the graph
+    collapseAll();  // Collapses all the nodes except the root node
+    currentRootId = rootId;
+  }
 }
 
 /**
@@ -69,7 +92,8 @@ function insertProjectNode (graphData, rootId) {
 function configureD3Graph () {
   // Append the SVG object to the body
   // Add a group element within it to encompass all the nodes - this fixes the chrome
-  svg = d3.select('body').append('svg')
+  svg = d3.select("[id='graphContainer']").append('svg')
+    .attr('id', 'graphSVG')
     .attr('width', '100%')
     .attr('height', height)
     .call(d3.behavior.zoom().scaleExtent([1, 10])
@@ -136,26 +160,45 @@ function mapNodesToEdges (graphData) {
 
 /**
  * Filters the graph input to be filtered by the rootId and all its downStream nodes
- * @param {number} id
+ * @param {number} rootId
  * @param {object} graphData
  */
 function filterJSON (graphData, rootId) {
   if (rootId !== -1 && rootId !== null) {
-    let thisNode = nodeToEdgeMap[rootId];
-    if (!thisNode.node.visited || thisNode.node.visited === 'undefined') {
-      thisNode.node.visited = true;
-      nodesToRender.push(thisNode.node);
-
-      if (thisNode.edges.length > 0) {
-        thisNode.edges.forEach(function (relItem) {
-          edgesToRender.push(relItem);
-          filterJSON(relItem.target);  // Traverse down the relations
-        });
-      }
-    }
+    filterJSONRecursive(nodeToEdgeMap[rootId]);
   } else {
     nodesToRender = graphData.nodes;
     edgesToRender = graphData.edges;
+  }
+}
+
+/**
+ * Filter Recursion function to traverse through the downstream elements of the selected root node
+ * @param thisNode
+ */
+function filterJSONRecursive (thisNode) {
+  if (!thisNode.node.visited || thisNode.node.visited === 'undefined') {
+    thisNode.node.visited = true;
+    nodesToRender.push(thisNode.node);
+
+    if (thisNode.edges.length > 0) {
+      thisNode.edges.forEach(function (relItem) {
+        edgesToRender.push(relItem);
+        filterJSONRecursive(nodeToEdgeMap[relItem.target]);  // Traverse down the relations
+      });
+    }
+  }
+}
+
+/**
+ * CLear the SVG object from the graphContainer and the data for the nodes, edges
+ */
+function clearGraph () {
+  nodesToRender = [];
+  edgesToRender = [];
+  let graphSVG = document.getElementById('graphSVG');
+  if (graphSVG) {
+    graphSVG.remove();
   }
 }
 
@@ -193,16 +236,19 @@ function updateGraph (graphData, rootId = -1) {
     relationsChecked = true;
   }
 
+  console.log(nodesToRender);
+  console.log(edgesToRender);
+
   force  // Set the force nodes, edges and start the graph
     .nodes(nodesToRender)  // .nodes(graphData.nodes)
     .links(edgesToRender) // .links(graphData.edges)
     .charge(function (d) {  // Variable Charge
       let chargeVal = -500;
-      return chargeVal + (-200 * d.downStream.length);
+      return d.downStream ? chargeVal + (-200 * d.downStream.length) : chargeVal - 200;
     })
     .linkStrength(function (d) {  // Variable link Strength
       let strengthVal = 1;
-      return strengthVal + (-0.12 * (d.source.downStream.length));
+      return d.downStream ? strengthVal + (-0.12 * (d.source.downStream.length)) : strengthVal - 0.12;
     })
     .on('tick', tick)
     .start();
