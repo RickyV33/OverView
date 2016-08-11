@@ -8,8 +8,10 @@
 <!-- Goes to d3 -->
 <h1><%= title %></h1>
 <h3><%= subtitle + ' ' + projectId %></h3>
+<div id='graphContainer'></div>
 <script>
     var request = new XMLHttpRequest();
+    var selectedProjectId = <%= projectId %>;
 
     request.onreadystatechange = function() {
         if (request.readyState === 4) {
