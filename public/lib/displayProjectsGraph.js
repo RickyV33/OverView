@@ -371,7 +371,7 @@ function updateGraph (graphData, rootId = -1) {
   // Add a downstream item count circle to each node that has downstream items
   let downStreamNodes = d3.selectAll('.node.hasDownstream')
     .append('g')
-      .attr('class', 'downsteamCount');
+      .attr('class', 'downstreamCount');
   downStreamNodes.append('circle')
       .attr('cx', '9px')
       .attr('cy', '-10px')

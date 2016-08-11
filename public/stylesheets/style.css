@@ -51,7 +51,7 @@ path.link-dot {
   stroke-width: 2px;
 }
 
-.hasDownstream > .downsteamCount > circle {
+.hasDownstream > .downstreamCount > circle {
   stroke: #fff !important;
   fill: #F2622B;
   fill-opacity: 0.90;
