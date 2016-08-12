@@ -64,7 +64,8 @@ function renderGraph (graphData, rootId, selectedProjectId) {
 
     configureD3Graph();
     updateGraph(graphData, rootId);  // Render the graph
-    collapseAll();  // Collapses all the nodes except the root node
+    collapseAll(rootId);  // Collapses all the nodes except the root node
+    updateOpacity();
     currentRootId = rootId;
   }
 }
@@ -131,8 +132,9 @@ function mapNodesToEdges (graphData) {
   graphData.nodes.forEach(function (item) {
     let thisItem = nodeToEdgeMap[item.id] = {};
     thisItem.node = item;
-    thisItem.node.isCollapsed = false;
+    thisItem.node.isCollapsed = true;
     thisItem.node.isVisible = true;
+    thisItem.node.isHighlighted = false;
     thisItem.node.downStream = [];
 
     // thisItem.edges refers to the downStream nodes
@@ -470,163 +472,6 @@ function updateGraph (graphData, rootId = -1) {
         .attr('cy', function (d) { return d.y; });
   }
 
-  //
-  // ============ Toggle highlighting nodes on single click ===========
-  //
-  /**
-   * Handles the logic for highlighting and un-highlighting nodes on single-click
-   * @param {Object} d is the node that was just clicked
-   */
-  function nodeClick (d) {
-    d.isSelected = true; // Sets the node you clicked on to have a "selected" flag.
-    let highlightedCount = -1; // this will count how many downStream nodes are highlighted.
-    highlightedCount = downStreamHighlightCheck(d, highlightedCount);
-    // If there are no downStream nodes and d is highlighted, un-highlight it.
-    if (d.isHighlighted) {
-      if (d.downStream.length > 0 && (highlightedCount !== d.downStream.length)) {
-        highlightNodes(d);
-      } else {
-        unHighlightNodes(d);
-        checkOpacity();
-      }
-    } else {
-      highlightNodes(d);
-    }
-  }
-
-  /**
-   * Un-highlight the clicked node (d) and the array of downStream nodes for it. This will NOT
-   * un-highlight a node if all of it's children are highlighted (cycle checking)
-   * @param {object} d is the node that was just clicked
-   */
-  // TODO : Keep nodes with two highlighted upstream nodes highlighted on un-highlight with a count
-  function unHighlightNodes (d) {
-    d.isHighlighted = false;
-    console.log(d);
-    node.style('opacity', function (curNode) {
-      let count = -1;
-      console.log(curNode);
-      if (d.downStream) {
-        for (let i = 0; i < d.downStream.length; i++) {
-          if (d.downStream[i] === curNode.id) {
-            count = downStreamHighlightCheck(curNode, count); // check downStream nodes for highlighting
-          }
-          if (count !== curNode.downStream.length && d.downStream[i] === curNode.id) {
-            curNode.isHighlighted = false;
-          }
-        }
-      }
-      if (curNode.isVisible) {
-        return curNode.isHighlighted ? 1 : reducedOpacity;
-      } else {
-        return 0;
-      }
-    });
-
-    path.style('opacity', function (curPath) {
-      if (nodeToEdgeMap[curPath.source.id].node.isVisible && nodeToEdgeMap[curPath.target.id].node.isVisible) {
-        return (curPath.source.isHighlighted && curPath.target.isHighlighted) ? 1 : reducedOpacity;
-      } else {
-        return 0;
-      }
-    });
-  }
-
-  /**
-   * Highlight the selected node "d" then highlight the nodes in it's downStream array
-   * @param {object} d
-   */
-  function highlightNodes (d) {
-    d.isHighlighted = true;
-    node.style('opacity', function (curNode) {
-      if (!d.noRelations) {
-        for (let i = 0; i < d.downStream.length; i++) {
-          if (d.downStream[i] === curNode.id) {
-            curNode.isHighlighted = true;
-          }
-        }
-      }
-      if (curNode.isVisible) {
-        return curNode.isHighlighted ? 1 : reducedOpacity;
-      } else {
-        return 0;
-      }
-    });
-
-    path.style('opacity', function (curPath) {
-      if (nodeToEdgeMap[curPath.source.id].node.isVisible && nodeToEdgeMap[curPath.target.id].node.isVisible) {
-        return (curPath.source.isHighlighted && curPath.target.isHighlighted) ? 1 : reducedOpacity;
-      } else {
-        return 0;
-      }
-    });
-  }
-
-  /**
-   * Check all the downStream nodes of your array to see if they are highlighted. This prevents
-   * issues when we have a cycle and are un-highlighting nodes.
-   * @param {object} d
-   * @param {int} count
-   */
-  function downStreamHighlightCheck (d, count) {
-    // This checks whether we should be highlighting or un-highlighting nodes
-    d3.selectAll('g.node')  // Loops through all nodes and checks if they have downStream relations
-      .each(function (curNode) {
-        for (let i = 0; i < d.downStream.length; i++) {
-          // If the index matches and the node is already highlighted, increase our count.
-          if (d.downStream[i] === curNode.id) {
-            if (curNode.isHighlighted) {
-              if (count === -1) {
-                count = 1;
-              } else {
-                count++;
-              }
-            }
-          }
-        }
-      });
-    return count;
-  }
-
-  /**
-   * Check if all the nodes are un-highlighted. If they are, highlight all the nodes on the graph.
-   */
-  function checkOpacity () {
-    let highlight = false; // flag to see if anyone is highlighted.
-    let allNodes = svg.selectAll('.node');
-    allNodes[0].forEach(function (d) {
-      if (d.__data__.isVisible && d.__data__.isHighlighted) {
-        console.log(d.__data__.isVisible);
-        highlight = true; // If ANY node is highlighted set this flag.
-      }
-    });
-    if (highlight === false) {  // Only executes if ALL nodes are NOT highlighted.
-      allNodes.style('opacity', function (d) {
-        return d.isVisible ? 1 : 0;
-      });// Turn Everyone on
-      path.style('opacity', function (d) {
-        return (nodeToEdgeMap[d.source.id].node.isVisible && nodeToEdgeMap[d.target.id].node.isVisible) ? 1 : 0;
-      }); // Turn on all the edges.
-    }
-  }
-
-  /**
-   * Node double click event hides all of the children nodes for double clicked node.
-   *
-   * @param {Object} clickedNode is the node that was clicked on
-   */
-  function nodeDoubleClick (clickedNode) {
-    console.log('================================');
-    console.log('   Double Click Fired on ' + clickedNode.id);
-    console.log('================================');
-    // console.log(clickedNode);
-    clickedOnce = false;  // For resetting the clickedOnce flag
-    clearTimeout(timer);  // Reset the timer for click event
-
-    collapseDownStream(clickedNode.id);   // Traverse down the graph
-    resetVisitedFlag();
-  }
-
   /**
    * Adds a downStream item and downStream edge to a given Node
    *
@@ -649,73 +494,179 @@ function updateGraph (graphData, rootId = -1) {
   }
 }
 
-/**
- * Collapse only the nodes downStream from the given node
- * @param {number} id - is the id of the object
- */
-function collapseDownStream (id) {
-  // console.log('======> collapseDownStream() ===');
-  let thisNode = nodeToEdgeMap[id];
-
-  if (thisNode.edges.length > 0) {
-    if (thisNode.node.isCollapsed === true) {
-      unCollapse(id);
-      thisNode.node.isCollapsed = false;
-    } else {
-      // Hide each downStream edge and recurse to downStream node
-      thisNode.edges.forEach(function (relItem) {
-        collapse(relItem.target.id, 0);  // Traverse down the relations
-        if (!relItem.visited) {
-          setOpacity(relItem.id, 0);  // Toggle the opacity of the edge
-          relItem.visited = true; // Toggle the visited flag
+  //
+  // ============ Toggle highlighting nodes on single click ===========
+  //
+  /**
+   * Handles the logic for highlighting and un-highlighting nodes on single-click
+   * @param {Object} d is the node that was just clicked
+   */
+  function nodeClick (d) {
+    console.log('==========================');
+    console.log('         nodeClick');
+    console.log('==========================');
+    let highlightedCount = 0; // this will count how many downStream nodes are highlighted.
+    if (d.downStream.length > 0) {
+      let selectedNode = nodeToEdgeMap[d.id];
+      selectedNode.edges.forEach(function (item) {
+        if (item.target.isHighlighted) {
+          highlightedCount++;
         }
       });
+    }
 
-      thisNode.node.isCollapsed = true;
+    // highlightedCount = downStreamHighlightCheck(d, highlightedCount);
+    if (d.isHighlighted) {
+      // If the downstream items are not all highlighted, then we highlight all of them
+      // Otherwise unHighlight all of them
+      if (d.downStream.length > 0 && (highlightedCount !== d.downStream.length)) {
+        highlightNodes(d);
+      } else {
+        unHighlightNodes(d);
+        checkOpacity();
+      }
+    } else {
+      highlightNodes(d);
+    }
+    updateOpacity();
+    resetVisitedFlag();
+  }
+
+  /**
+   * Un-highlight the clicked node (d) and the array of downStream nodes for it. This will NOT
+   * un-highlight a node if all of it's children are highlighted (cycle checking)
+   * @param {object} d is the node that was just clicked
+   */
+  // TODO : Keep nodes with two highlighted upstream nodes highlighted on un-highlight with a count
+  function unHighlightNodes (d) {
+    console.log('====> unHighlightNodes()');
+    d.isHighlighted = false;
+    d.visited = true;
+      let count = -1;
+      if (d.downStream.length > 0) {
+        d.downStream.forEach(function (curID) {
+
+          let curNode = nodeToEdgeMap[curID];
+          curNode.node.visited = true;
+          if (typeof curNode.node.downStream !== 'undefined' && curNode.node.downStream.length > 0){
+            count = downStreamHighlightCheck(curNode, count); // check downStream nodes for highlighting
+          }
+          if (count !== curNode.node.downStream.length) {
+            curNode.node.isHighlighted = false;
+          }
+        });
+      }
+  }
+
+  /**
+   * Highlight the selected node "d" then highlight the nodes in it's downStream array
+   * @param {object} d
+   */
+  function highlightNodes (d) {
+    d.isHighlighted = true;
+    if (d.downStream.length > 0){
+      d.downStream.forEach( function (curID) {
+        let curNode = nodeToEdgeMap[curID];
+        curNode.node.isHighlighted = true;
+      });
     }
   }
-}
+
+  /**
+   * Check all the downStream nodes of your array to see if they are highlighted. This prevents
+   * issues when we have a cycle and are un-highlighting nodes.
+   * @param {object} d
+   * @param {int} count
+   */
+  function downStreamHighlightCheck (d, count) {
+    console.log('====> downStreamHighlightCheck()');
+    // This checks whether we should be highlighting or un-highlighting nodes
+    if (d.downStream.length > 0) {
+      d.downStream.forEach(function (curID) {
+        let curNode = nodeToEdgeMap[curID.id];
+        if ((curNode.edges && curNode.node.isHighlighted) || curNode.node.visited) {
+          count = (count === -1) ? 1 : count + 1;
+        }
+        curID.visited = true;
+      });
+      return count;
+    }
+  }
+
+  /**
+   * Check if all the nodes are un-highlighted. If they are, highlight all the nodes on the graph.
+   */
+  function checkOpacity () {
+    let highlight = false; // flag to see if anyone is highlighted.
+    nodesToRender.forEach(function (d) {
+      if (d.isVisible && d.isHighlighted) {
+        highlight = true; // If ANY node is highlighted set this flag.
+      }
+    });
+    if (highlight === false) {  // Only executes if ALL nodes are NOT highlighted.
+      node.style('opacity', function (d) {
+        return d.isVisible ? 1 : 0;
+      });// Turn Everyone on
+      path.style('opacity', function (d) {
+        return (nodeToEdgeMap[d.source.id].node.isVisible && nodeToEdgeMap[d.target.id].node.isVisible) ? 1 : 0;
+      }); // Turn on all the edges.
+    }
+  }
+
+  /**
+   * Node double click event hides all of the children nodes for double clicked node.
+   *
+   * @param {Object} clickedNode is the node that was clicked on
+   */
+  function nodeDoubleClick (clickedNode) {
+    console.log('================================');
+    console.log('   Double Click Fired on ' + clickedNode.id);
+    console.log('================================');
+    // console.log(clickedNode);
+    clickedOnce = false;  // For resetting the clickedOnce flag
+    clearTimeout(timer);  // Reset the timer for click event
+    if(clickedNode.isCollapsed){
+      if (clickedNode.downStream.length > 0) {
+        unCollapse(clickedNode.id);
+      }
+    } else {
+      if (clickedNode.downStream.length > 0){
+        collapse(clickedNode.id);
+      }
+    }
+    resetVisitedFlag();
+    updateOpacity();
+  }
+
+
 
 /**
  * Collapses all of the graph nodes downStream from the selected node
  * @param {number} id is the object that is selected and whose downStream nodes will be toggled
  */
-function collapse (id, count) {
+function collapse (id) {
   // console.log('-- collapse *' + id + '* [' + count + '] --');
   let thisNode = nodeToEdgeMap[id];
-
   if (!thisNode.node.visited || thisNode.node.visited === 'undefined') {
     thisNode.node.visited = true;
-    count++; // increment the count
 
     if (thisNode.node.isCollapsed === false) {
       if (thisNode.edges.length > 0) {
         // Hide each downStream edge and recurse to downStream node
         thisNode.edges.forEach(function (relItem) {
           if (!relItem.visited) {
-            setOpacity(relItem.id, 0);  // Toggle the opacity of the edge
+            relItem.isCollapsed = true;
+            relItem.isVisible = false;
             relItem.visited = true; // Toggle the visited flag
           }
 
-          collapse(relItem.target.id, count);  // Traverse downstream nodes
+          collapse(relItem.target.id);  // Traverse downstream nodes
           relItem.target.isVisible = false;
         });
       }
-
-      if (thisNode.edgesUpstream.length > 0) {
-        // hide each upstream edge from this node
-        thisNode.edgesUpstream.forEach(function (relItem) {
-          if (relItem.target.visited) {
-            setOpacity(relItem.id, 0); // set the opacity of the edge to 0
-            relItem.visited = true;  // Toggle the visited flag
-          }
-        });
-      }
       thisNode.node.isCollapsed = true;
-      thisNode.node.isVisible = false;
+      thisNode.node.isVisible = true;
     }
-
-    setOpacity(thisNode.node.id, 0);  // Toggle the visibility of the edge
   }
 }
 
@@ -730,54 +681,21 @@ function unCollapse (id) {
   if (thisNode.edges.length > 0) {
     // Hide each downStream edge and recurse to downStream node
     thisNode.edges.forEach(function (relItem) {
-      let foundRel = d3.select("[id='" + relItem.id + "']");
-      let foundNode = d3.select("[id='" + relItem.target.id + "']");
-
-      if (foundRel[0][0] !== null) {
-        foundRel.style('opacity', function () {
-          return relItem.target.isHighlighted && relItem.source.isHighlighted ? 1 : reducedOpacity;
-        });
-      } else { console.log('item not found'); }
-
-      if (foundNode[0][0] !== null) {
-        relItem.target.isVisible = true;
-        foundNode.style('opacity', function () {
-          return relItem.target.isHighlighted ? 1 : reducedOpacity;
-        });
-      } else { console.log('item not found'); }
-
-      unCollapseNodeUpstream(relItem.target.id);
+      relItem.target.isVisible = true;
     });
-  }
-
-  unCollapseNodeUpstream(id);
-}
-
-function unCollapseNodeUpstream (id) {
-  // console.log('===> unCollapseNodeUpstream ' + id);
-  let thisNode = nodeToEdgeMap[id];
-  if (thisNode.edgesUpstream.length > 0) {
-    // UnCollapse all of the node's upstream relations
-    thisNode.edgesUpstream.forEach(function (relItem) {
-      let foundRel = d3.select("[id='" + relItem.id + "']");
-
-      if (foundRel[0] && relItem.source.isVisible) {
-        foundRel.style('opacity', 1);
-      } else { console.log('item not found'); }
-    });
-
     thisNode.node.isCollapsed = false;
   }
+  thisNode.node.isVisible = true;
 }
 
 /**
  * Hides all of the graph nodes except the root id
  */
-function collapseAll () {
+function collapseAll (rootId) {
   // Set all nodes to be invisible
-  svg.selectAll('.node').style('opacity', 0);
-  d3.select('.projectRoot').style('opacity', 1);  // Set the root node to be visible
-  path.style('opacity', 0);
+  nodesToRender.forEach(function (item) {
+    item.isVisible = (item.id === -1 || item.id === rootId);
+  });
 }
 
 /**
@@ -804,14 +722,35 @@ function resetVisitedFlag () {
 //   } else { console.log('toggleOpacity() - item is not a number'); }
 // }
 
-function setOpacity (id, opac) {
-  // console.log('----- toggleOpacity() -----');
-  let foundRel;
+// function setOpacity (id, opac) {
+//   // console.log('----- toggleOpacity() -----');
+//   let foundRel;
+//
+//   if (id && (typeof id === typeof 0)) {
+//     foundRel = d3.select("[id='" + id + "']");
+//     if (foundRel[0][0] !== null) {
+//       foundRel.style('opacity', opac);
+//     } else { console.log('setOpacity() - item not found'); }
+//   } else { console.log('setOpacity() - item is not a number'); }
+// }
 
-  if (id && (typeof id === typeof 0)) {
-    foundRel = d3.select("[id='" + id + "']");
-    if (foundRel[0][0] !== null) {
-      foundRel.style('opacity', opac);
-    } else { console.log('setOpacity() - item not found'); }
-  } else { console.log('setOpacity() - item is not a number'); }
+function updateOpacity(){
+  // Node checking
+  node.style('opacity', function (d) {
+    if (d.isVisible) {
+      return (d.isHighlighted) ? 1 : reducedOpacity;
+    } else {
+      return 0;
+    }
+  });
+  // Edge Checking
+  path.style('opacity', function (curPath) {
+    let src = curPath.source;
+    let targ = curPath.target;
+    if (src.isVisible && targ.isVisible) {
+      return (curPath.source.isHighlighted && curPath.target.isHighlighted) ? 1 : reducedOpacity;
+    } else {
+      return 0;
+    }
+  });
 }
