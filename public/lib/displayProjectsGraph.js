@@ -519,7 +519,7 @@ function updateGraph (graphData, rootId = -1) {
       if (curNode.isVisible) {
         return curNode.isHighlighted ? 1 : reducedOpacity;
       } else {
-        return 0
+        return 0;
       }
     });
 
@@ -548,8 +548,9 @@ function updateGraph (graphData, rootId = -1) {
       }
       if (curNode.isVisible) {
         return curNode.isHighlighted ? 1 : reducedOpacity;
-      }
+      } else {
         return 0;
+      }
     });
 
     path.style('opacity', function (curPath) {
@@ -594,8 +595,8 @@ function updateGraph (graphData, rootId = -1) {
     let highlight = false; // flag to see if anyone is highlighted.
     let allNodes = svg.selectAll('.node');
     allNodes[0].forEach(function (d) {
-      if (d.__data__.isVisible &&  d.__data__.isHighlighted) {
-        console.log (d.__data__.isVisible);
+      if (d.__data__.isVisible && d.__data__.isHighlighted) {
+        console.log(d.__data__.isVisible);
         highlight = true; // If ANY node is highlighted set this flag.
       }
     });
@@ -604,7 +605,7 @@ function updateGraph (graphData, rootId = -1) {
         return d.isVisible ? 1 : 0;
       });// Turn Everyone on
       path.style('opacity', function (d) {
-        return (nodeToEdgeMap[d.source.id].node.isVisible && nodeToEdgeMap[d.target.id].node.isVisible) ? 1 : 0 ;
+        return (nodeToEdgeMap[d.source.id].node.isVisible && nodeToEdgeMap[d.target.id].node.isVisible) ? 1 : 0;
       }); // Turn on all the edges.
     }
   }
@@ -716,8 +717,6 @@ function collapse (id, count) {
 
     setOpacity(thisNode.node.id, 0);  // Toggle the visibility of the edge
   }
-
-
 }
 
 /**
@@ -744,7 +743,6 @@ function unCollapse (id) {
       } else { console.log('item not found'); }
 
       unCollapseNodeUpstream(relItem.target.id);
-
     });
   }
 
@@ -782,7 +780,7 @@ function collapseAll () {
  * Cycle through all of the nodes and edges and set the visited flag to false
  */
 function resetVisitedFlag () {
-  nodesToRender.forEach(function (item) {item.visited = false; });
+  nodesToRender.forEach(function (item) { item.visited = false; });
   edgesToRender.forEach(function (item) { item.visited = false; });
 }
 
