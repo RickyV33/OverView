@@ -2,13 +2,69 @@
 
 import './lib/displayProjectsGraph';
 
+let projects = document.querySelector('#projects');
+let hierarchy = document.querySelector('#hierarchy');
+let selectedProject;
+let selectedHierarchyItem;
+let graph;
+
 // TODO: Hook this up to the log out button on the graph view. It is currently not hooked up to anything,
 // but functions properly
 document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('logOut').addEventListener('click', () => {
     document.location.href = '/logout';
   });
+
+  // Manage the selection of a project and item hierarchy
+  buildProjectAnchors().then(() => {
+    getGraph(selectedProject).then(graphJSON => {
+      graph = graphJSON;
+      console.log(graph);
+    });
+  });
+  buildItemHierarchyAnchors();
+  document.getElementById('renderButton').addEventListener('click', event => {
+    toggle(hierarchy);
+    document.querySelector('svg').style.display = 'block';
+  });
 });
+
+/**
+ * Listens for mouse clicks on the Item hierarchy list and sets the selected
+ * variable to that items ID
+ */
+function buildItemHierarchyAnchors () {
+  return new Promise(resolve => {
+    querySelectorAll('#hierarchy a').forEach(hierarchyAnchor => {
+      hierarchyAnchor.addEventListener('click', event => {
+        selectedHierarchyItem = event.target.getAttribute('data-id');
+        document.body.style.cursor = 'wait';
+        console.log(selectedHierarchyItem);
+      });
+    });
+  });
+}
+
+function buildProjectAnchors () {
+  return new Promise((resolve) => {
+    querySelectorAll('#projects a').forEach(projectAnchor => {
+      projectAnchor.addEventListener('click', event => {
+        selectedProject = event.target.getAttribute('data-id');
+
+        // Wait until loadHierarchy retrieves the new partial view and updates it with the item hierarchy
+        // to display the hierarchy selection div and toggle projects view
+        document.body.style.cursor = 'wait';
+        getHierarchy(selectedProject).then(hierarchyPayload => {
+          renderHierarchy(hierarchyPayload);
+          toggle(projects);
+          toggle(hierarchy);
+          document.body.style.cursor = 'default';
+          resolve();
+        });
+      });
+    });
+  });
+}
 
 /**
  * Query the page for a set of elements given a CSS selector.
@@ -17,47 +73,16 @@ document.addEventListener('DOMContentLoaded', () => {
  * @returns {*} Array of matched elements
  */
 function querySelectorAll (selector) {
-  return Array.prototype.slice.call(document.querySelectorAll(selector));
+  return Array.from(document.querySelectorAll(selector));
 }
 
-let projects = document.querySelector('#projects');
-let hierarchy = document.querySelector('#hierarchy');
-
-function toggleHierarchy () {
-  if (hierarchy.classList.contains('hidden')) {
-    hierarchy.classList.remove('hidden');
+function toggle (element) {
+  if (element.classList.contains('hidden')) {
+    element.classList.remove('hidden');
   } else {
-    hierarchy.classList.add('hidden');
+    element.classList.add('hidden');
   }
 }
-
-function hideProjects () {
-  projects.classList.add('hidden');
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-  querySelectorAll('#projects a').forEach(projectAnchor => {
-    projectAnchor.addEventListener('click', event => {
-      let selectedProject = event.target.getAttribute('data-id');
-
-      hideProjects();
-      toggleHierarchy();
-
-      getHierarchy(selectedProject).then(hierarchy => {
-        console.log(hierarchy);
-      });
-      getGraph(selectedProject).then(graph => {
-        console.log(graph);
-      });
-      // TODO: change query parameter (dependent on hierarchy endpoint story)
-    });
-  });
-
-  document.getElementById('renderButton').addEventListener('click', event => {
-    toggleHierarchy();
-    document.querySelector('svg').style.display = 'block';
-  });
-});
 
 /**
  * Makes an AJAX request to the provided endpoint for the item hierarchy tree.
@@ -84,6 +109,34 @@ function getHierarchy (projectId) {
   });
 }
 
+function renderHierarchy (hierarchyPayload) {
+  let itemHierarchyList = document.getElementById('itemHierarchyList');
+  if (hierarchyPayload) {
+    hierarchyPayload.forEach(item => {
+      itemHierarchyList.appendChild(getHierarchyItemWithChildren(item));
+    });
+  } else {
+    itemHierarchyList.appendChild(document.createTextNode('Sorry, this project has no items to display.'));
+  }
+}
+
+function getHierarchyItemWithChildren (item) {
+  let listItem = document.createElement('li');
+  let itemAnchor = document.createElement('a');
+  itemAnchor.setAttribute('href', '#rootId=' + item.id);
+  itemAnchor.appendChild(document.createTextNode(item.name));
+  itemAnchor.setAttribute('data-id', item.id);
+  listItem.appendChild(itemAnchor);
+  if (item.children) {
+    let unorderedList = document.createElement('ul');
+    item.children.forEach(function (subItem) {
+      unorderedList.appendChild(getHierarchyItemWithChildren(subItem));
+    });
+    listItem.appendChild(unorderedList);
+  }
+  return listItem;
+}
+
 /**
  * Makes an AJAX request to the provided endpoint for the project graph.
  *
@@ -98,14 +151,13 @@ function getGraph (projectId) {
       if (httpRequest.readyState === XMLHttpRequest.DONE) {
         if (httpRequest.status === 200) {
           resolve(JSON.parse(httpRequest.responseText));
-          console.log(httpRequest.responseText);
         } else {
           console.log('There was a problem requesting to the graph endpoint.');
           reject({status: httpRequest.status, response: httpRequest.responseText});
         }
       }
     };
-    httpRequest.open('GET', '/graph?project=' + projectId);
+    httpRequest.open('GET', 'graph/getGraphData/' + projectId);
     httpRequest.send();
   });
 }

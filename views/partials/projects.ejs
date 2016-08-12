@@ -2,7 +2,7 @@
     <%if (projects === null || projects.length === 0) {%>
         <p>Sorry, there are no projects to display.</p>
     <%} else {%>
-        <p>Click on a project below to view it's traceability graph:</p>
+        <p>Select a project below to view it's traceability graph:</p>
         <ul>
           <%projects.forEach(function (project) {%>
             <li><a href="#project=<%= project.id %>" data-id="<%= project.id %>"><%= project.name %></a></li>
