@@ -11,7 +11,6 @@
 <div id='graphContainer'></div>
 <script>
     var request = new XMLHttpRequest();
-    var selectedProjectId = <%= projectId %>;
 
     request.onreadystatechange = function() {
         if (request.readyState === 4) {
@@ -19,7 +18,7 @@
             // console.log('AJAX Status: ' + request.status);
             if (request.status === 200) {
                 let projectData = request.responseText;
-                renderGraph(JSON.parse(projectData), <%= rootId %>);
+                renderGraph(JSON.parse(projectData), <%= rootId %>, <%= projectId %>);
             }
         }
     };

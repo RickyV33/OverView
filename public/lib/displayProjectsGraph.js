@@ -1,4 +1,4 @@
-/* global d3, selectedProjectId, event */
+/* global d3, event */
 /* exported renderGraph */
 let clickedOnce = false;  // For monitoring the click event on node
 let timer;                // For click event monitoring
@@ -46,11 +46,9 @@ function initializeGraphData (graphData, rootId) {
  * @param graphData
  */
 // eslint-disable-next-line no-unused-vars
-function renderGraph (graphData, rootId) {
-  console.log('---> Graph Data');
-  console.log('Root ID: ' + rootId + '  CurrentRootId: ' + currentRootId);
-  console.log('Project ID: ' + selectedProjectId + '  CurrentProjectId: ' + currentProjectId);
-  console.log(graphData);
+function renderGraph (graphData, rootId, selectedProjectId) {
+  // console.log('Root ID: ' + rootId + '  CurrentRootId: ' + currentRootId);
+  // console.log('Project ID: ' + selectedProjectId + '  CurrentProjectId: ' + currentProjectId);
 
   if (currentProjectId !== selectedProjectId) {
     initializeGraphData(graphData, rootId);
