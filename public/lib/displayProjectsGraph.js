@@ -523,12 +523,13 @@ function updateGraph (graphData, rootId = -1) {
         highlightNodes(d);
       } else {
         unHighlightNodes(d);
-        checkOpacity();
+        // checkOpacity();
       }
     } else {
       highlightNodes(d);
     }
     updateOpacity();
+    checkOpacity();
     resetVisitedFlag();
   }
 
