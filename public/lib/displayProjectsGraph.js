@@ -66,7 +66,7 @@ function renderGraph (graphData, rootId) {
 
     configureD3Graph();
     updateGraph(graphData, rootId);  // Render the graph
-    // collapseAll();  // Collapses all the nodes except the root node
+    collapseAll();  // Collapses all the nodes except the root node
     currentRootId = rootId;
   }
 }
@@ -121,7 +121,7 @@ function configureD3Graph () {
   force = d3.layout.force()
     .size([width, height])
     .linkDistance(100);  // sets the target distance between linked nodes to the specified value
-  // .charge(-2000);       // - value results in node repulsion, while + value results in node attraction
+    // .charge(-2000);       // - value results in node repulsion, while + value results in node attraction
 }
 
 /**
@@ -504,8 +504,10 @@ function updateGraph (graphData, rootId = -1) {
   // TODO : Keep nodes with two highlighted upstream nodes highlighted on un-highlight with a count
   function unHighlightNodes (d) {
     d.isHighlighted = false;
+    console.log(d);
     node.style('opacity', function (curNode) {
       let count = -1;
+      console.log(curNode);
       if (d.downStream) {
         for (let i = 0; i < d.downStream.length; i++) {
           if (d.downStream[i] === curNode.id) {
@@ -516,11 +518,19 @@ function updateGraph (graphData, rootId = -1) {
           }
         }
       }
-      return curNode.isHighlighted ? 1 : reducedOpacity;
+      if (curNode.isVisible) {
+        return curNode.isHighlighted ? 1 : reducedOpacity;
+      } else {
+        return 0
+      }
     });
 
     path.style('opacity', function (curPath) {
-      return (curPath.source.isHighlighted && curPath.target.isHighlighted) ? 1 : reducedOpacity;
+      if (nodeToEdgeMap[curPath.source.id].node.isVisible && nodeToEdgeMap[curPath.target.id].node.isVisible) {
+        return (curPath.source.isHighlighted && curPath.target.isHighlighted) ? 1 : reducedOpacity;
+      } else {
+        return 0;
+      }
     });
   }
 
@@ -538,11 +548,18 @@ function updateGraph (graphData, rootId = -1) {
           }
         }
       }
-      return curNode.isHighlighted ? 1 : reducedOpacity;
+      if (curNode.isVisible) {
+        return curNode.isHighlighted ? 1 : reducedOpacity;
+      }
+        return 0;
     });
 
     path.style('opacity', function (curPath) {
-      return (curPath.source.isHighlighted && curPath.target.isHighlighted) ? 1 : reducedOpacity;
+      if (nodeToEdgeMap[curPath.source.id].node.isVisible && nodeToEdgeMap[curPath.target.id].node.isVisible) {
+        return (curPath.source.isHighlighted && curPath.target.isHighlighted) ? 1 : reducedOpacity;
+      } else {
+        return 0;
+      }
     });
   }
 
@@ -579,13 +596,18 @@ function updateGraph (graphData, rootId = -1) {
     let highlight = false; // flag to see if anyone is highlighted.
     let allNodes = svg.selectAll('.node');
     allNodes[0].forEach(function (d) {
-      if (d.__data__.isHighlighted) {
+      if (d.__data__.isVisible &&  d.__data__.isHighlighted) {
+        console.log (d.__data__.isVisible);
         highlight = true; // If ANY node is highlighted set this flag.
       }
     });
     if (highlight === false) {  // Only executes if ALL nodes are NOT highlighted.
-      allNodes.style('opacity', 1); // Turn Everyone on
-      d3.selectAll('path').style('opacity', 1); // Turn on all the edges.
+      allNodes.style('opacity', function (d) {
+        return d.isVisible ? 1 : 0;
+      });// Turn Everyone on
+      path.style('opacity', function (d) {
+        return (nodeToEdgeMap[d.source.id].node.isVisible && nodeToEdgeMap[d.target.id].node.isVisible) ? 1 : 0 ;
+      }); // Turn on all the edges.
     }
   }
 
@@ -691,6 +713,7 @@ function collapse (id, count) {
         });
       }
       thisNode.node.isCollapsed = true;
+      thisNode.node.isVisible = false;
     }
 
     setOpacity(thisNode.node.id, 0);  // Toggle the visibility of the edge
@@ -718,11 +741,12 @@ function unCollapse (id) {
       } else { console.log('item not found'); }
 
       if (foundNode[0][0] !== null) {
+        relItem.target.isVisible = true;
         foundNode.style('opacity', 1);
       } else { console.log('item not found'); }
 
       unCollapseNodeUpstream(relItem.target.id);
-      relItem.target.isVisible = true;
+
     });
   }
 
@@ -760,7 +784,7 @@ function collapseAll () {
  * Cycle through all of the nodes and edges and set the visited flag to false
  */
 function resetVisitedFlag () {
-  nodesToRender.forEach(function (item) { item.visited = false; });
+  nodesToRender.forEach(function (item) {item.visited = false; });
   edgesToRender.forEach(function (item) { item.visited = false; });
 }
 
