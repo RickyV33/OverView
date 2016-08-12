@@ -735,12 +735,16 @@ function unCollapse (id) {
       let foundNode = d3.select("[id='" + relItem.target.id + "']");
 
       if (foundRel[0][0] !== null) {
-        foundRel.style('opacity', 1);
+        foundRel.style('opacity', function () {
+          return relItem.target.isHighlighted && relItem.source.isHighlighted ? 1 : reducedOpacity;
+        });
       } else { console.log('item not found'); }
 
       if (foundNode[0][0] !== null) {
         relItem.target.isVisible = true;
-        foundNode.style('opacity', 1);
+        foundNode.style('opacity', function () {
+          return relItem.target.isHighlighted ? 1 : reducedOpacity;
+        });
       } else { console.log('item not found'); }
 
       unCollapseNodeUpstream(relItem.target.id);
