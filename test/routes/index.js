@@ -22,7 +22,6 @@ let index;
 let path;
 let resData;
 let renderedHtml;
-
 let userLoginMockData = {username: 'invalid', password: 'invalid', teamName: 'invalid', projectId: 1000};
 
 let authStub = {
@@ -183,6 +182,20 @@ describe('index route', () => {
         })
         .catch((err) => {
           throw (err);
+        });
+    });
+    it('should fail when index route source is not found', (done) => {
+      indexNotFoundProxySetup();
+      chai.request(app)
+        .get('/')
+        .end((err, res) => {
+          expect(err).to.not.equal(null);
+          expect(err.status).to.equal(404);
+          expect(err.message).to.equal('Not Found');
+          expect(res).to.not.equal(null);
+          expect(res).to.have.property('text');
+          expect(res.text).to.contain('<h1>Not Found</h1>').and.to.contain('<h2>404</h2>');
+          done();
         });
     });
   });
