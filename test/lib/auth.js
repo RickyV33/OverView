@@ -74,17 +74,17 @@ describe('Auth module', function () {
       let teamName = fixture.teamName ? 'valid' : 'empty';
 
       if (fixture.username && fixture.password && fixture.teamName) {
-        it('should return true when all required fields are valid', ()=> {
+        it('should return true when all required fields are valid', () => {
           credentialsFixture.body = fixture;
           expect(auth.validate(credentialsFixture)).to.be.true();
         });
       } else if (!fixture.username && !fixture.password && !fixture.teamName) {
-        it('should return false when all required fields are empty', ()=> {
+        it('should return false when all required fields are empty', () => {
           credentialsFixture.body = fixture;
           expect(auth.validate(credentialsFixture)).to.be.false();
         });
       } else {
-        it(baseMessage + username + ', password is ' + password + ', and team name is ' + teamName, ()=> {
+        it(baseMessage + username + ', password is ' + password + ', and team name is ' + teamName, () => {
           credentialsFixture.body = fixture;
           expect(auth.validate(credentialsFixture)).to.be.false();
         });
@@ -100,7 +100,7 @@ describe('Auth module', function () {
       return string;
     }
 
-    it('should return false when username length is more than 200', () =>{
+    it('should return false when username length is more than 200', () => {
       credentialFixtureCases.filter(fixture => {
         return fixture.username;
       }).forEach(fixture => {
@@ -134,30 +134,30 @@ describe('Auth module', function () {
     });
   });
 
-  describe('authenticate function',  () => {
+  describe('authenticate function', () => {
     'use strict';
     let username = 'dummy';
     let password = 'password';
     let teamName = 'sevensource';
-    let resolvedPromise =  () => {
+    let resolvedPromise = () => {
       return new Promise((resolve, reject) => {
         let payload = [ { status: 200 } ];
         resolve(payload);
       });
     };
     let rejectedPromise = () => {
-      return new Promise( (resolve, reject) => {
+      return new Promise((resolve, reject) => {
         let payload = [ { status: 401 } ];
         reject(payload);
       });
     };
     let auth;
 
-    it('should return a resolved promise when all credentials are valid',  () =>{
+    it('should return a resolved promise when all credentials are valid', () => {
       auth = proxyquire('../../lib/auth', { './pagination': resolvedPromise });
       expect(auth.authenticate(username, password, teamName)).to.be.fulfilled();
     });
-    it('should return a rejected promise when all credentials are invalid',  () => {
+    it('should return a rejected promise when all credentials are invalid', () => {
       auth = proxyquire('../../lib/auth', { './pagination': rejectedPromise });
       expect(auth.authenticate(username, password, teamName)).to.be.rejected();
     });

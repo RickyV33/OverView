@@ -88,7 +88,7 @@ describe('projects.js module', function () {
     });
   });
 
-  describe('parseProjectsList function',  () => {
+  describe('parseProjectsList function', () => {
     // Array 0 is for checking against completely valid JSON
     // Array 1 is for checking against JSON with an invalid entry in the first set
     let filterJSON = [
@@ -102,7 +102,7 @@ describe('projects.js module', function () {
       ]
     ];
 
-    it('should return a valid JSON with all three projects when all three projects are valid schema format', () =>{
+    it('should return a valid JSON with all three projects when all three projects are valid schema format', () => {
       // When all projects have valid ids and names
       let parsed = projects.parseProjectList(mockProjects);
       let result = validate(parsed);
@@ -110,7 +110,7 @@ describe('projects.js module', function () {
       expect(result).to.be.true();
     });
 
-    it('should return a valid JSON with two of three projects when name is null in the first project',  () => {
+    it('should return a valid JSON with two of three projects when name is null in the first project', () => {
       // When id is valid and name is invalid
       mockProjects[0].fields.name = null;
       let parsed = projects.parseProjectList(mockProjects);
@@ -139,7 +139,7 @@ describe('projects.js module', function () {
       expect(result).to.be.true();
     });
 
-    it('should return an empty array of projects when passed a null',  () => {
+    it('should return an empty array of projects when passed a null', () => {
       // When projects are null
       let empty = [];
       let parsed = projects.parseProjectList(null);

@@ -15,7 +15,7 @@ chai.use(dirtyChai);
 chai.use(chaiHttp);
 chai.use(chaiPromise);
 
-describe('index', ()=> {
+describe('index', () => {
   let credentialFixtureCases = [
     {
       username: '',
@@ -59,7 +59,7 @@ describe('index', ()=> {
     }
   ];
 
-  describe('get request', ()=> {
+  describe('get request', () => {
     it('should contain a property called text', (done) => {
       // This makes a server request to the route location '/'
       chai.request(app)
@@ -98,7 +98,7 @@ describe('index', ()=> {
         });
       } else {
         it('should return false when any form field is invalid username is, "' + fixture.username + '" password is, "' +
-            fixture.password + '" team name is, "' + fixture.teamName + '".',  () => {
+            fixture.password + '" team name is, "' + fixture.teamName + '".', () => {
           return chai.request(app)
                 .post('/')
                 .send({ username: fixture.username, password: fixture.password, teamName: fixture.teamName }).then(res => {

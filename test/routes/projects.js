@@ -20,7 +20,7 @@ describe('projects', () => {
       chai.request(server)
             .post('/')
             .send({teamName: 'sevensource', username: 'dummy', password: 'password'})
-            .end( (err, res) => {
+            .end((err, res) => {
               if (err) {
                 console.log(err);
               }

@@ -73,8 +73,8 @@ describe('Relationship Graph JSON', () => {
     });
   });
   // Validating all correct JSON are accepted
-  passingTestCases.forEach( item => {
-    it(item.title,  () => {
+  passingTestCases.forEach(item => {
+    it(item.title, () => {
       validJSON = validate(item.body);
       expect(validJSON).to.be.true();
     });
