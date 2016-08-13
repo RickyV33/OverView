@@ -65,7 +65,7 @@ describe('index', () => {
       // This makes a server request to the route location '/'
       chai.request(app)
             .get('/')
-            .end(function (err, res) {
+            .end((err, res) => {
               if (err) {
                 expect.fail();
               }

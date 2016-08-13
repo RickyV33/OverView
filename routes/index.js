@@ -4,11 +4,11 @@ let projects = require('../lib/projects');
 let router = express.Router();
 
 /* GET home page. */
-router.get('/', function (req, res, next) {
+router.get('/', (req, res, next) => {
   res.render('index', {title: 'JamaTrace', teamName: req.session.teamName, error: false});
 });
 
-router.post('/', function (req, res, next) {
+router.post('/', (req, res, next) => {
   req.body.teamName = req.session.teamName;
   if (auth.validate(req)) {
     auth.authenticate(req.body.username, req.body.password, req.body.teamName).then(sessionProjects => {
@@ -22,7 +22,7 @@ router.post('/', function (req, res, next) {
         }
         res.redirect('/projects');
       });
-    }, function () {
+    }, () => {
       res.render('index', { title: 'JamaTrace', teamName: req.body.teamName, error: true });
     });
   } else {

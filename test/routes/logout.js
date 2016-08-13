@@ -18,7 +18,7 @@ describe('logout', () => {
       let path, data, renderedView;
       chai.request(server)
             .get('/logout')
-            .end(function (err, res) {
+            .end((err, res) => {
               if (err) {
                 console.log(err);
               }
