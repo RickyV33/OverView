@@ -15,7 +15,7 @@ Ajv.addSchema(schema, 'graphSchema');
 let validate = Ajv.compile(schema);
 let validJSON = false;
 
-describe('Relationship Graph JSON', function () {
+describe('Relationship Graph JSON', () => {
   // Failing test cases for relationship graph JSON
   let failingTestCases = [
       // test cases for items missing a field [id, name, type]
@@ -66,15 +66,15 @@ describe('Relationship Graph JSON', function () {
            {id: 5, fromItem: 5, toItem: 3, type: 38}, {id: 6, fromItem: 4, toItem: 3, type: 39}]}}
   ];
   // Validating all incorrect JSON are rejected
-  failingTestCases.forEach(function (item) {
-    it(item.title, function () {
+  failingTestCases.forEach(item => {
+    it(item.title, () => {
       validJSON = validate(item.body);
       expect(validJSON).to.be.false();
     });
   });
   // Validating all correct JSON are accepted
-  passingTestCases.forEach(function (item) {
-    it(item.title, function () {
+  passingTestCases.forEach( item => {
+    it(item.title,  () => {
       validJSON = validate(item.body);
       expect(validJSON).to.be.true();
     });

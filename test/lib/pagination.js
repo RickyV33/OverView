@@ -48,7 +48,7 @@ let startAt = 0;
 let page = 0;
 let maxPossible = Number.MAX_SAFE_INTEGER;
 
-let rejectedRequestStub = function (options, callback) {
+let rejectedRequestStub =  (options, callback) => {
   process.nextTick(function () {
     callback('this is an error');
   });
@@ -88,44 +88,44 @@ function resolvedRequest (totalResults, maxResults) {
   return resolvedObjects;
 }
 
-describe('Pagination Module', function () {
+describe('Pagination Module', () => {
   'use strict';
 
-  describe('Pagination Function', function () {
+  describe('Pagination Function', () => {
     let pagination;
 
     //  Test #1: username is invalid
     //  returned promise from pagination should be rejected
-    it('should reject if the username is invalid', function () {
+    it('should reject if the username is invalid', () => {
       pagination = proxyquire('../../lib/pagination', { 'request': rejectedRequestStub });
       expect(pagination('http://notdummy:password@sevensource.jamacloud.com/rest/latest/projects', startAt, maxPossible)).to.eventually.be.rejected();
     });
     //  Test #2: password is invalid
     //  returned promise from pagination should be rejected
-    it('should reject if the password is invalid', function () {
+    it('should reject if the password is invalid',  () => {
       pagination = proxyquire('../../lib/pagination', { 'request': rejectedRequestStub });
       expect(pagination('http://dummy:invalidPassword@sevensource.jamacloud.com/rest/latest/projects', startAt, maxPossible)).to.eventually.be.fulfilled();
     });
     //  Test #3: URL contains a typo (is invalid)
     //  returned promise from pagination should be rejected
-    it('should reject if the URL is invalid', function () {
+    it('should reject if the URL is invalid', () => {
       pagination = proxyquire('../../lib/pagination', { 'request': rejectedRequestStub });
       expect(pagination('http://dummy:password@sevensourcejamacloud.com/rest/latest/projects', startAt, maxPossible)).to.eventually.be.rejected();
     });
     //  Test #4: startAt value is invalid (less than zero)
     //  returned promise from pagination should be rejected
-    it('should reject if the startAt value is invalid (less than zero)', function () {
+    it('should reject if the startAt value is invalid (less than zero)', () => {
       pagination = proxyquire('../../lib/pagination', { 'request': rejectedRequestStub });
       expect(pagination('http://dummy:password@sevensourcejamacloud.com/rest/latest/projects', -1, maxPossible)).to.eventually.be.rejected();
     });
     //  Test #5: valid URL, startAt, and maxResultsAllowed is 0
     //  returned promise from pagination should be resolved with no data
-    it('should return an empty page when URL is valid, startAt is valid, and maxResultsAllowed is 0 ', function () {
+    it('should return an empty page when URL is valid, startAt is valid, and maxResultsAllowed is 0 ', () => {
       // total results: 0, maximum results per page: 3
       let pages = resolvedRequest(0, 20);
       page = 0;
-      let requestStub = function (options, callback) {
-        process.nextTick(function () {
+      let requestStub =  (options, callback) => {
+        process.nextTick( () => {
           callback(null, pages[page]);
           page += 1;
         });
@@ -139,8 +139,8 @@ describe('Pagination Module', function () {
       // total results: 10, maximum results per page: 3
       let pages = resolvedRequest(10, 3);
       page = 0;
-      let requestStub = function (options, callback) {
-        process.nextTick(function () {
+      let requestStub = (options, callback) => {
+        process.nextTick( () => {
           callback(null, pages[page]);
           page += 1;
         });
@@ -154,8 +154,8 @@ describe('Pagination Module', function () {
       // total results: 50, maximum results per page: 50
       let pages = resolvedRequest(50, 50);
       page = 0;
-      let requestStub = function (options, callback) {
-        process.nextTick(function () {
+      let requestStub = (options, callback) => {
+        process.nextTick( () => {
           callback(null, pages[page]);
           page += 1;
         });
@@ -169,8 +169,8 @@ describe('Pagination Module', function () {
       // total results: 10, maximum results per page: 20
       let pages = resolvedRequest(10, 20);
       page = 0;
-      let requestStub = function (options, callback) {
-        process.nextTick(function () {
+      let requestStub = (options, callback) => {
+        process.nextTick( () => {
           callback(null, pages[page]);
           page += 1;
         });
@@ -180,12 +180,12 @@ describe('Pagination Module', function () {
     });
     //  Test #9: valid URL, startAt, maxResultsAllowed, retrieving more than a single page of results
     //  returned promise from pagination should be valid and equal to pages' data
-    it('should return multiple page(s) of results when URL, startAt, and maxResultsAllowed are valid', function () {
+    it('should return multiple page(s) of results when URL, startAt, and maxResultsAllowed are valid',  () => {
       // total results: 130, maximum results per page: 20
       let pages = resolvedRequest(130, 20);
       page = 0;
-      let requestStub = function (options, callback) {
-        process.nextTick(function () {
+      let requestStub = (options, callback) => {
+        process.nextTick( () => {
           callback(null, pages[page]);
           page += 1;
         });
