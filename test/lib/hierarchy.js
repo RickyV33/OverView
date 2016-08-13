@@ -52,42 +52,42 @@ let pushChildrenStub = () => {
 describe('Hierarchy Module', () => {
   describe('getAllItems function', () => {
     it('should return a rejected promise when the login credentials are invalid', () => {
-        projectId = 99;
-        data = 'Invalid login credentials';
-        hierarchy = proxyquire('../../lib/hierarchy', {'./pagination': rejectedPromise});
-        return (expect(hierarchy.getAllItems(username, password, teamName, projectId))
-          .to.eventually.be.rejected()).then((item) => {
-            expect(item).to.equal(data);
-          });
-      });
+      projectId = 99;
+      data = 'Invalid login credentials';
+      hierarchy = proxyquire('../../lib/hierarchy', {'./pagination': rejectedPromise});
+      return (expect(hierarchy.getAllItems(username, password, teamName, projectId))
+        .to.eventually.be.rejected()).then((item) => {
+          expect(item).to.equal(data);
+        });
+    });
     it('should return a rejected promise when the login credentials are valid, but projectId is invalid', () => {
-        projectId = 1000;
-        data = 'Invalid project ID';
-        hierarchy = proxyquire('../../lib/hierarchy', {'./pagination': rejectedPromise});
-        return (expect(hierarchy.getAllItems(username, password, teamName, projectId))
-          .to.eventually.be.rejected()).then((item) => {
-            expect(item).to.equal(data);
-          });
-      });
+      projectId = 1000;
+      data = 'Invalid project ID';
+      hierarchy = proxyquire('../../lib/hierarchy', {'./pagination': rejectedPromise});
+      return (expect(hierarchy.getAllItems(username, password, teamName, projectId))
+        .to.eventually.be.rejected()).then((item) => {
+          expect(item).to.equal(data);
+        });
+    });
     it('should return an empty JSON blob when login credentials and projectId are valid', () => {
-        projectId = 33;
-        data = {};
-        hierarchy = proxyquire('../../lib/hierarchy', {'./pagination': resolvedPromise});
-        return (expect(hierarchy.getAllItems(username, password, teamName, projectId))
-          .to.eventually.be.fulfilled()).then((item) => {
-            expect(item).to.equal(data);
-          });
-      });
+      projectId = 33;
+      data = {};
+      hierarchy = proxyquire('../../lib/hierarchy', {'./pagination': resolvedPromise});
+      return (expect(hierarchy.getAllItems(username, password, teamName, projectId))
+        .to.eventually.be.fulfilled()).then((item) => {
+          expect(item).to.equal(data);
+        });
+    });
     it('should return a valid JSON blob with one item and one sub item ' +
       'when login credentials and projectId are valid, and the project contains one item and one sub item', () => {
-        projectId = 33;
-        data = {'name': 'first item', 'children': {'name': 'sub item of first item', 'children': {}}};
-        hierarchy = proxyquire('../../lib/hierarchy', {'./pagination': resolvedPromise});
-        return (expect(hierarchy.getAllItems(username, password, teamName, projectId))
-          .to.eventually.be.fulfilled()).then((item) => {
-            expect(item).to.equal(data);
-          });
-      });
+      projectId = 33;
+      data = {'name': 'first item', 'children': {'name': 'sub item of first item', 'children': {}}};
+      hierarchy = proxyquire('../../lib/hierarchy', {'./pagination': resolvedPromise});
+      return (expect(hierarchy.getAllItems(username, password, teamName, projectId))
+        .to.eventually.be.fulfilled()).then((item) => {
+          expect(item).to.equal(data);
+        });
+    });
   });
   describe('parseItemHierarchy function', () => {
     describe('parseItemHierarchy function', () => {
