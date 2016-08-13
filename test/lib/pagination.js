@@ -19,7 +19,7 @@ function arrayOfSizeN (n, counter) {
   return array;
 }
 
-//  function to create a page {meta: {startIndex, resultCount}, data: []}} of size N
+//  function to create a page {meta: {startIndex, resultCount}, userLoginMockData: []}} of size N
 function pageArrayOfSizeN (n) {
   let array = [];
   for (let i = 0; i < n; i += 1) {
@@ -28,7 +28,7 @@ function pageArrayOfSizeN (n) {
   return array;
 }
 
-  //  function to create an array with all returned data items from all pages
+  //  function to create an array with all returned userLoginMockData items from all pages
 function arrayOfPageData (resolvedObjects) {
   let array = [];
   let numOfPages = resolvedObjects.length;
@@ -119,7 +119,7 @@ describe('Pagination Module', function () {
       expect(pagination('http://dummy:password@sevensourcejamacloud.com/rest/latest/projects', -1, maxPossible)).to.eventually.be.rejected();
     });
     //  Test #5: valid URL, startAt, and maxResultsAllowed is 0
-    //  returned promise from pagination should be resolved with no data
+    //  returned promise from pagination should be resolved with no userLoginMockData
     it('should return an empty page when URL is valid, startAt is valid, and maxResultsAllowed is 0 ', function () {
       // total results: 0, maximum results per page: 3
       let pages = resolvedRequest(0, 20);
@@ -134,7 +134,7 @@ describe('Pagination Module', function () {
       expect(pagination('http://dummy:password@sevensource.jamacloud.com/rest/latest/projects', startAt, maxPossible)).to.eventually.be.fulfilled().and.to.equal(arrayOfPageData(pages));
     });
     //  Test #6: valid URL, startAt, and maxResultsAllowed is less than maximum allowed (20)
-    //  returned promise from pagination should be valid and equal to pages' data
+    //  returned promise from pagination should be valid and equal to pages' userLoginMockData
     it('should return page(s) of less than 20 items when URL is valid, startAt is valid, maxResultsAllowed is less than 20, and there are results to retrieve', function () {
       // total results: 10, maximum results per page: 3
       let pages = resolvedRequest(10, 3);
@@ -149,7 +149,7 @@ describe('Pagination Module', function () {
       expect(pagination('http://dummy:password@sevensource.jamacloud.com/rest/latest/projects', startAt, maxPossible)).to.eventually.be.fulfilled().and.to.equal(arrayOfPageData(pages));
     });
     //  Test #7: valid URL, startAt, and maxResultsAllowed is greater than maximum allowed (20)
-    //  returned promise from pagination should be valid and equal to pages' data
+    //  returned promise from pagination should be valid and equal to pages' userLoginMockData
     it('should return page(s) when URL is valid, startAt is valid, and maxResultsAllowed is greater than maximum allowed (20), and there are 20 results to retrieve ', function () {
       // total results: 50, maximum results per page: 50
       let pages = resolvedRequest(50, 50);
@@ -164,7 +164,7 @@ describe('Pagination Module', function () {
       expect(pagination('http://dummy:password@sevensource.jamacloud.com/rest/latest/projects', startAt, maxPossible)).to.eventually.be.fulfilled().and.to.equal(arrayOfPageData(pages));
     });
     //  Test #8: valid URL, startAt, maxResultsAllowed is <= 20, and there are less than maxResultsAllowed results (testing single page results)
-    //  returned promise from pagination should be valid and equal to pages' data
+    //  returned promise from pagination should be valid and equal to pages' userLoginMockData
     it('should return a single page of results when URL is valid, startAt is valid, maxResultsAllowed <= 20, and there are < 20 results to retrieve ', function () {
       // total results: 10, maximum results per page: 20
       let pages = resolvedRequest(10, 20);
@@ -179,7 +179,7 @@ describe('Pagination Module', function () {
       expect(pagination('http://dummy:password@sevensource.jamacloud.com/rest/latest/projects', startAt, maxPossible)).to.eventually.be.fulfilled().and.to.equal(arrayOfPageData(pages));
     });
     //  Test #9: valid URL, startAt, maxResultsAllowed, retrieving more than a single page of results
-    //  returned promise from pagination should be valid and equal to pages' data
+    //  returned promise from pagination should be valid and equal to pages' userLoginMockData
     it('should return multiple page(s) of results when URL, startAt, and maxResultsAllowed are valid', function () {
       // total results: 130, maximum results per page: 20
       let pages = resolvedRequest(130, 20);

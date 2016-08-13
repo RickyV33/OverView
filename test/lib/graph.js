@@ -50,7 +50,7 @@ describe('Graph class module', () => {
       });
     };
 
-    it('should return a graph with nonempty data members when project ID and url are valid.', () => {
+    it('should return a graph with nonempty userLoginMockData members when project ID and url are valid.', () => {
       stubs.getProjectName = () => resolvedNamePromise();
       stubs.getProjectItems = () => resolvedItemsPromise();
       stubs.getProjectRelationships = () => resolvedRelationshipsPromise();
@@ -167,14 +167,14 @@ describe('Graph class module', () => {
     let nodes = [{'id': 10, 'name': 'item name', 'type': 99}];
     let edges = [{'id': 10, 'fromItem': 1, 'toItem': 2, 'type': 99}];
 
-    it('should print an error message if the data Graph contains is invalid', () => {
+    it('should print an error message if the userLoginMockData Graph contains is invalid', () => {
       let graph = new Graph();
       graph.nodes = badNodes;
       graph.edges = badEdges;
       expect(graph.toJson()).to.be.empty();
     });
 
-    it('should return a valid relationship graph json object if Graph contains valid data', () => {
+    it('should return a valid relationship graph json object if Graph contains valid userLoginMockData', () => {
       let graph = new Graph();
       graph.nodes = nodes;
       graph.edges = edges;
@@ -188,12 +188,12 @@ describe('Graph class module', () => {
     let nodes = [{'id': 10, 'name': 'item name', 'type': 99}];
     let edges = [{'id': 10, 'fromItem': 1, 'toItem': 2, 'type': 99}];
 
-    it('should print an error message if the data Graph contains is invalid', () => {
+    it('should print an error message if the userLoginMockData Graph contains is invalid', () => {
       let relGraphObj = {'items': badNodes, 'relationships': badEdges};
       expect(Graph.fromJson(relGraphObj)).to.be.null;
     });
 
-    it('should return a valid relationship graph json object if graph contains valid data', () => {
+    it('should return a valid relationship graph json object if graph contains valid userLoginMockData', () => {
       let graph = new Graph();
       graph.nodes = nodes;
       graph.edges = edges;

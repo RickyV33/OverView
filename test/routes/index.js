@@ -11,186 +11,179 @@ let ejs = require('ejs');
 let read = require('fs').readFileSync;
 let join = require('path').join;
 let proxyquire = require('proxyquire');
-var express = require('express');
-var supertest = require('supertest');
-var sinon = require('sinon');
-let rewire = require('rewire');
-
-let index;
-
-let validateStub = (req) => {
-  console.log('authStub' + req);
-};
-
-let authenticateStub = (username, password, teamName) => {
-  console.log('authStub' + req);
-};
-
-let authStub = {
-  'validate': (req) => {
-    console.log('authStub' + req)
-  }
-};
-
-let projectsStub = {
-  'parseProjectList': () => {
-    console.log('projects Stub');
-  }
-};
-
-let app;
-
 
 chai.use(dirtyChai);
 chai.use(chaiHttp);
 chai.use(chaiPromise);
 
-describe('index route', function () {
-  let credentialFixtureCases = [
-    {
-      username: '',
-      password: '',
-      teamName: ''
-    },
-    {
-      username: 'dummy',
-      password: '',
-      teamName: ''
-    },
-    {
-      username: '',
-      password: 'wrong',
-      teamName: ''
-    },
-    {
-      username: '',
-      password: '',
-      teamName: 'dummy'
-    },
-    {
-      username: 'dummy',
-      password: 'password',
-      teamName: ''
-    },
-    {
-      username: '',
-      password: 'password',
-      teamName: 'sevensource'
-    },
-    {
-      username: 'dummy',
-      password: '',
-      teamName: 'sevensource'
-    },
-    {
-      username: 'dummy',
-      password: 'password',
-      teamName: 'sevensource'
-    }
-  ];
+let validateReturnFlag;
+let app;
+let index;
+let path;
+let resData;
+let renderedHtml;
 
-  describe.skip('get request', function () {
-    it('should contain a property called text', function (done) {
-      // This makes a server request to the route location '/'
+let userLoginMockData = {username: 'invalid', password: 'invalid', teamName: 'invalid', projectId: 1000};
+
+let authStub = {
+  validate: (req) => {
+    return validateReturnFlag;
+  }
+};
+
+let rejectedAuthPromise = {
+  validate: (req) => {
+    return validateReturnFlag;
+  },
+  authenticate: (username, password, teamName) => {
+    return new Promise((resolve, reject) => {
+      process.nextTick(() => {
+        reject();
+      });
+    });
+  }
+};
+
+let parseProjectsStub = () => {
+  return [];
+};
+
+let resolvedAuthPromise = {
+  validate: (req) => {
+    return validateReturnFlag;
+  },
+  authenticate: (username, password, teamName) => {
+    return new Promise((resolve, reject) => {
+      process.nextTick(() => {
+        resolve([]);
+      });
+    });
+  }
+};
+
+function indexNotFoundProxySetup () {
+  index = require('./mockIndexRoute');
+  app = proxyquire('../../app', {
+    './routes/index': index
+  });
+}
+
+function indexFoundProxySetup () {
+  index = require('../../routes/index');
+  app = require('../../app');
+}
+
+function falseAuthReturnProxySetup () {
+  index = proxyquire('../../routes/index', {
+    '../lib/auth': authStub
+  });
+  app = proxyquire('../../app', {
+    './routes/index': index
+  });
+}
+
+function rejectedPromiseProxySetup () {
+  index = proxyquire('../../routes/index', {
+    '../lib/auth': rejectedAuthPromise
+  });
+  app = proxyquire('../../app', {
+    './routes/index': index
+  });
+}
+
+function resolvedPromiseProxySetup () {
+  index = proxyquire('../../routes/index', {
+    '../lib/auth': resolvedAuthPromise,
+    '../lib/projects': parseProjectsStub
+  });
+  app = proxyquire('../../app', {
+    './routes/index': index
+  });
+}
+
+describe('index route', () => {
+  describe('get request', () => {
+    it('should return a response containing a property called text when index route source is found', (done) => {
+      indexFoundProxySetup();
+      path = join(__dirname, '../../views/index.ejs');
+      resData = {title: 'JamaTrace'};
+      renderedHtml = ejs.compile(read(path, 'utf8'), {filename: path})(resData);
       chai.request(app)
         .get('/')
-        .end(function (err, res) {
-          if (err) {
-            expect.fail();
-          }
+        .then(res => {
           // Render the view using ejs
-          let path = join(__dirname, '../../views/index.ejs');
-          let data = {title: 'JamaTrace'};
-          let rendHtml = ejs.compile(read(path, 'utf8'), {filename: path})(data);
-
-          // Response rendered html
-          let respHtml = res.text;
-
+          expect(res.status).to.equal(200);
           expect(res).to.have.property('text');
-          expect(err).to.be.null();
-          expect(respHtml).to.be.equal(rendHtml);
+          expect(res.text).to.equal(renderedHtml);
+          done();
+        })
+        .catch((err) => {
+          throw (err);
+        });
+    });
+    it('should fail when index route source is not found', (done) => {
+      indexNotFoundProxySetup();
+      chai.request(app)
+        .get('/')
+        .end((err, res) => {
+          expect(err).to.not.equal(null);
+          expect(err.status).to.equal(404);
+          expect(err.message).to.equal('Not Found');
+          expect(res).to.not.equal(null);
+          expect(res).to.have.property('text');
+          expect(res.text).to.contain('<h1>Not Found</h1>').and.to.contain('<h2>404</h2>');
           done();
         });
     });
   });
-
   describe('post request', function () {
-    it('should validate user credentials, load validated user projects, and redirect to render projects to the' +
-      'user', function (done) {
-      index = require('../../routes/index', {
-        '../lib/auth': authStub,
-        '../lib/projects': projectsStub
-      });
-      app = require('../../app', {
-        './routes/index': index
-      });
-
+    it('should render the index view with an error that the credentials are invalid when validate is false', () => {
+      validateReturnFlag = false;
+      falseAuthReturnProxySetup();
+      path = join(__dirname, '../../views/index.ejs');
+      resData = { title: 'Error: Incorrect credentials, please try again.' };
+      renderedHtml = ejs.compile(read(path, 'utf8'), {filename: path})(resData);
       chai.request(app)
         .post('/')
-        .send({username: 'invalid', password: 'invalid', teamName: 'invalid', projectId: 1000})
-        .end(function (err, res) {
-          expect(err).to.be(null);
-          expect(res).to.have.status(200);
+        .send(userLoginMockData)
+        .end((err, res) => {
+          expect(res).to.have.status(401);
+          expect(err).to.not.be(null);
+          expect(res).to.have.property('text');
+          expect(res.text).to.equal(renderedHtml);
         });
-
-
-
-      /*    authStub = () => {
-       let validate = (req) => {
-
-       };
-       // Authenticate Stub
-       let authenticate = (username, password, teamName) => {
-       let url = 'http://' + username + ':' + password + '@' + teamName + '.jamacloud.com/rest/latest/projects';
-       console.log('authenticate stub hit');
-       };
-       };*/
-      /*  let authStub = sinon.stub();
-       app = express();
-       let index = proxyquire('../../routes/index', {
-       'auth': authStub,
-       });
-
-       index(app);*/
-
-
-      // request = supertest(app);
-      /*
-       let response = (object) => {
-       // console.log('validate stub hit');
-       return (object.body.username !== '' && object.body.username.length <= 200 &&
-       object.body.password.length >= 6 && object.body.password.length <= 200 &&
-       teamName !== '');
-       };*/
-      //  validate.returns(response);
-
-      /*    authStub.return('blobl');
-       credentialFixtureCases.forEach(function (fixture) {
-       if (fixture.username && fixture.password && fixture.teamName) {
-       it('should return true when all form fields are valid', function () {
-
-       return chai.request(index)
-       .post('/index')
-       .send({ username: fixture.username, password: fixture.password, teamName: fixture.teamName }).then(res => {
-       expect(res.body).to.deep.equal(response);
-       //expect(res).to.redirect();
-       }).catch(err => { throw err; });
-       });
-       } else {
-       it('should return false when any form field is invalid username is, "' + fixture.username + '" password is, "' +
-       fixture.password + '" team name is, "' + fixture.teamName + '".', function () {
-       return chai.request(index)
-       .post('/')
-       .send({ username: fixture.username, password: fixture.password, teamName: fixture.teamName }).then(res => {
-       expect(res).to.have.status(200);
-       }).catch(err => { throw err; });
-       });
-       }
-       });
-       });*/
-      done();
-
     });
-
+    it('should render the index view with an error when authenticates promise is rejected', (done) => {
+      rejectedPromiseProxySetup();
+      validateReturnFlag = true;
+      path = join(__dirname, '../../views/index.ejs');
+      resData = { title: 'Error: Incorrect credentials, please try again.' };
+      renderedHtml = ejs.compile(read(path, 'utf8'), {filename: path})(resData);
+      chai.request(app)
+        .post('/')
+        .send(userLoginMockData)
+        .then(() => {
+        })
+        .catch((err) => {
+          expect(err.message).to.equal('Unauthorized');
+          expect(err.status).to.equal(401);
+          done();
+        });
+    });
+    it('should render the index view with an empty list of projects when authenticates promise is resolved', (done) => {
+      resolvedPromiseProxySetup();
+      validateReturnFlag = true;
+      chai.request(app)
+        .post('/')
+        .send(userLoginMockData)
+        .then(res => {
+          expect(res).to.have.status(200);
+          expect(res).to.redirect.to('/projects');
+          done();
+        })
+        .catch((err) => {
+          throw (err);
+        });
+    });
   });
 });

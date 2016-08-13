@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
 document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('projectList').addEventListener('click', event => {
     if (event.target.nodeName === 'A') {
-      let selectedProject = event.target.getAttributeNode('data-id').nodeValue;
+      let selectedProject = event.target.getAttributeNode('userLoginMockData-id').nodeValue;
       let hierarchy = getHierarchyRequest('/hierarchy', selectedProject);
       let graph = getGraphRequest('/graph', selectedProject);
       // Temporary statement for linter
