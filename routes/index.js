@@ -23,11 +23,11 @@ router.post('/', (req, res, next) => {
         res.redirect('/projects');
       });
     }, () => {
-    res.status(401);
+      res.status(401);
       res.render('index', { title: 'JamaTrace', teamName: req.body.teamName, error: true });
     });
   } else {
-  res.status(401);
+    res.status(401);
     res.render('index', { title: 'JamaTrace', teamName: req.body.teamName, error: true });
   }
 });

@@ -39,7 +39,6 @@ let authStub = {
   }
 };
 
-
 /**
  * This will effectively replace the validate and authenticate functions in the auth module at lib/auth.
  * This stub is used for testing a rejected promise from the authenticate function. The validate function is set to
