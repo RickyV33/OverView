@@ -1,12 +1,13 @@
 /* eslint-env browser */
 
-import './lib/displayProjectsGraph';
+import renderGraph from './lib/displayProjectsGraph';
 
 let projects = document.querySelector('#projects');
 let hierarchy = document.querySelector('#hierarchy');
+let graph = document.querySelector('#graphContainer');
 let selectedProject;
-let selectedHierarchyItem;
-let graph;
+let selectedHierarchyItem = null;
+let graphData;
 
 // TODO: Hook this up to the log out button on the graph view. It is currently not hooked up to anything,
 // but functions properly
@@ -16,41 +17,25 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // Manage the selection of a project and item hierarchy
-  buildProjectAnchors().then(() => {
-    getGraph(selectedProject).then(graphJSON => {
-      graph = graphJSON;
-      console.log(graph);
-    });
+  buildProjectAnchors().then(() => getGraph(selectedProject)).then(graphJSON => {
+    graphData = graphJSON;
+    console.log(graphData);
+    buildItemHierarchyAnchors();
   });
-  buildItemHierarchyAnchors();
+
+
   document.getElementById('renderButton').addEventListener('click', event => {
     toggle(hierarchy);
-    document.querySelector('svg').style.display = 'block';
+    console.log(selectedHierarchyItem);
+    renderGraph(graphData, selectedProject, parseInt(selectedHierarchyItem));
   });
 });
-
-/**
- * Listens for mouse clicks on the Item hierarchy list and sets the selected
- * variable to that items ID
- */
-function buildItemHierarchyAnchors () {
-  return new Promise(resolve => {
-    querySelectorAll('#hierarchy a').forEach(hierarchyAnchor => {
-      hierarchyAnchor.addEventListener('click', event => {
-        selectedHierarchyItem = event.target.getAttribute('data-id');
-        document.body.style.cursor = 'wait';
-        console.log(selectedHierarchyItem);
-      });
-    });
-  });
-}
 
 function buildProjectAnchors () {
   return new Promise((resolve) => {
     querySelectorAll('#projects a').forEach(projectAnchor => {
       projectAnchor.addEventListener('click', event => {
         selectedProject = event.target.getAttribute('data-id');
-
         // Wait until loadHierarchy retrieves the new partial view and updates it with the item hierarchy
         // to display the hierarchy selection div and toggle projects view
         document.body.style.cursor = 'wait';
@@ -59,8 +44,23 @@ function buildProjectAnchors () {
           toggle(projects);
           toggle(hierarchy);
           document.body.style.cursor = 'default';
-          resolve();
+          resolve(true);
         });
+      });
+    });
+  });
+}
+
+/**
+ * Listens for mouse clicks on the Item hierarchy list and sets the selected
+ * variable to that items ID
+ */
+function buildItemHierarchyAnchors () {
+  return new Promise(resolve => {
+    querySelectorAll('#itemHierarchyList a').forEach(hierarchyAnchor => {
+      hierarchyAnchor.addEventListener('click', event => {
+        selectedHierarchyItem = event.target.getAttribute('data-id');
+        resolve(true);
       });
     });
   });
