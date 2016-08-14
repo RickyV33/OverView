@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+</head>
+<body>
+<!-- Goes to d3 -->
+<h1><%= title %></h1>
+<h3><%= subtitle + ' ' + projectId %></h3>
+<div id='graphContainer'></div>
+<script>
+    var request = new XMLHttpRequest();
+
+    request.onreadystatechange = function() {
+        if (request.readyState === 4) {
+            // console.log('AJAX Ready State: ' + request.readyState);
+            // console.log('AJAX Status: ' + request.status);
+            if (request.status === 200) {
+                let projectData = request.responseText;
+                renderGraph(JSON.parse(projectData), <%= rootId %>, <%= projectId %>);
+            }
+        }
+    };
+    request.open('GET', './graph/getGraphData?id=' + <%= projectId %>, true);
+    request.send(null);
+
+</script>
+<script src='http://d3js.org/d3.v3.min.js'></script>
+<script src='../lib/displayProjectsGraph.js'></script>
+</body>
+</html>

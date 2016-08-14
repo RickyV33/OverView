@@ -8,6 +8,7 @@ let bodyParser = require('body-parser');
 // TODO: Refactor these into a single routes module
 let routes = require('./routes/index');
 let projects = require('./routes/projects');
+let project = require('./routes/graph');
 let logout = require('./routes/logout');
 let hierarchy = require('./routes/hierarchy');
 
@@ -42,6 +43,7 @@ app.use('/', routes);
 app.use('/projects', projects);
 app.use('/logout', logout);
 app.use('/hierarchy', hierarchy);
+app.use('/graph', project);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
