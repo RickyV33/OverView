@@ -22,6 +22,7 @@ let index;
 let path;
 let resData;
 let renderedHtml;
+let teamName;
 let userLoginMockData = {username: 'invalid', password: 'invalid', teamName: 'invalid', projectId: 1000};
 
 /**
@@ -183,7 +184,7 @@ describe('index route', () => {
       validateReturnFlag = false;
       falseAuthReturnProxySetup();
       path = join(__dirname, '../../views/index.ejs');
-      resData = {title: 'Error: Incorrect credentials, please try again.'};
+      resData = {title: 'Error: Incorrect credentials, please try again.', teamName: teamName};
       renderedHtml = ejs.compile(read(path, 'utf8'), {filename: path})(resData);
       chai.request(app)
         .post('/')
@@ -199,7 +200,7 @@ describe('index route', () => {
       rejectedPromiseProxySetup();
       validateReturnFlag = true;
       path = join(__dirname, '../../views/index.ejs');
-      resData = {title: 'Error: Incorrect credentials, please try again.'};
+      resData = {title: 'Error: Incorrect credentials, please try again.', teamName: teamName};
       renderedHtml = ejs.compile(read(path, 'utf8'), {filename: path})(resData);
       chai.request(app)
         .post('/')
