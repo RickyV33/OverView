@@ -2,6 +2,7 @@
 /* exported renderGraph */
 let clickedOnce = false;  // For monitoring the click event on node
 let timer;                // For click event monitoring
+const noRoot = -1;
 
 let width = 1000;         // D3 window Width
 let height = 800;         // D3 window height
@@ -78,11 +79,11 @@ export default function renderGraph (graphData, selectedProjectId, rootId) {
  */
 function insertProjectNode (graphData, rootId) {
   // Create a project node and add it to the nodes list
-  projectNode = {id: -1, name: graphData.name, image: '', type: -1};
+  projectNode = {id: noRoot, name: graphData.name, image: '', type: -1};
   graphData.nodes.unshift(projectNode);
 
   // Add a relationship from project node to root id if one was passed in
-  if (rootId !== -1 && rootId !== null && rootId !== undefined) {
+  if (rootId !== noRoot && rootId !== null && rootId !== undefined) {
     graphData.edges.push({id: -1, source: -1, target: rootId, type: -1});
   }
 }
@@ -166,7 +167,7 @@ function mapNodesToEdges (graphData) {
  * @param {object} graphData
  */
 function filterJSON (graphData, rootId) {
-  if (rootId !== -1 && rootId !== null && rootId !== undefined) {
+  if (rootId !== noRoot && rootId !== null && rootId !== undefined) {
     filterJSONRecursive(nodeToEdgeMap[rootId]);
   } else {
     nodesToRender = graphData.nodes;
@@ -193,7 +194,7 @@ function filterJSONRecursive (thisNode) {
 }
 
 /**
- * CLear the SVG object from the graphContainer and the data for the nodes, edges
+ * Clear the SVG object from the graphContainer and the data for the nodes, edges
  */
 function clearGraph () {
   nodesToRender = [];
@@ -209,7 +210,7 @@ function clearGraph () {
  * @param {object} graphData
  * @param {integer} rootId is the id of the element that is to be the root node coming off the project node
  */
-function updateGraph (graphData, rootId = -1) {
+function updateGraph (graphData, rootId = noRoot) {
   if (!relationsChecked) {
     // For each relationship, add the target to the source node
     graphData.edges.forEach(function (relItem) {
@@ -291,7 +292,7 @@ function updateGraph (graphData, rootId = -1) {
       // Add projectRoot class if the node is the project node
       let strClass = 'node';
 
-      if (thisNode.id === rootId || thisNode.id === -1) {
+      if (thisNode.id === rootId || thisNode.id === noRoot) {
         strClass = strClass + ' projectRoot';
       }
 
@@ -700,7 +701,7 @@ function unCollapse (id) {
 function collapseAll (rootId) {
   // Set all nodes to be invisible
   nodesToRender.forEach(function (item) {
-    item.isVisible = (item.id === -1 || item.id === rootId);
+    item.isVisible = (item.id === noRoot || item.id === rootId);
   });
 }
 
