@@ -24,12 +24,33 @@ let resData;
 let renderedHtml;
 let userLoginMockData = {username: 'invalid', password: 'invalid', teamName: 'invalid', projectId: 1000};
 
+/**
+ * This will effectively replace the validate function in the auth module at lib/auth. This stub is used for testing
+ * a false return from the validate function. No other functions within the auth module will be referenced when this
+ * stub is used. Therefore, no other functions have been stubbed.
+ *
+ * {validate}:
+ *    @returns {boolean} validateReturnFlag is a boolean variable set at the beginning of every test to determine
+ *    the return status of the validate function
+ */
 let authStub = {
   validate: (req) => {
     return validateReturnFlag;
   }
 };
 
+/**
+ * This will effectively replace the validate and authenticate functions in the auth module at lib/auth.
+ * This stub is used for testing a rejected promise from the authenticate function. The validate function is set to
+ * return the validateReturnFlag boolean variable which should be set to true in order for authenticate to be called.
+ *
+ * {validate}:
+ *    @returns {boolean} validateReturnFlag is a boolean variable set at the beginning of every test to determine
+ *    the return status of the validate function
+ *
+ *  * {authenticate}:
+ *    @returns {Promise} the returned promise is rejected in this stub
+ */
 let rejectedAuthPromise = {
   validate: (req) => {
     return validateReturnFlag;
@@ -43,10 +64,18 @@ let rejectedAuthPromise = {
   }
 };
 
-let parseProjectsStub = () => {
-  return [];
-};
-
+/**
+ * This will effectively replace the validate and authenticate functions in the auth module at lib/auth.
+ * This stub is used for testing a resolved promise from the authenticate function. The validate function is set to
+ * return the validateReturnFlag boolean variable which should be set to true in order for authenticate to be called.
+ *
+ * {validate}:
+ *    @returns {boolean} validateReturnFlag is a boolean variable set at the beginning of every test to determine
+ *    the return status of the validate function
+ *
+ *  * {authenticate}:
+ *    @returns {Promise} the returned promise is resolved in this stub with an empty payload
+ */
 let resolvedAuthPromise = {
   validate: (req) => {
     return validateReturnFlag;
@@ -60,6 +89,23 @@ let resolvedAuthPromise = {
   }
 };
 
+/**
+ * This will effectively replace the parseProjectList function in the projects module at lib/projects. This stub
+ * is used for mocking the return of a parsed payload in the format specified by the projects JSON spec. This stub
+ * will return an empty array as the parsed payload.
+ *
+ * @returns {Object} an empty array as the parsed payload
+ */
+let parseProjectsStub = () => {
+  return [];
+};
+
+/**
+ * This function sets up the proxies required to test the index route in the event the get request cannot be found
+ * in the source file. It sets up the app to proxyquire app.js with the stubbed index. The index stub is set up to
+ * proxyquire the index route with a fake index route that is missing the get request source.
+ *
+ */
 function indexNotFoundProxySetup () {
   index = require('./mockIndexRoute');
   app = proxyquire('../../app', {
@@ -67,11 +113,12 @@ function indexNotFoundProxySetup () {
   });
 }
 
-function indexFoundProxySetup () {
-  index = require('../../routes/index');
-  app = require('../../app');
-}
-
+/**
+ * This function sets up the proxies required to test the index route in the event validate returns false for
+ * the given login credentials. It sets up the app to proxyquire app.js with the stubbed index. The index stub
+ * is set up to proxyquire the index route with stubbed validate function that returns false via the authStub object
+ *
+ */
 function falseAuthReturnProxySetup () {
   index = proxyquire('../../routes/index', {
     '../lib/auth': authStub
@@ -81,6 +128,13 @@ function falseAuthReturnProxySetup () {
   });
 }
 
+/**
+ * This function sets up the proxies required to test the index route in the event the authenticate function returns
+ * a rejected promise. It sets up the app to proxyquire app.js with the stubbed index. The index stub is set up to
+ * proxyquire the index route with a validate stub that returns true, and an authenticate stub that returns a rejected
+ * promise.
+ *
+ */
 function rejectedPromiseProxySetup () {
   index = proxyquire('../../routes/index', {
     '../lib/auth': rejectedAuthPromise
@@ -90,6 +144,13 @@ function rejectedPromiseProxySetup () {
   });
 }
 
+/**
+ * This function sets up the proxies required to test the index route in the event the authenticate function returns
+ * a resolved promise. It sets up the app to proxyquire app.js with the stubbed index. The index stub is set up to
+ * proxyquire the index route with a validate stub that returns true, and an authenticate stub that returns a resolved
+ * promise.
+ *
+ */
 function resolvedPromiseProxySetup () {
   index = proxyquire('../../routes/index', {
     '../lib/auth': resolvedAuthPromise,
@@ -102,24 +163,6 @@ function resolvedPromiseProxySetup () {
 
 describe('index route', () => {
   describe('get request', () => {
-    it('should return a response containing a property called text when index route source is found', (done) => {
-      indexFoundProxySetup();
-      path = join(__dirname, '../../views/index.ejs');
-      resData = {title: 'JamaTrace'};
-      renderedHtml = ejs.compile(read(path, 'utf8'), {filename: path})(resData);
-      chai.request(app)
-        .get('/')
-        .then(res => {
-          // Render the view using ejs
-          expect(res.status).to.equal(200);
-          expect(res).to.have.property('text');
-          expect(res.text).to.equal(renderedHtml);
-          done();
-        })
-        .catch((err) => {
-          throw (err);
-        });
-    });
     it('should fail when index route source is not found', (done) => {
       indexNotFoundProxySetup();
       chai.request(app)
