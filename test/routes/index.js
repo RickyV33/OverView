@@ -87,7 +87,7 @@ describe('index', () => {
   describe.skip('post request', () => {
     'use strict';
 
-    credentialFixtureCases.forEach((fixture) => {
+    credentialFixtureCases.forEach(fixture => {
       if (fixture.username && fixture.password && fixture.teamName) {
         it('should return true when all form fields are valid', () => {
           return chai.request(app)
