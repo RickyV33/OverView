@@ -15,7 +15,7 @@ chai.use(chaiHttp);
 describe('projects', () => {
   describe.skip('get request', () => {
     // Test #1: verify projects list view is rendered successfully as is documented in views/projects.ejs
-    it('should render successfully with status 200', (done) => {
+    it('should render successfully with status 200', done => {
       let path, data, renderedView;
       chai.request(server)
             .post('/')
