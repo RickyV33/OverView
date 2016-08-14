@@ -12,13 +12,19 @@ chai.use(dirtyChai);
 
 describe('Graph class module', () => {
   // Removes console printing for our modules
-  console.error = () => {};
+  let oldError = console.error;
+  before(() => {
+    console.error = () => {};
+  });
+  after(() => {
+    console.error = oldError;
+  });
   describe('constructor', () => {
     let projectId = 1;
     let url = 'url';
     let stubs = {};
     let data = [];
-    let Graph = proxyquire('../../lib/graph', {'./projectquire': stubs});
+    let Graph = proxyquire('../../lib/graph', {'./projects': stubs});
     let newGraph;
     let resolvedNamePromise = () => {
       return new Promise((resolve, reject) => {
