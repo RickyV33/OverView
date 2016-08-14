@@ -19,6 +19,10 @@ path.link-dash {
   stroke-dasharray: 5;
 }
 
+path.suspect {
+  stroke: #73a8cf !important;
+}
+
 path.link-dot {
   stroke: #F2622B;
   stroke-dasharray: 5,5;
@@ -31,15 +35,33 @@ path.link-dot {
   stroke-width: 2px !important;
 }
 
-.node circle {
-  stroke-width: 2px;
+.node {
   fill-opacity: 0.80;
 }
 
-circle.active {
-  fill: #efefef;
-  stroke: #0a1d64;
+.node circle {
   stroke-width: 2px;
+  fill-opacity: 0.80;
+  fill: #76D3F5;
+  stroke: #fff;
+}
+
+.hasDownstream > circle {
+  stroke: #1e4c90 !important;
+  stroke-width: 2px;
+}
+
+.hasDownstream > .downstreamCount > circle {
+  stroke: #fff !important;
+  fill: #F2622B;
+  fill-opacity: 0.90;
+  stroke-width: 1px;
+}
+
+.downstreamCountText {
+  fill: #fff;
+  font-weight: bolder;
+  font-size: 10px;
 }
 
 rect {
@@ -52,7 +74,7 @@ rect {
   pointer-events: none;
 }
 
-text {
+.nodeText {
   fill: #000;
   paint-order: stroke;
   stroke: #fff;

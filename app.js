@@ -7,6 +7,7 @@ let bodyParser = require('body-parser');
 
 // TODO: Refactor these into a single routes module
 let routes = require('./routes/index');
+let projects = require('./routes/projects');
 let logout = require('./routes/logout');
 let hierarchy = require('./routes/hierarchy');
 let graph = require('./routes/graph');
@@ -29,7 +30,7 @@ app.use(session({
 }));
 
 // Middleware to add the teamName to the session from the .env config file
-app.use(function (req, res, next) {
+app.use((req, res, next) => {
   var teamName = req.session.teamName;
   if (!teamName) {
     req.session.teamName = process.env.TEAM_NAME || 'sevensource';
@@ -39,9 +40,10 @@ app.use(function (req, res, next) {
 
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', routes);
+app.use('/projects', projects);
 app.use('/logout', logout);
 app.use('/hierarchy', hierarchy);
-app.use('/graph', graph);
+app.use('/graph', project);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
