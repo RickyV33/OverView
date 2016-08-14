@@ -49,7 +49,7 @@ let page = 0;
 let maxPossible = Number.MAX_SAFE_INTEGER;
 
 let rejectedRequestStub = (options, callback) => {
-  process.nextTick(function () {
+  process.nextTick(() => {
     callback('this is an error');
   });
 };
