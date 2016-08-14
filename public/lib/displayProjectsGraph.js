@@ -46,7 +46,7 @@ function initializeGraphData (graphData, rootId) {
  * @param graphData
  */
 // eslint-disable-next-line no-unused-vars
-function renderGraph (graphData, rootId, selectedProjectId) {
+export default function renderGraph (graphData, selectedProjectId, rootId) {
   // console.log('Root ID: ' + rootId + '  CurrentRootId: ' + currentRootId);
   // console.log('Project ID: ' + selectedProjectId + '  CurrentProjectId: ' + currentProjectId);
 
@@ -64,7 +64,9 @@ function renderGraph (graphData, rootId, selectedProjectId) {
 
     configureD3Graph();
     updateGraph(graphData, rootId);  // Render the graph
-    collapseAll(rootId);  // Collapses all the nodes except the root node
+    if (rootId) {
+      collapseAll(rootId);  // Collapses all the nodes except the root node
+    }
     updateOpacity();
     currentRootId = rootId;
   }
@@ -80,7 +82,7 @@ function insertProjectNode (graphData, rootId) {
   graphData.nodes.unshift(projectNode);
 
   // Add a relationship from project node to root id if one was passed in
-  if (rootId !== -1 && rootId !== null) {
+  if (rootId !== -1 && rootId !== null && rootId !== undefined) {
     graphData.edges.push({id: -1, source: -1, target: rootId, type: -1});
   }
 }
@@ -164,7 +166,7 @@ function mapNodesToEdges (graphData) {
  * @param {object} graphData
  */
 function filterJSON (graphData, rootId) {
-  if (rootId !== -1 && rootId !== null) {
+  if (rootId !== -1 && rootId !== null && rootId !== undefined) {
     filterJSONRecursive(nodeToEdgeMap[rootId]);
   } else {
     nodesToRender = graphData.nodes;

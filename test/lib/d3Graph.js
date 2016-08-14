@@ -1,4 +1,6 @@
 /* eslint-env mocha */
+/* eslint-disable */
+// REMOVE LINT DISABLE
 
 let chai = require('chai');
 let expect = chai.expect;
