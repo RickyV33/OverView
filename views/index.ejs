@@ -5,7 +5,7 @@
     <link rel='stylesheet' href='/stylesheets/style.css' />
   </head>
   <body>
-    <h1><%= title %></h1>
+    <h1><img id="logo" src="img/logo.png" alt="<%= title %>" /></h1>
     <input type="hidden" id=teamName value=<%= teamName %>/>
     <form id="logIn" method="post">
       <div>
@@ -16,8 +16,8 @@
         <label for="password">Password:</label>
         <input id="password" type="password" name="password" required maxlength="200" minlength="6" />
       </div>
-      <input type="submit" value="Submit" />
-      <%if (error !== undefined && error){%>
+        <input type="submit" value="Login" />
+        <%if (error !== undefined && error){%>
       <div class="error">
         Your login attempt was not successful. The user credentials you entered were not valid, please try again.
       </div>
