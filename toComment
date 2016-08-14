@@ -1,4 +1,3 @@
 src/graph
-src/index
 test/lib/pagination (in JSDoc style)
 test/lib/projects (for projectQuire promises like in index route tests)
