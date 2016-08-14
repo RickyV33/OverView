@@ -1,11 +1,11 @@
 /* eslint-env mocha */
+
 'use strict';
 
 let chai = require('chai');
 let expect = chai.expect;
 let chaiHttp = require('chai-http');
 let server = require('../../app');
-
 let ejs = require('ejs');
 let read = require('fs').readFileSync;
 let join = require('path').join;
@@ -18,7 +18,7 @@ describe('logout', () => {
       let path, data, renderedView;
       chai.request(server)
             .get('/logout')
-            .end(function (err, res) {
+            .end((err, res) => {
               if (err) {
                 console.log(err);
               }
@@ -26,7 +26,9 @@ describe('logout', () => {
               expect(res).to.redirect('/');
               expect(res).to.have.property('text');
               path = join(__dirname, '../../views/index.ejs');
-              data = {title: 'JamaTrace', teamName: 'sevensource'};
+
+              data = {title: 'JamaTrace', teamName: 'sevensource', error: false};
+
               renderedView = ejs.compile(read(path, 'utf8'), {filename: path})(data);
               expect(res.text).to.equal(renderedView);
               done();
