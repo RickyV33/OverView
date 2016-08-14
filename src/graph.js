@@ -4,7 +4,6 @@ import renderGraph from './lib/displayProjectsGraph';
 
 let projects = document.querySelector('#projects');
 let hierarchy = document.querySelector('#hierarchy');
-let graph = document.querySelector('#graphContainer');
 let selectedProject;
 let selectedHierarchyItem = null;
 let graphData;
@@ -22,7 +21,6 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log(graphData);
     buildItemHierarchyAnchors();
   });
-
 
   document.getElementById('renderButton').addEventListener('click', event => {
     toggle(hierarchy);
@@ -157,7 +155,7 @@ function getGraph (projectId) {
         }
       }
     };
-    httpRequest.open('GET', 'graph/getGraphData/' + projectId);
+    httpRequest.open('GET', '?project=' + projectId);
     httpRequest.send();
   });
 }
