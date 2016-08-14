@@ -10,6 +10,7 @@ let chaiPromise = require('chai-as-promised');
 let ejs = require('ejs');
 let read = require('fs').readFileSync;
 let join = require('path').join;
+
 let app = require('../../app');
 
 chai.use(dirtyChai);

@@ -7,13 +7,13 @@ let expect = chai.expect;
 let dirtyChai = require('dirty-chai');
 let proxyquire = require('proxyquire');
 let chaiAsPromised = require('chai-as-promised');
+
 let auth = require('../../lib/auth');
 
 chai.use(dirtyChai);
 chai.use(chaiAsPromised);
 
 describe('Auth module', () => {
-  'use strict';
   let credentialFixtureCases = [
     {
       username: '',
