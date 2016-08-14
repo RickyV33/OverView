@@ -11,13 +11,19 @@ chai.use(dirtyChai);
 
 describe('Graph class module', () => {
   // Removes console printing for our modules
-  console.error = () => {};
+  let oldError = console.error;
+  before(() => {
+    console.error = () => {};
+  });
+  after(() => {
+    console.error = oldError;
+  });
   describe('constructor', () => {
     let projectId = 1;
     let url = 'url';
     let stubs = {};
     let data = [];
-    let Graph = proxyquire('../../lib/graph', {'./projectquire': stubs});
+    let Graph = proxyquire('../../lib/graph', {'./projects': stubs});
     let newGraph;
     let resolvedNamePromise = () => {
       return new Promise((resolve, reject) => {
@@ -33,7 +39,7 @@ describe('Graph class module', () => {
     };
     let resolvedRelationshipsPromise = () => {
       return new Promise((resolve, reject) => {
-        data = [{'id': 10, 'fromItem': 1, 'toItem': 2, 'type': 99}];
+        data = [{'id': 10, 'source': 1, 'target': 2, 'type': 99}];
         resolve(data);
       });
     };
@@ -61,8 +67,8 @@ describe('Graph class module', () => {
         expect(newGraph.nodes[0].name).to.equal('item name');
         expect(newGraph.nodes[0].type).to.equal(99);
         expect(newGraph.edges[0].id).to.equal(10);
-        expect(newGraph.edges[0].fromItem).to.equal(1);
-        expect(newGraph.edges[0].toItem).to.equal(2);
+        expect(newGraph.edges[0].source).to.equal(1);
+        expect(newGraph.edges[0].target).to.equal(2);
         expect(newGraph.edges[0].type).to.equal(99);
       }, 5000);
     });
@@ -163,9 +169,9 @@ describe('Graph class module', () => {
 
   describe('toJson function', () => {
     let badNodes = [{'id': '10', 'name': 'item name', 'type': '99'}];
-    let badEdges = [{'id': '10', 'fromItem': '1', 'toItem': '2', 'type': '99'}];
-    let nodes = [{'id': 10, 'name': 'item name', 'type': 99}];
-    let edges = [{'id': 10, 'fromItem': 1, 'toItem': 2, 'type': 99}];
+    let badEdges = [{'id': '10', 'source': '1', 'target': '2', 'type': '99'}];
+    let nodes = [{'id': 10, 'name': 'item name', 'type': 99, 'image': 'url'}];
+    let edges = [{'id': 10, 'source': 1, 'target': 2, 'type': 99, 'suspect': true}];
 
     it('should print an error message if the data Graph contains is invalid', () => {
       let graph = new Graph();
@@ -184,9 +190,9 @@ describe('Graph class module', () => {
 
   describe('fromJson function', () => {
     let badNodes = [{'id': '10', 'name': 'item name', 'type': '99'}];
-    let badEdges = [{'id': '10', 'fromItem': '1', 'toItem': '2', 'type': '99'}];
-    let nodes = [{'id': 10, 'name': 'item name', 'type': 99}];
-    let edges = [{'id': 10, 'fromItem': 1, 'toItem': 2, 'type': 99}];
+    let badEdges = [{'id': '10', 'source': '1', 'target': '2', 'type': '99'}];
+    let nodes = [{'id': 10, 'name': 'item name', 'type': 99, 'image': 'url'}];
+    let edges = [{'id': 10, 'source': 1, 'target': 2, 'type': 99, 'suspect': false}];
 
     it('should print an error message if the data Graph contains is invalid', () => {
       let relGraphObj = {'items': badNodes, 'relationships': badEdges};
