@@ -67,24 +67,24 @@ describe('Auth module', function () {
       };
     });
 
-    credentialFixtureCases.forEach(function (fixture) {
+    credentialFixtureCases.forEach(fixture => {
       let baseMessage = 'should return false when a username is ';
       let username = fixture.username ? 'valid' : 'empty';
       let password = fixture.password ? 'valid' : 'empty';
       let teamName = fixture.teamName ? 'valid' : 'empty';
 
       if (fixture.username && fixture.password && fixture.teamName) {
-        it('should return true when all required fields are valid', function () {
+        it('should return true when all required fields are valid', () => {
           credentialsFixture.body = fixture;
           expect(auth.validate(credentialsFixture)).to.be.true();
         });
       } else if (!fixture.username && !fixture.password && !fixture.teamName) {
-        it('should return false when all required fields are empty', function () {
+        it('should return false when all required fields are empty', () => {
           credentialsFixture.body = fixture;
           expect(auth.validate(credentialsFixture)).to.be.false();
         });
       } else {
-        it(baseMessage + username + ', password is ' + password + ', and team name is ' + teamName, function () {
+        it(baseMessage + username + ', password is ' + password + ', and team name is ' + teamName, () => {
           credentialsFixture.body = fixture;
           expect(auth.validate(credentialsFixture)).to.be.false();
         });
@@ -100,10 +100,10 @@ describe('Auth module', function () {
       return string;
     }
 
-    it('should return false when username length is more than 200', function () {
-      credentialFixtureCases.filter(function (fixture) {
+    it('should return false when username length is more than 200', () => {
+      credentialFixtureCases.filter(fixture => {
         return fixture.username;
-      }).forEach(function (fixture) {
+      }).forEach(fixture => {
         fixture.username = stringOfLengthN(201);
         credentialsFixture.body = fixture;
 
@@ -111,10 +111,10 @@ describe('Auth module', function () {
       });
     });
 
-    it('should return false when password length is more than 200', function () {
-      credentialFixtureCases.filter(function (fixture) {
+    it('should return false when password length is more than 200', () => {
+      credentialFixtureCases.filter(fixture => {
         return fixture.password;
-      }).forEach(function (fixture) {
+      }).forEach(fixture => {
         fixture.password = stringOfLengthN(201);
         credentialsFixture.body = fixture;
 
@@ -122,10 +122,10 @@ describe('Auth module', function () {
       });
     });
 
-    it('should return false when password length is less than 6', function () {
-      credentialFixtureCases.filter(function (fixture) {
+    it('should return false when password length is less than 6', () => {
+      credentialFixtureCases.filter(fixture => {
         return fixture.password;
-      }).forEach(function (fixture) {
+      }).forEach(fixture => {
         fixture.password = stringOfLengthN(5);
         credentialsFixture.body = fixture;
 
@@ -134,30 +134,30 @@ describe('Auth module', function () {
     });
   });
 
-  describe('authenticate function', function () {
+  describe('authenticate function', () => {
     'use strict';
     let username = 'dummy';
     let password = 'password';
     let teamName = 'sevensource';
-    let resolvedPromise = function () {
-      return new Promise(function (resolve, reject) {
+    let resolvedPromise = () => {
+      return new Promise((resolve, reject) => {
         let payload = [ { status: 200 } ];
         resolve(payload);
       });
     };
-    let rejectedPromise = function () {
-      return new Promise(function (resolve, reject) {
+    let rejectedPromise = () => {
+      return new Promise((resolve, reject) => {
         let payload = [ { status: 401 } ];
         reject(payload);
       });
     };
     let auth;
 
-    it('should return a resolved promise when all credentials are valid', function () {
+    it('should return a resolved promise when all credentials are valid', () => {
       auth = proxyquire('../../lib/auth', { './pagination': resolvedPromise });
       expect(auth.authenticate(username, password, teamName)).to.be.fulfilled();
     });
-    it('should return a rejected promise when all credentials are invalid', function () {
+    it('should return a rejected promise when all credentials are invalid', () => {
       auth = proxyquire('../../lib/auth', { './pagination': rejectedPromise });
       expect(auth.authenticate(username, password, teamName)).to.be.rejected();
     });

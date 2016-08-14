@@ -15,7 +15,7 @@ chai.use(dirtyChai);
 chai.use(chaiHttp);
 chai.use(chaiPromise);
 
-describe('index', function () {
+describe('index', () => {
   let credentialFixtureCases = [
     {
       username: '',
@@ -59,12 +59,12 @@ describe('index', function () {
     }
   ];
 
-  describe('get request', function () {
-    it('should contain a property called text', function (done) {
+  describe('get request', () => {
+    it('should contain a property called text', (done) => {
       // This makes a server request to the route location '/'
       chai.request(app)
             .get('/')
-            .end(function (err, res) {
+            .end((err, res) => {
               if (err) {
                 expect.fail();
               }
@@ -84,12 +84,12 @@ describe('index', function () {
     });
   });
 
-  describe.skip('post request', function () {
+  describe.skip('post request', () => {
     'use strict';
 
-    credentialFixtureCases.forEach(function (fixture) {
+    credentialFixtureCases.forEach(fixture => {
       if (fixture.username && fixture.password && fixture.teamName) {
-        it('should return true when all form fields are valid', function () {
+        it('should return true when all form fields are valid', () => {
           return chai.request(app)
             .post('/')
             .send({ username: fixture.username, password: fixture.password, teamName: fixture.teamName }).then(res => {
@@ -98,7 +98,7 @@ describe('index', function () {
         });
       } else {
         it('should return false when any form field is invalid username is, "' + fixture.username + '" password is, "' +
-            fixture.password + '" team name is, "' + fixture.teamName + '".', function () {
+            fixture.password + '" team name is, "' + fixture.teamName + '".', () => {
           return chai.request(app)
                 .post('/')
                 .send({ username: fixture.username, password: fixture.password, teamName: fixture.teamName }).then(res => {
