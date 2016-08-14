@@ -2,9 +2,9 @@ let express = require('express');
 let hierarchy = require('../lib/hierarchy');
 let router = express.Router();
 
-router.get('/', function (req, res, next) {
+router.get('/', (req, res, next) => {
   hierarchy.getItemHierarchy(req.session.username, req.session.password, req.session.teamName, req.session.projectId)
-    .then(function (allItems) {
+    .then(allItems => {
       res.send(200).json(hierarchy.parseItemHierarchy(allItems));
  /*     res.render('hierarchy', {
         title: 'Select a Root Item (Optional) ',

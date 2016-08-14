@@ -1,10 +1,11 @@
 /* eslint-env mocha */
 
+'use strict';
+
 let chai = require('chai');
 let expect = chai.expect;
 let dirtyChai = require('dirty-chai');
 let proxyquire = require('proxyquire');
-
 let Graph = require('../../lib/graph');
 
 chai.use(dirtyChai);

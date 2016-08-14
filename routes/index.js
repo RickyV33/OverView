@@ -14,7 +14,6 @@ router.post('/', (req, res, next) => {
     auth.authenticate(req.body.username, req.body.password, req.body.teamName).then(sessionProjects => {
       req.session.username = req.body.username;
       req.session.password = req.body.password;
-      req.session.teamName = req.body.teamName;
       req.session.projects = projects.parseProjectList(sessionProjects);
       req.session.save(err => {
         if (err) {

@@ -1,10 +1,12 @@
 /* eslint-env mocha */
+
+'use strict';
+
 let chai = require('chai');
 let expect = chai.expect;
 let dirtyChai = require('dirty-chai');
 let chaiAsPromised = require('chai-as-promised');
 let Ajv = require('ajv');
-
 let schema = require('../../../lib/schema/relationshipGraph');
 
 chai.use(dirtyChai);

@@ -1,11 +1,11 @@
 /* eslint-env mocha */
+
 'use strict';
 
 let chai = require('chai');
 let expect = chai.expect;
 let chaiHttp = require('chai-http');
 let server = require('../../app');
-
 let ejs = require('ejs');
 let read = require('fs').readFileSync;
 let join = require('path').join;
@@ -18,7 +18,7 @@ describe('logout', () => {
       let path, data, renderedView;
       chai.request(server)
             .get('/logout')
-            .end(function (err, res) {
+            .end((err, res) => {
               if (err) {
                 console.log(err);
               }

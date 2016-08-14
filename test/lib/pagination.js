@@ -1,5 +1,7 @@
 /* eslint-env mocha */
 
+'use strict';
+
 var chai = require('chai');
 var expect = chai.expect;
 var dirtyChai = require('dirty-chai');
@@ -61,7 +63,7 @@ function createResolvedObject (startingIndex, resultingCount, dataSupplied) {
 
 function resolvedRequest (totalResults, maxResults) {
   let startAt = 0;
-  let resolvedObjects;
+  let resolvedObjects = [];
   let remaining = totalResults;
   let processedResults = 0;
   let pageSize = 0;

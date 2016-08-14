@@ -1,4 +1,5 @@
 /* eslint-env mocha */
+
 'use strict';
 
 let chai = require('chai');
@@ -7,8 +8,8 @@ let chaiHttp = require('chai-http');
 let dirtyChai = require('dirty-chai');
 let proxyquire = require('proxyquire');
 let chaiAsPromised = require('chai-as-promised');
-
 let Ajv = require('ajv');
+
 let projectListSchema = require('../../lib/schema/projectList.json');
 let projects = require('../../lib/projects');
 let mockProjects = require('../routes/mockProjects.json');
@@ -93,16 +94,17 @@ let projectFixtureCases = [
   ]
 ];
 
-describe('projects.js module', function () {
-  describe('Schema Validation', function () {
-    projectFixtureCases.forEach(function (fixture) {
+describe('projects.js module', () => {
+  describe('Schema Validation', () => {
+    projectFixtureCases.forEach(fixture => {
       let result = validate(fixture);
       if (result === true) {
-        it('should return true when the JSON schema object is VALID\n', function () {
+        it('should return true when the JSON schema object is VALID\n', () => {
           expect(result).to.be.true();
         });
       } else {
-        it('JSON schema object should be INVALID with the credentials\n \tname: ' + fixture[0].name + ' and ID: ' + fixture[0].id + '\n', function () {
+        it('JSON schema object should be INVALID with the credentials\n \tname: ' + fixture[0].name +
+          ' and ID: ' + fixture[0].id + '\n', () => {
           expect(result).to.not.be.true();
         });
       }

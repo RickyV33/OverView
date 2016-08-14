@@ -1,5 +1,7 @@
 /* eslint-env mocha */
 
+'use strict';
+
 let chai = require('chai');
 let expect = chai.expect;
 let dirtyChai = require('dirty-chai');
@@ -11,8 +13,7 @@ let auth = require('../../lib/auth');
 chai.use(dirtyChai);
 chai.use(chaiAsPromised);
 
-describe('Auth module', function () {
-  'use strict';
+describe('Auth module', () => {
   let credentialFixtureCases = [
     {
       username: '',
@@ -55,13 +56,12 @@ describe('Auth module', function () {
       teamName: 'sevensource'
     }
   ];
-  describe('validate function', function () {
-    'use strict';
+  describe('validate function', () => {
     let credentialsFixture = {
       body: {}
     };
 
-    beforeEach(function () {
+    beforeEach(() => {
       credentialsFixture = {
         body: {}
       };
@@ -92,7 +92,6 @@ describe('Auth module', function () {
     });
 
     function stringOfLengthN (length) {
-      'use strict';
       let string = '';
       for (let i = 0; i < length; i += 1) {
         string += 'a';
@@ -106,7 +105,6 @@ describe('Auth module', function () {
       }).forEach(fixture => {
         fixture.username = stringOfLengthN(201);
         credentialsFixture.body = fixture;
-
         expect(auth.validate(credentialsFixture)).to.be.false();
       });
     });
@@ -117,7 +115,6 @@ describe('Auth module', function () {
       }).forEach(fixture => {
         fixture.password = stringOfLengthN(201);
         credentialsFixture.body = fixture;
-
         expect(auth.validate(credentialsFixture)).to.be.false();
       });
     });
@@ -128,14 +125,12 @@ describe('Auth module', function () {
       }).forEach(fixture => {
         fixture.password = stringOfLengthN(5);
         credentialsFixture.body = fixture;
-
         expect(auth.validate(credentialsFixture)).to.be.false();
       });
     });
   });
 
   describe('authenticate function', () => {
-    'use strict';
     let username = 'dummy';
     let password = 'password';
     let teamName = 'sevensource';
@@ -151,8 +146,6 @@ describe('Auth module', function () {
         reject(payload);
       });
     };
-    let auth;
-
     it('should return a resolved promise when all credentials are valid', () => {
       auth = proxyquire('../../lib/auth', { './pagination': resolvedPromise });
       expect(auth.authenticate(username, password, teamName)).to.be.fulfilled();

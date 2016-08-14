@@ -23,7 +23,7 @@ let projectId = 0;
 
 let rejectedPromise = () => {
   return new Promise((resolve, reject) => {
-    process.nextTick(function () {
+    process.nextTick(() => {
       reject(data);
     });
   });
@@ -31,7 +31,7 @@ let rejectedPromise = () => {
 
 let resolvedPromise = () => {
   return new Promise((resolve, reject) => {
-    process.nextTick(function () {
+    process.nextTick(() => {
       resolve(data);
     });
   });
@@ -49,53 +49,49 @@ let pushChildrenStub = () => {
   });
 };
 
-describe('Hierarchy Module', function () {
-  describe('getAllItems function', function () {
-    it('should return a rejected promise when the login credentials are invalid',
-      function () {
-        projectId = 99;
-        data = 'Invalid login credentials';
-        hierarchy = proxyquire('../../lib/hierarchy', {'./pagination': rejectedPromise});
-        return (expect(hierarchy.getAllItems(username, password, teamName, projectId))
-          .to.eventually.be.rejected()).then((item) => {
-            expect(item).to.equal(data);
-          });
-      });
-    it('should return a rejected promise when the login credentials are valid, but projectId is invalid',
-      function () {
-        projectId = 1000;
-        data = 'Invalid project ID';
-        hierarchy = proxyquire('../../lib/hierarchy', {'./pagination': rejectedPromise});
-        return (expect(hierarchy.getAllItems(username, password, teamName, projectId))
-          .to.eventually.be.rejected()).then((item) => {
-            expect(item).to.equal(data);
-          });
-      });
-    it('should return an empty JSON blob when login credentials and projectId are valid',
-      function () {
-        projectId = 33;
-        data = {};
-        hierarchy = proxyquire('../../lib/hierarchy', {'./pagination': resolvedPromise});
-        return (expect(hierarchy.getAllItems(username, password, teamName, projectId))
-          .to.eventually.be.fulfilled()).then((item) => {
-            expect(item).to.equal(data);
-          });
-      });
+describe('Hierarchy Module', () => {
+  describe('getAllItems function', () => {
+    it('should return a rejected promise when the login credentials are invalid', () => {
+      projectId = 99;
+      data = 'Invalid login credentials';
+      hierarchy = proxyquire('../../lib/hierarchy', {'./pagination': rejectedPromise});
+      return (expect(hierarchy.getAllItems(username, password, teamName, projectId))
+        .to.eventually.be.rejected()).then(item => {
+          expect(item).to.equal(data);
+        });
+    });
+    it('should return a rejected promise when the login credentials are valid, but projectId is invalid', () => {
+      projectId = 1000;
+      data = 'Invalid project ID';
+      hierarchy = proxyquire('../../lib/hierarchy', {'./pagination': rejectedPromise});
+      return (expect(hierarchy.getAllItems(username, password, teamName, projectId))
+        .to.eventually.be.rejected()).then(item => {
+          expect(item).to.equal(data);
+        });
+    });
+    it('should return an empty JSON blob when login credentials and projectId are valid', () => {
+      projectId = 33;
+      data = {};
+      hierarchy = proxyquire('../../lib/hierarchy', {'./pagination': resolvedPromise});
+      return (expect(hierarchy.getAllItems(username, password, teamName, projectId))
+        .to.eventually.be.fulfilled()).then(item => {
+          expect(item).to.equal(data);
+        });
+    });
     it('should return a valid JSON blob with one item and one sub item ' +
-      'when login credentials and projectId are valid, and the project contains one item and one sub item',
-      function () {
-        projectId = 33;
-        data = {'name': 'first item', 'children': {'name': 'sub item of first item', 'children': {}}};
-        hierarchy = proxyquire('../../lib/hierarchy', {'./pagination': resolvedPromise});
-        return (expect(hierarchy.getAllItems(username, password, teamName, projectId))
-          .to.eventually.be.fulfilled()).then((item) => {
-            expect(item).to.equal(data);
-          });
-      });
+      'when login credentials and projectId are valid, and the project contains one item and one sub item', () => {
+      projectId = 33;
+      data = {'name': 'first item', 'children': {'name': 'sub item of first item', 'children': {}}};
+      hierarchy = proxyquire('../../lib/hierarchy', {'./pagination': resolvedPromise});
+      return (expect(hierarchy.getAllItems(username, password, teamName, projectId))
+        .to.eventually.be.fulfilled()).then(item => {
+          expect(item).to.equal(data);
+        });
+    });
   });
-  describe('parseItemHierarchy function', function () {
-    describe('parseItemHierarchy function', function () {
-      it('should return an empty array when the json blob argument is empty', function () {
+  describe('parseItemHierarchy function', () => {
+    describe('parseItemHierarchy function', () => {
+      it('should return an empty array when the json blob argument is empty', () => {
         let results;
         data = [];
         hierarchy = rewire('../../lib/hierarchy');
@@ -108,7 +104,7 @@ describe('Hierarchy Module', function () {
       });
     });
     it('should return a single item with no children when the json blob argument contains a single root item' +
-      'with no children', function () {
+      'with no children', () => {
       let results;
       data = require('./singleItemHierarchy.json');
       roots = [{'id': 2140, 'type': 24, 'name': 'Input a Username', 'parent': 33, 'children': []}];
@@ -122,7 +118,7 @@ describe('Hierarchy Module', function () {
       expect(hierarchy.__get__('children')).to.deep.equal(mergedChildren);
     });
     it('should return a root item with one direct child and one nested child when the json ' +
-      'blob argument contains a single root item with one child and one nested child', function () {
+      'blob argument contains a single root item with one child and one nested child', () => {
       let results;
       data = require('./singleItemwithNestedChild.json');
       roots = [{'id': 2104, 'type': 24, 'name': 'Input a Username', 'parent': 33, 'children': [
@@ -160,7 +156,7 @@ describe('Hierarchy Module', function () {
       expect(hierarchy.__get__('children')).to.deep.equal(mergedChildren);
     });
     it('should console error message due to an invalid id type for one of the items in the JSON ' +
-      'argument blob argument', function () {
+      'argument blob argument', () => {
       let invalidData = require('./invalidItemHierarchy.json');
       data = require('./invalidItemHierarchy.json');
       hierarchy = rewire('../../lib/hierarchy');
@@ -172,9 +168,9 @@ describe('Hierarchy Module', function () {
       }
     });
   });
-  describe('mergeChildren function', function () {
+  describe('mergeChildren function', () => {
     it('should result in children array being empty as there aren\'t any items in the children array to begin with',
-      function () {
+      () => {
         data = [];
         mergedChildren = [];
         hierarchy = rewire('../../lib/hierarchy');
@@ -183,7 +179,7 @@ describe('Hierarchy Module', function () {
         expect(hierarchy.__get__('children')).to.deep.equal(mergedChildren);
       });
     it('should result in children array containing the same data from before, since there are no parent items' +
-      'in the children array', function () {
+      'in the children array', () => {
       data = [
         {
           'id': 2115,
@@ -207,7 +203,7 @@ describe('Hierarchy Module', function () {
       expect(hierarchy.__get__('children')).to.deep.equal(mergedChildren);
     });
     it('should result in children array having all children items in the children array into ' +
-      'their parents arrya of children', function () {
+      'their parents arrya of children', () => {
       data = [{
         'id': 2115,
         'type': 31,
@@ -284,9 +280,9 @@ describe('Hierarchy Module', function () {
       expect(hierarchy.__get__('children')).to.deep.equal(mergedChildren);
     });
   });
-  describe('pushChildrenToRoots function', function () {
+  describe('pushChildrenToRoots function', () => {
     it('should result in rootItems array being empty as their aren\'t any items in the roots array to begin with',
-      function () {
+      () => {
         data = [];
         roots = [];
         hierarchy = rewire('../../lib/hierarchy');
@@ -295,7 +291,7 @@ describe('Hierarchy Module', function () {
         expect(hierarchy.__get__('rootItems')).to.deep.equal(data);
       });
     it('should result in rootItems array containing the same data from before, since there are no children items' +
-      'in the children array', function () {
+      'in the children array', () => {
       roots = [
         {
           'id': 2115,
@@ -317,7 +313,7 @@ describe('Hierarchy Module', function () {
       hierarchy.pushChildrenToRoots();
       expect(hierarchy.__get__('rootItems')).to.deep.equal(roots);
     });
-    it('should result in rootsItem array having all children items in their children array ', function () {
+    it('should result in rootsItem array having all children items in their children array ', () => {
       roots = [
         {
           'id': 2115,

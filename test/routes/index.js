@@ -1,5 +1,7 @@
 /* eslint-env mocha */
 
+'use strict';
+
 let chai = require('chai');
 let expect = chai.expect;
 let dirtyChai = require('dirty-chai');
@@ -60,7 +62,7 @@ describe('index', () => {
   ];
 
   describe('get request', () => {
-    it('should contain a property called text', (done) => {
+    it('should contain a property called text', done => {
       // This makes a server request to the route location '/'
       chai.request(app)
             .get('/')
@@ -92,16 +94,18 @@ describe('index', () => {
         it('should return true when all form fields are valid', () => {
           return chai.request(app)
             .post('/')
-            .send({ username: fixture.username, password: fixture.password, teamName: fixture.teamName }).then(res => {
+            .send({ username: fixture.username, password: fixture.password, teamName: fixture.teamName })
+            .then(res => {
               expect(res).to.redirect();
             }).catch(err => { throw err; });
         });
       } else {
-        it('should return false when any form field is invalid username is, "' + fixture.username + '" password is, "' +
-            fixture.password + '" team name is, "' + fixture.teamName + '".', () => {
+        it('should return false when any form field is invalid username is, "' + fixture.username +
+          '" password is, "' + fixture.password + '" team name is, "' + fixture.teamName + '".', () => {
           return chai.request(app)
                 .post('/')
-                .send({ username: fixture.username, password: fixture.password, teamName: fixture.teamName }).then(res => {
+                .send({ username: fixture.username, password: fixture.password, teamName: fixture.teamName })
+                .then(res => {
                   expect(res).to.have.status(200);
                 }).catch(err => { throw err; });
         });
