@@ -39,6 +39,7 @@ let authStub = {
   }
 };
 
+
 /**
  * This will effectively replace the validate and authenticate functions in the auth module at lib/auth.
  * This stub is used for testing a rejected promise from the authenticate function. The validate function is set to
@@ -183,7 +184,7 @@ describe('index route', () => {
       validateReturnFlag = false;
       falseAuthReturnProxySetup();
       path = join(__dirname, '../../views/index.ejs');
-      resData = { title: 'Error: Incorrect credentials, please try again.' };
+      resData = {title: 'Error: Incorrect credentials, please try again.'};
       renderedHtml = ejs.compile(read(path, 'utf8'), {filename: path})(resData);
       chai.request(app)
         .post('/')
@@ -199,7 +200,7 @@ describe('index route', () => {
       rejectedPromiseProxySetup();
       validateReturnFlag = true;
       path = join(__dirname, '../../views/index.ejs');
-      resData = { title: 'Error: Incorrect credentials, please try again.' };
+      resData = {title: 'Error: Incorrect credentials, please try again.'};
       renderedHtml = ejs.compile(read(path, 'utf8'), {filename: path})(resData);
       chai.request(app)
         .post('/')

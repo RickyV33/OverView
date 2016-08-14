@@ -49,6 +49,7 @@ describe('projects', function () {
           expect(res).to.have.property('text');
           expect(res.text).to.equal(renderedView);
         });
+
     });
   });
 });
