@@ -1,4 +1,5 @@
 /* eslint-env browser */
+
 let auth = require('../lib/auth');
 
 const INVALID_CREDENTIALS_ERROR_MESSAGE = 'Invalid Credentials';
@@ -8,7 +9,8 @@ document.addEventListener('DOMContentLoaded', () => {
     let username = document.getElementById('username').value;
     let password = document.getElementById('password').value;
     let teamName = document.getElementById('teamName').value;
-    let credentials = {username: username, password: password, teamName: teamName};
+    let credentials = {body: {username: username, password: password, teamName: teamName}};
+
     if (auth.validate(credentials)) {
       // run submit function
     } else {
@@ -16,7 +18,6 @@ document.addEventListener('DOMContentLoaded', () => {
       alert(INVALID_CREDENTIALS_ERROR_MESSAGE);
       document.getElementById('username').value = '';
       document.getElementById('password').value = '';
-      document.getElementById('teamName').value = '';
     }
   });
 });

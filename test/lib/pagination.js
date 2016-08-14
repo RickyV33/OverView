@@ -28,7 +28,7 @@ function pageArrayOfSizeN (n) {
   return array;
 }
 
-  //  function to create an array with all returned data items from all pages
+//  function to create an array with all returned data items from all pages
 function arrayOfPageData (resolvedObjects) {
   let array = [];
   let numOfPages = resolvedObjects.length;
@@ -203,7 +203,7 @@ describe('Pagination Module', function () {
         });
       };
       pagination = proxyquire('../../lib/pagination', { 'request': requestStub });
-      expect(pagination('http://dummy:password@sevensource.jamacloud.com/rest/latest/projects', startAt, Number.MAX_SAFE_INTEGER))
+      expect(pagination('http://dummy:dummy@dummy.jamacloud.com/rest/latest/projects', startAt, Number.MAX_SAFE_INTEGER))
         .to.eventually.be.fulfilled().and.to.have.lengthOf(arrayOfPageData(pages).length).and.to.deep.equal(arrayOfPageData(pages));
     });
     it('should append a new query string if the url already contains a query', () => {
