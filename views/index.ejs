@@ -17,7 +17,7 @@
         <input id="password" type="password" name="password" required maxlength="200" minlength="6" />
       </div>
       <input type="submit" value="Login" />
-      <%if (error !== undefined && error){%>
+      <%if (typeof error !== 'undefined' && error){%>
       <div class="error">
         Your login attempt was not successful. The user credentials you entered were not valid, please try again.
       </div>

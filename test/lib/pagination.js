@@ -52,6 +52,7 @@ let rejectedRequestStub = (error = 'this is an error', status = {statusCode: 200
     process.nextTick(() => {
       callback(error, status);
     });
+  };
 };
 
 function createResolvedObject (startingIndex, resultingCount, dataSupplied) {
