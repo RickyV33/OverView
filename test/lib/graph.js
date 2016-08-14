@@ -11,7 +11,13 @@ chai.use(dirtyChai);
 
 describe('Graph class module', () => {
   // Removes console printing for our modules
-  console.error = () => {};
+  let oldError = console.error;
+  before(() => {
+    console.error = () => {};
+  });
+  after(() => {
+    console.error = oldError;
+  });
   describe('constructor', () => {
     let projectId = 1;
     let url = 'url';
@@ -85,7 +91,6 @@ describe('Graph class module', () => {
       expect(newGraph.name).to.be.empty();
       expect(newGraph.nodes).to.be.empty();
       expect(newGraph.edges).to.be.empty();
-      console.log('------------------------------------------------');
     });
 
     it('should return a graph that contains nothing when a timeout has occurred for getProjectItems', () => {
