@@ -56,7 +56,7 @@ describe('Hierarchy Module', () => {
       data = 'Invalid login credentials';
       hierarchy = proxyquire('../../lib/hierarchy', {'./pagination': rejectedPromise});
       return (expect(hierarchy.getAllItems(username, password, teamName, projectId))
-        .to.eventually.be.rejected()).then((item) => {
+        .to.eventually.be.rejected()).then(item => {
           expect(item).to.equal(data);
         });
     });
@@ -65,7 +65,7 @@ describe('Hierarchy Module', () => {
       data = 'Invalid project ID';
       hierarchy = proxyquire('../../lib/hierarchy', {'./pagination': rejectedPromise});
       return (expect(hierarchy.getAllItems(username, password, teamName, projectId))
-        .to.eventually.be.rejected()).then((item) => {
+        .to.eventually.be.rejected()).then(item => {
           expect(item).to.equal(data);
         });
     });
@@ -74,7 +74,7 @@ describe('Hierarchy Module', () => {
       data = {};
       hierarchy = proxyquire('../../lib/hierarchy', {'./pagination': resolvedPromise});
       return (expect(hierarchy.getAllItems(username, password, teamName, projectId))
-        .to.eventually.be.fulfilled()).then((item) => {
+        .to.eventually.be.fulfilled()).then(item => {
           expect(item).to.equal(data);
         });
     });
@@ -84,7 +84,7 @@ describe('Hierarchy Module', () => {
       data = {'name': 'first item', 'children': {'name': 'sub item of first item', 'children': {}}};
       hierarchy = proxyquire('../../lib/hierarchy', {'./pagination': resolvedPromise});
       return (expect(hierarchy.getAllItems(username, password, teamName, projectId))
-        .to.eventually.be.fulfilled()).then((item) => {
+        .to.eventually.be.fulfilled()).then(item => {
           expect(item).to.equal(data);
         });
     });
