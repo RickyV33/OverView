@@ -100,11 +100,11 @@ let hierarchyTestCases = [
             children: [{name: 'Nested child of root 2', children: []}]}]}]}}
 ];
 
-describe.skip('hierarchy', function () {
-  describe('GET /hierarchy', function () {
+describe('hierarchy', () => {
+  describe('GET /hierarchy', () => {
   //  let link;
-    hierarchyTestCases.forEach(function (item) {
-      it(item.testcase, function () {
+    hierarchyTestCases.forEach(item => {
+      it(item.testcase, () => {
         initializeRoute(item.body);
   //      link = proxyquire('../../routes/hierarchy', {
   //        './hierarchy': testModule
@@ -113,7 +113,7 @@ describe.skip('hierarchy', function () {
         //   app.use(router);
      //   request(app)
           .get('./hierarchy')
-          .end(function (err, res) {
+          .end((err, res) => {
             if (err) {
               throw (err);
             } else {

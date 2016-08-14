@@ -1,5 +1,7 @@
 /* eslint-env mocha */
 
+'use strict';
+
 let chai = require('chai');
 let expect = chai.expect;
 let dirtyChai = require('dirty-chai');
@@ -11,7 +13,7 @@ let schema = require('../../../lib/schema/itemHierarchy');
 chai.use(dirtyChai);
 chai.use(chaiAsPromised);
 
-describe('Item Hierarchy JSON', function () {
+describe('Item Hierarchy JSON', () => {
   let ajv = new Ajv();
   let validJSON = false;
   let failingTestCases = [
@@ -72,13 +74,13 @@ describe('Item Hierarchy JSON', function () {
     }
   ];
   failingTestCases.forEach(item => {
-    it(item.title, function () {
+    it(item.title, () => {
       validJSON = ajv.validate(schema, item.body);
       expect(validJSON).to.be.false();
     });
   });
   passingTestCases.forEach(item => {
-    it(item.title, function () {
+    it(item.title, () => {
       validJSON = ajv.validate(schema, item.body);
       expect(validJSON).to.be.true();
     });
