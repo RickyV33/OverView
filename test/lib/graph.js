@@ -1,23 +1,30 @@
 /* eslint-env mocha */
 
+'use strict';
+
 let chai = require('chai');
 let expect = chai.expect;
 let dirtyChai = require('dirty-chai');
 let proxyquire = require('proxyquire');
-
 let Graph = require('../../lib/graph');
 
 chai.use(dirtyChai);
 
 describe('Graph class module', () => {
   // Removes console printing for our modules
-  console.error = () => {};
+  let oldError = console.error;
+  before(() => {
+    console.error = () => {};
+  });
+  after(() => {
+    console.error = oldError;
+  });
   describe('constructor', () => {
     let projectId = 1;
     let url = 'url';
     let stubs = {};
     let data = [];
-    let Graph = proxyquire('../../lib/graph', {'./projectquire': stubs});
+    let Graph = proxyquire('../../lib/graph', {'./projects': stubs});
     let newGraph;
     let resolvedNamePromise = () => {
       return new Promise((resolve, reject) => {
@@ -197,7 +204,7 @@ describe('Graph class module', () => {
       let graph = new Graph();
       graph.nodes = nodes;
       graph.edges = edges;
-      let relGraphBlob = {'items': nodes, 'relationships': edges};
+      let relGraphBlob = {name: 'test', 'items': nodes, 'relationships': edges};
       let newGraph = Graph.fromJson(relGraphBlob);
       expect(newGraph.nodes).to.deep.equal(nodes);
       expect(newGraph.edges).to.deep.equal(edges);

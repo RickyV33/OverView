@@ -1,10 +1,12 @@
 /* eslint-env mocha */
+
+'use strict';
+
 let chai = require('chai');
 let expect = chai.expect;
 let dirtyChai = require('dirty-chai');
 let chaiAsPromised = require('chai-as-promised');
 let Ajv = require('ajv');
-
 let schema = require('../../../lib/schema/relationshipGraph');
 
 chai.use(dirtyChai);
@@ -15,7 +17,7 @@ Ajv.addSchema(schema, 'graphSchema');
 let validate = Ajv.compile(schema);
 let validJSON = false;
 
-describe('Relationship Graph JSON', function () {
+describe('Relationship Graph JSON', () => {
   // Failing test cases for relationship graph JSON
   let failingTestCases = [
       // test cases for items missing a field [id, name, type, image]
@@ -61,10 +63,10 @@ describe('Relationship Graph JSON', function () {
   // Passing test cases for relationship graph JSON
   let passingTestCases = [
       {title: 'should return true when JSON contains at least 1 item and at least 1 relationship',
-          body: {items: [{id: 34, name: 'story', type: 35, image: 'url'}],
+          body: {name: 'test', items: [{id: 34, name: 'story', type: 35, image: 'url'}],
               relationships: [{id: 1, source: 34, target: 35, type: 35, suspect: false}]}},
       {title: 'should return true when JSON contains many items and many relationships with valid properties',
-          body: {items: [{id: 34, name: 'story', type: 35, image: 'url'}, {id: 1, name: 'story', type: 35, image: 'url'},
+          body: {name: 'test', items: [{id: 34, name: 'story', type: 35, image: 'url'}, {id: 1, name: 'story', type: 35, image: 'url'},
             {id: 2, name: 'req', type: 36, image: 'url'}, {id: 3, name: 'story', type: 35, image: 'url'},
             {id: 4, name: 'story', type: 35, image: 'url'}, {id: 5, name: 'req', type: 36, image: 'url'},
             {id: 6, name: 'epic', type: 34, image: 'url'}],
@@ -73,15 +75,15 @@ describe('Relationship Graph JSON', function () {
            {id: 5, source: 5, target: 3, type: 38, suspect: false}, {id: 6, source: 4, target: 3, type: 39, suspect: false}]}}
   ];
   // Validating all incorrect JSON are rejected
-  failingTestCases.forEach(function (item) {
-    it(item.title, function () {
+  failingTestCases.forEach(item => {
+    it(item.title, () => {
       validJSON = validate(item.body);
       expect(validJSON).to.be.false();
     });
   });
   // Validating all correct JSON are accepted
-  passingTestCases.forEach(function (item) {
-    it(item.title, function () {
+  passingTestCases.forEach(item => {
+    it(item.title, () => {
       validJSON = validate(item.body);
       expect(validJSON).to.be.true();
     });

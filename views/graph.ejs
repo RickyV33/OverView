@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <link rel='stylesheet' href='/stylesheets/app.css' />
+</head>
+<body>
+    <!-- Goes to d3 -->
+    <h1><%= title %></h1>
+    <h3><%= subtitle %></h3>
+    <% include partials/projects.ejs %>
+    <% include partials/hierarchy.ejs %>
+    <input id="logOut" type="button" value="Log Out" >
+    <script src='http://d3js.org/d3.v3.min.js'></script>
+    <script src='js/app.js'></script>
+</body>
+</html>
