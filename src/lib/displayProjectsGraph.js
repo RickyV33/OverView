@@ -2,7 +2,7 @@
 /* exported renderGraph */
 let clickedOnce = false;  // For monitoring the click event on node
 let timer;                // For click event monitoring
-const noRoot = -1;
+const projectRootId = -1; // Default value for project node
 
 let width = 1000;         // D3 window Width
 let height = 800;         // D3 window height
@@ -69,6 +69,7 @@ export default function renderGraph (graphData, selectedProjectId, rootId) {
       collapseAll(rootId);  // Collapses all the nodes except the root node
     }
     updateOpacity();
+    checkOpacity();
     currentRootId = rootId;
   }
 }
@@ -79,12 +80,13 @@ export default function renderGraph (graphData, selectedProjectId, rootId) {
  */
 function insertProjectNode (graphData, rootId) {
   // Create a project node and add it to the nodes list
-  projectNode = {id: noRoot, name: graphData.name, image: '', type: -1};
+  projectNode = {id: projectRootId, name: graphData.name, image: '', type: -1};
   graphData.items.unshift(projectNode);
 
   // Add a relationship from project node to root id if one was passed in
-  if (rootId !== noRoot && rootId !== null && rootId !== undefined) {
-    graphData.relationships.push({id: -1, source: -1, target: rootId, type: -1});
+  console.log('insertProjectNode() ===> rootID=' + rootId);
+  if (rootId && rootId !== projectRootId) {
+    graphData.relationships.push({id: projectRootId, source: projectRootId, target: rootId, type: -1});
   }
 }
 
@@ -94,7 +96,7 @@ function insertProjectNode (graphData, rootId) {
 function configureD3Graph () {
   // Append the SVG object to the body
   // Add a group element within it to encompass all the nodes - this fixes the chrome
-  svg = d3.select('body').append('svg')
+  svg = d3.select('#d3Container').append('svg')
     .attr('id', 'graphSVG')
     .attr('width', '100%')
     .attr('height', height)
@@ -167,7 +169,8 @@ function mapNodesToEdges (graphData) {
  * @param {object} graphData
  */
 function filterJSON (graphData, rootId) {
-  if (rootId !== noRoot && rootId !== null && rootId !== undefined) {
+  console.log('Filter JSON: rootid = ' + rootId);
+  if (rootId && rootId !== projectRootId) {
     filterJSONRecursive(nodeToEdgeMap[rootId]);
   } else {
     nodesToRender = graphData.items;
@@ -210,7 +213,7 @@ function clearGraph () {
  * @param {object} graphData
  * @param {integer} rootId is the id of the element that is to be the root node coming off the project node
  */
-function updateGraph (graphData, rootId = noRoot) {
+function updateGraph (graphData, rootId = projectRootId) {
   if (!relationsChecked) {
     // For each relationship, add the target to the source node
     graphData.relationships.forEach(function (relItem) {
@@ -292,7 +295,7 @@ function updateGraph (graphData, rootId = noRoot) {
       // Add projectRoot class if the node is the project node
       let strClass = 'node';
 
-      if (thisNode.id === rootId || thisNode.id === noRoot) {
+      if (thisNode.id === rootId || thisNode.id === projectRootId) {
         strClass = strClass + ' projectRoot';
       }
 
@@ -305,7 +308,7 @@ function updateGraph (graphData, rootId = noRoot) {
       if (clickedOnce) {  // This only occurs if someone clicks twice before the timeout below
         nodeDoubleClick(d);  // Call the double click function
       } else {              // We've seen a single click
-        if (event.shiftKey) {  // If we see a click with a shift...
+        if (d3.event.shiftKey) {  // If we see a click with a shift...
           nodeClick(d);  // Call nodeClick() to check (un)highlighting
         } else {
           timer = setTimeout(function () { // If we just see a click check for double click
@@ -653,6 +656,7 @@ function nodeDoubleClick (clickedNode) {
   }
   resetVisitedFlag();
   updateOpacity();
+  checkOpacity();
 }
 
 /**
@@ -708,7 +712,7 @@ function unCollapse (id) {
 function collapseAll (rootId) {
   // Set all nodes to be invisible
   nodesToRender.forEach(function (item) {
-    item.isVisible = (item.id === noRoot || item.id === rootId);
+    item.isVisible = (item.id === projectRootId || item.id === rootId);
   });
 }
 
@@ -720,33 +724,6 @@ function resetVisitedFlag () {
   edgesToRender.forEach(function (item) { item.visited = false; });
 }
 
-// /**
-//  * Toggles the opacity of a d3 svg item
-//  * @param {number} id
-//  */
-// function toggleOpacity (id) {
-//   // console.log('----- toggleOpacity() -----');
-//   let foundRel;
-//
-//   if (id && (typeof id === typeof 0)) {
-//     foundRel = d3.select("[id='" + id + "']");
-//     if (foundRel[0][0] !== null) {
-//       foundRel.style('opacity', (foundRel.style('opacity') > 0) ? 0 : 1);
-//     } else { console.log('toggleOpacity() - item not found'); }
-//   } else { console.log('toggleOpacity() - item is not a number'); }
-// }
-
-// function setOpacity (id, opac) {
-//   // console.log('----- toggleOpacity() -----');
-//   let foundRel;
-//
-//   if (id && (typeof id === typeof 0)) {
-//     foundRel = d3.select("[id='" + id + "']");
-//     if (foundRel[0][0] !== null) {
-//       foundRel.style('opacity', opac);
-//     } else { console.log('setOpacity() - item not found'); }
-//   } else { console.log('setOpacity() - item is not a number'); }
-// }
 /**
  * Updates the opacity of all the nodes and edges based on their current flags.
  */
@@ -755,18 +732,15 @@ function updateOpacity () {
   node.style('opacity', function (d) {
     if (d.isVisible) {
       return (d.isHighlighted) ? 1 : reducedOpacity;
-    } else {
-      return 0;
-    }
+    } else { return 0; }
   });
+
   // Edge Checking
   path.style('opacity', function (curPath) {
     let src = curPath.source;
     let targ = curPath.target;
     if (src.isVisible && targ.isVisible) {
       return (curPath.source.isHighlighted && curPath.target.isHighlighted) ? 1 : reducedOpacity;
-    } else {
-      return 0;
-    }
+    } else { return 0; }
   });
 }
