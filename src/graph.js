@@ -15,17 +15,34 @@ document.addEventListener('DOMContentLoaded', () => {
     document.location.href = '/logout';
   });
 
+  
   // Manage the selection of a project and item hierarchy
-  buildProjectAnchors().then(() => getGraph(selectedProject)).then(graphJSON => {
-    graphData = graphJSON;
-    console.log(graphData);
-    buildItemHierarchyAnchors();
-  });
+  buildProjectAnchors()
+    .then(() => {
+      let requests = [
+        getHierarchy(selectedProject),
+        getGraph(selectedProject)
+      ];
+      // Fetch the hierarchy and graph payload and then return the promise with the values
+      document.body.style.cursor = 'wait';
+      return Promise.all(requests);
+    })
+    .then(payloads => {
+      // Render the hierarchy display and add click handlers and store the project graph JSON
+      let hierarchyPayload = payloads[0];
+      graphData = payloads[1];
 
-  document.getElementById('renderButton').addEventListener('click', event => {
+      renderHierarchy(hierarchyPayload);
+      buildItemHierarchyAnchors();
+      toggle(projects);
+      toggle(hierarchy);
+      document.body.style.cursor = 'default';
+    });
+
+  document.getElementById('renderButton').addEventListener('click', () => {
+    let rootId = isNaN(parseInt(selectedHierarchyItem)) ? null : parseInt(selectedHierarchyItem);
     toggle(hierarchy);
-    console.log(selectedHierarchyItem);
-    renderGraph(graphData, selectedProject, parseInt(selectedHierarchyItem));
+    renderGraph(graphData, selectedProject, rootId);
   });
 });
 
@@ -34,16 +51,7 @@ function buildProjectAnchors () {
     querySelectorAll('#projects a').forEach(projectAnchor => {
       projectAnchor.addEventListener('click', event => {
         selectedProject = event.target.getAttribute('data-id');
-        // Wait until loadHierarchy retrieves the new partial view and updates it with the item hierarchy
-        // to display the hierarchy selection div and toggle projects view
-        document.body.style.cursor = 'wait';
-        getHierarchy(selectedProject).then(hierarchyPayload => {
-          renderHierarchy(hierarchyPayload);
-          toggle(projects);
-          toggle(hierarchy);
-          document.body.style.cursor = 'default';
-          resolve(true);
-        });
+          resolve();
       });
     });
   });
