@@ -12,24 +12,23 @@ let join = require('path').join;
 
 chai.use(chaiHttp);
 
-describe('projects', () => {
-  describe.skip('get request', () => {
-    // Test #1: verify projects list view is rendered successfully as is documented in views/projects.ejs
-    it('should render successfully with status 200', done => {
+describe('logout', () => {
+  describe('get request', () => {
+    it('should render successfully with status 200', (done) => {
       let path, data, renderedView;
       chai.request(server)
-            .post('/')
-            .send({teamName: 'sevensource', username: 'dummy', password: 'password'})
+            .get('/logout')
             .end((err, res) => {
               if (err) {
                 console.log(err);
               }
               expect(res).to.have.status(200);
-              expect(res).to.redirect();
+              expect(res).to.redirect('/');
               expect(res).to.have.property('text');
-              path = join(__dirname, '../../views/projects.ejs');
-              // TODO need to test with actual data once "Gather projects" story is completed
-              data = {title: 'Projects', projects: null};
+              path = join(__dirname, '../../views/index.ejs');
+
+              data = {title: 'JamaTrace', teamName: 'sevensource', error: false};
+
               renderedView = ejs.compile(read(path, 'utf8'), {filename: path})(data);
               expect(res.text).to.equal(renderedView);
               done();

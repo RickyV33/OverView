@@ -4,29 +4,29 @@ let projects = require('../lib/projects');
 let router = express.Router();
 
 /* GET home page. */
-router.get('/', function (req, res, next) {
-  res.render('index', { title: 'JamaTrace' });
+router.get('/', (req, res, next) => {
+  res.render('index', {title: 'JamaTrace', teamName: req.session.teamName});
 });
 
-router.post('/', function (req, res, next) {
+router.post('/', (req, res, next) => {
+  req.body.teamName = req.session.teamName;
   if (auth.validate(req)) {
-    auth.authenticate(req.body.username, req.body.password, req.body.teamName).then(function (sessionProjects) {
+    auth.authenticate(req.body.username, req.body.password, req.body.teamName).then(sessionProjects => {
       req.session.username = req.body.username;
       req.session.password = req.body.password;
-      req.session.teamName = req.body.teamName;
       req.session.projects = projects.parseProjectList(sessionProjects);
-      req.session.save(function (err) {
+      req.session.save(err => {
         if (err) {
           // TODO Session save Error message
-          res.render('index', { title: err });
+          res.render('index', { title: 'JamaTrace', teamName: req.body.teamName, error: true });
         }
-        res.redirect('/projects');
+        res.redirect('/graph');
       });
-    }, function () {
-      res.render('index', { title: 'Error: Incorrect credentials, please try again.' });
+    }, () => {
+      res.render('index', { title: 'JamaTrace', teamName: req.body.teamName, error: true });
     });
   } else {
-    res.render('index', { title: 'Error: Incorrect credentials, please try again.' });
+    res.render('index', { title: 'JamaTrace', teamName: req.body.teamName, error: true });
   }
 });
 
