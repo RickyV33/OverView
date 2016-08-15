@@ -24,8 +24,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
   document.getElementById('renderButton').addEventListener('click', event => {
     toggle(hierarchy);
-    console.log(selectedHierarchyItem);
-    renderGraph(graphData, selectedProject, parseInt(selectedHierarchyItem));
+    // Hacky way of displaying the graph
+    if (selectedHierarchyItem) {
+      renderGraph(graphData, selectedProject, parseInt(selectedHierarchyItem));
+    } else {
+      renderGraph(graphData, selectedProject, null);
+    }
   });
 });
 
