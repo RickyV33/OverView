@@ -5,7 +5,3 @@ body {
 .hidden {
     display: none;
 }
-
-body > svg {
-    display: none;
-}
