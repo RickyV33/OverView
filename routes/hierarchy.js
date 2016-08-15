@@ -7,16 +7,6 @@ router.get('/', (req, res, next) => {
     .then(allItems => {
       res.json(hierarchy.parseItemHierarchy(allItems));
     });
- /* req.session.save(function (err) {
-    if (err) {
-      // TODO Session save Error message
-    } else {
-      res.render('hierarchy', {
-        title: 'Select a Root Item (Optional) ',
-        itemHierarchy: req.session.itemHierarchy ? req.session.itemHierarchy : []
-      });
-    }
-  });*/
 });
 
 module.exports = router;
