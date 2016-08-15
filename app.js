@@ -7,6 +7,7 @@ let bodyParser = require('body-parser');
 
 // TODO: Refactor these into a single routes module
 let routes = require('./routes/index');
+let projects = require('./routes/projects');
 let logout = require('./routes/logout');
 let hierarchy = require('./routes/hierarchy');
 let graph = require('./routes/graph');
@@ -29,7 +30,7 @@ app.use(session({
 }));
 
 // Middleware to add the teamName to the session from the .env config file
-app.use(function (req, res, next) {
+app.use((req, res, next) => {
   var teamName = req.session.teamName;
   if (!teamName) {
     req.session.teamName = process.env.TEAM_NAME || 'sevensource';
@@ -39,12 +40,13 @@ app.use(function (req, res, next) {
 
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', routes);
+app.use('/projects', projects);
 app.use('/logout', logout);
 app.use('/hierarchy', hierarchy);
 app.use('/graph', graph);
 
 // catch 404 and forward to error handler
-app.use(function (req, res, next) {
+app.use((req, res, next) => {
   let err = new Error('Not Found');
   err.status = 404;
   next(err);
@@ -55,7 +57,7 @@ app.use(function (req, res, next) {
 // development error handler
 // will print stacktrace
 if (app.get('env') === 'development') {
-  app.use(function (err, req, res, next) {
+  app.use((err, req, res, next) => {
     res.status(err.status || 500);
     res.render('error', {
       message: err.message,
@@ -66,7 +68,7 @@ if (app.get('env') === 'development') {
 
 // production error handler
 // no stacktraces leaked to user
-app.use(function (err, req, res, next) {
+app.use((err, req, res, next) => {
   res.status(err.status || 500);
   res.render('error', {
     message: err.message,

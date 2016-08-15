@@ -3,10 +3,7 @@ let router = express.Router();
 
 /* GET home page. */
 router.get('/', (req, res, next) => {
-  req.session.destroy(req.session.id, error => {
-    console.log('Error clearing out the session: ' + error);
-  });
-  res.redirect('/');
+  res.render('projects', {title: 'Projects', projects: req.session.projects ? req.session.projects : null});
 });
 
 module.exports = router;
