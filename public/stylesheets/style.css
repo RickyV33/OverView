@@ -28,9 +28,11 @@ a:hover {
 }
 
 #logo {
-  position: absolute;
   text-align: center;
   width: 100%;
+}
+#logo.small {
+  position: absolute;
 }
 
 #logo img {
