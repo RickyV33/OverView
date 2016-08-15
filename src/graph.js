@@ -54,12 +54,9 @@ function buildProjectAnchors () {
  * variable to that items ID
  */
 function buildItemHierarchyAnchors () {
-  return new Promise(resolve => {
-    querySelectorAll('#itemHierarchyList a').forEach(hierarchyAnchor => {
-      hierarchyAnchor.addEventListener('click', event => {
-        selectedHierarchyItem = event.target.getAttribute('data-id');
-        resolve(true);
-      });
+  querySelectorAll('#itemHierarchyList a').forEach(hierarchyAnchor => {
+    hierarchyAnchor.addEventListener('click', event => {
+      selectedHierarchyItem = event.target.getAttribute('data-id');
     });
   });
 }
