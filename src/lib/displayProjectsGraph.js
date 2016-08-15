@@ -22,6 +22,7 @@ let relationsChecked = false;   // Flag to see if relations check was run
 
 let currentProjectId;
 let currentRootId;
+let debug = true;         // To display the function console logs
 
 // ////// DEMO VARS//////
 
@@ -48,15 +49,19 @@ function initializeGraphData (graphData, rootId) {
  */
 // eslint-disable-next-line no-unused-vars
 export default function renderGraph (graphData, selectedProjectId, rootId) {
-  // console.log('Root ID: ' + rootId + '  CurrentRootId: ' + currentRootId);
-  // console.log('Project ID: ' + selectedProjectId + '  CurrentProjectId: ' + currentProjectId);
+  if (debug) {
+    // console.log('Root ID: ' + rootId + '  CurrentRootId: ' + currentRootId);
+    // console.log('Project ID: ' + selectedProjectId + '  CurrentProjectId: ' + currentProjectId);
+  }
 
   if (currentProjectId !== selectedProjectId) {
     initializeGraphData(graphData, rootId);
     currentProjectId = selectedProjectId;
   }
 
-  // console.log(nodeToEdgeMap[rootId]);
+  if (debug) {
+    // console.log(nodeToEdgeMap[rootId]);
+  }
 
   if (rootId !== currentRootId) {
     clearGraph(); // Clear all of the graph data
@@ -84,7 +89,10 @@ function insertProjectNode (graphData, rootId) {
   graphData.items.unshift(projectNode);
 
   // Add a relationship from project node to root id if one was passed in
-  console.log('insertProjectNode() ===> rootID=' + rootId);
+  if (debug) {
+    console.log('insertProjectNode() ===> rootID=' + rootId);
+  }
+
   if (rootId && rootId !== projectRootId) {
     graphData.relationships.push({id: projectRootId, source: projectRootId, target: rootId, type: -1});
   }
@@ -169,7 +177,10 @@ function mapNodesToEdges (graphData) {
  * @param {object} graphData
  */
 function filterJSON (graphData, rootId) {
-  console.log('Filter JSON: rootid = ' + rootId);
+  if (debug) {
+    console.log('Filter JSON: rootid = ' + rootId);
+  }
+
   if (rootId && rootId !== projectRootId) {
     filterJSONRecursive(nodeToEdgeMap[rootId]);
   } else {
@@ -183,6 +194,10 @@ function filterJSON (graphData, rootId) {
  * @param thisNode
  */
 function filterJSONRecursive (thisNode) {
+  if (debug) {
+    console.log('filterJSONRecursive(thisNode)');
+  }
+
   if (!thisNode.node.visited || thisNode.node.visited === 'undefined') {
     thisNode.node.visited = true;
     nodesToRender.push(thisNode.node);
@@ -200,6 +215,10 @@ function filterJSONRecursive (thisNode) {
  * Clear the SVG object from the graphContainer and the data for the nodes, edges
  */
 function clearGraph () {
+  if (debug) {
+    console.log('clearGraph()');
+  }
+
   nodesToRender = [];
   edgesToRender = [];
   let graphSVG = document.getElementById('graphSVG');
@@ -214,6 +233,10 @@ function clearGraph () {
  * @param {integer} rootId is the id of the element that is to be the root node coming off the project node
  */
 function updateGraph (graphData, rootId = projectRootId) {
+  if (debug) {
+    console.log('updateGraph()');
+  }
+
   if (!relationsChecked) {
     // For each relationship, add the target to the source node
     graphData.relationships.forEach(function (relItem) {
@@ -242,8 +265,10 @@ function updateGraph (graphData, rootId = projectRootId) {
     relationsChecked = true;
   }
 
-  console.log(nodesToRender);
-  console.log(edgesToRender);
+  if (debug) {
+    console.log(nodesToRender);
+    console.log(edgesToRender);
+  }
 
   force  // Set the force nodes, edges and start the graph
     .nodes(nodesToRender)  // .nodes(graphData.items)
@@ -508,9 +533,10 @@ function updateGraph (graphData, rootId = projectRootId) {
  * @param {Object} d is the node that was just clicked
  */
 function nodeClick (d) {
-  console.log('==========================');
-  console.log('         nodeClick');
-  console.log('==========================');
+  if (debug) {
+    console.log('===============> nodeClick');
+  }
+
   let highlightedCount = 0; // this will count how many downStream nodes are highlighted.
   if (d.downStream.length > 0) {
     let selectedNode = nodeToEdgeMap[d.id];
@@ -547,7 +573,10 @@ function nodeClick (d) {
  */
 // TODO : Keep nodes with two highlighted upstream nodes highlighted on un-highlight with a count
 function unHighlightNodes (d) {
-  console.log('====> unHighlightNodes()');
+  if (debug) {
+    console.log('====> unHighlightNodes()');
+  }
+
   // unhighlight the clicked node
   d.isHighlighted = false;
   d.visited = true;
@@ -578,7 +607,10 @@ function unHighlightNodes (d) {
  * @param {int} count
  */
 function downStreamHighlightCheck (d, count) {
-  console.log('====> downStreamHighlightCheck()');
+  if (debug) {
+    console.log('====> downStreamHighlightCheck()');
+  }
+
   count = -1;
   // This checks whether we should be highlighting or un-highlighting nodes by counting the number of downstream
   // nodes that are highlighted and returning that count.
@@ -591,8 +623,12 @@ function downStreamHighlightCheck (d, count) {
       }
       curID.visited = true;
     });
-    console.log('count is: ' + count);
-    console.log('downstream length is: ' + d.downStream.length);
+
+    if (debug) {
+      console.log('count is: ' + count);
+      console.log('downstream length is: ' + d.downStream.length);
+    }
+
     return count;
   }
 }
@@ -639,10 +675,11 @@ function checkOpacity () {
  * @param {Object} clickedNode is the node that was clicked on
  */
 function nodeDoubleClick (clickedNode) {
-  console.log('================================');
-  console.log('   Double Click Fired on ' + clickedNode.id);
-  console.log('================================');
-  // console.log(clickedNode);
+  if (debug) {
+    console.log('===============> Double Click Fired on ' + clickedNode.id);
+    // console.log(clickedNode);
+  }
+
   clickedOnce = false;  // For resetting the clickedOnce flag
   clearTimeout(timer);  // Reset the timer for click event
   if (clickedNode.isCollapsed) {
@@ -664,7 +701,10 @@ function nodeDoubleClick (clickedNode) {
  * @param {number} id is the object that is selected and whose downStream nodes will be toggled
  */
 function collapse (id) {
-  // console.log('-- collapse *' + id + '* [' + count + '] --');
+  if (debug) {
+    // console.log('-- collapse *' + id + '* [' + count + '] --');
+  }
+
   let thisNode = nodeToEdgeMap[id];
   if (!thisNode.node.visited || thisNode.node.visited === 'undefined') {
     thisNode.node.visited = true;
@@ -693,7 +733,10 @@ function collapse (id) {
  * @param id
  */
 function unCollapse (id) {
-  // console.log('-- unCollapse() --');
+  if (debug) {
+    // console.log('-- unCollapse() --');
+  }
+
   let thisNode = nodeToEdgeMap[id];
 
   if (thisNode.edges.length > 0) {
@@ -720,6 +763,10 @@ function collapseAll (rootId) {
  * Cycle through all of the nodes and edges and set the visited flag to false
  */
 function resetVisitedFlag () {
+  if (debug) {
+    console.log('resetVisitedFlag()');
+  }
+
   nodesToRender.forEach(function (item) { item.visited = false; });
   edgesToRender.forEach(function (item) { item.visited = false; });
 }
@@ -728,6 +775,10 @@ function resetVisitedFlag () {
  * Updates the opacity of all the nodes and edges based on their current flags.
  */
 function updateOpacity () {
+  if (debug) {
+    console.log('updateOpacity()');
+  }
+
   // Node checking
   node.style('opacity', function (d) {
     if (d.isVisible) {
