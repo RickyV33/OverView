@@ -18,7 +18,9 @@ mockApp.use(session({
 }));
 
 mockApp.use((req, res, next) => {
-  req.session.projects = [{id: 1, name: 'Project 1'}, {id: 2, name: 'Project 2'}];
+  req.session.username = 'invalid';
+  req.session.password = 'invalid';
+  req.session.teamName = 'invalid';
   next();
 });
 

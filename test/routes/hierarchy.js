@@ -8,7 +8,7 @@ let dirtyChai = require('dirty-chai');
 let chaiAsPromised = require('chai-as-promised');
 let chaiHttp = require('chai-http');
 let proxyquire = require('proxyquire');
-let mockHierarchy = require('../lib/mockHierarchy.json');
+let mockHierarchy = require('./mockHierarchy.json');
 
 chai.use(dirtyChai);
 chai.use(chaiHttp);
@@ -30,7 +30,7 @@ let libStub;
  */
 function initializeRoute (object) {
   libStub = {
-    getAllItems: () => {
+    getAllItems: (username, password, teamName, projectId) => {
       return new Promise((resolve, reject) => {
         process.nextTick(() => {
           resolve(mockHierarchy);
@@ -42,10 +42,10 @@ function initializeRoute (object) {
     }
   };
   hierarchyStub = proxyquire('../../routes/hierarchy', {
-    '../../lib/hiearchy': libStub
+    '../lib/hierarchy': libStub
   });
   app = proxyquire('./mockApp', {
-    './routes/hiearchy': hierarchyStub
+    '../../routes/hierarchy': hierarchyStub
   });
 }
 
@@ -104,16 +104,16 @@ let hierarchyTestCases = [
 describe('hierarchy', () => {
   describe('GET /hierarchy', () => {
     hierarchyTestCases.forEach(item => {
-      it(item.testcase, () => {
+      it(item.testcase, (done) => {
         initializeRoute(item.body);
         chai.request(app)
           .get('/hierarchy?project=33')
-          .end((err, res) => {
-            if (err) {
-              throw (err);
-            } else {
-              expect(res).to.deep.equal(item.body);
-            }
+          .then(res => {
+            expect(res.body).to.deep.equal(item.body.itemHierarchy);
+            done();
+          })
+          .catch(err => {
+            done(err);
           });
       });
     });
