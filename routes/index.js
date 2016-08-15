@@ -9,6 +9,8 @@ router.get('/', (req, res, next) => {
 });
 
 router.post('/', (req, res, next) => {
+  let teamname = process.env.TEAM_NAME;
+  console.log('teamname came back as ' + teamname);
   req.body.teamName = req.session.teamName;
   if (auth.validate(req)) {
     auth.authenticate(req.body.username, req.body.password, req.body.teamName).then(sessionProjects => {

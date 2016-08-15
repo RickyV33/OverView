@@ -29,12 +29,9 @@ app.use(session({
   saveUninitialized: false
 }));
 
-// Middleware to add the teamName to the session from the .env config file
+// Middleware to add the teamName to the process from the .env config file
 app.use((req, res, next) => {
-  var teamName = req.session.teamName;
-  if (!teamName) {
-    req.session.teamName = process.env.TEAM_NAME || 'sevensource';
-  }
+  process.env.TEAM_NAME = process.env.TEAM_NAME != undefined ? process.env.TEAM_NAME : 'defaultName';
   next();
 });
 
