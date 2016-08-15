@@ -31,7 +31,7 @@ app.use(session({
 
 // Middleware to add the teamName to the process from the .env config file
 app.use((req, res, next) => {
-  process.env.TEAM_NAME = process.env.TEAM_NAME != undefined ? process.env.TEAM_NAME : 'defaultName';
+  process.env.TEAM_NAME = process.env.TEAM_NAME !== undefined ? process.env.TEAM_NAME : 'defaultName';
   next();
 });
 
