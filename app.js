@@ -54,6 +54,8 @@ app.use((req, res, next) => {
 
 // error handlers
 
+// TODO: Should the error handlers provide a default status to the view, too?
+
 // development error handler
 // will print stacktrace
 if (app.get('env') === 'development') {
