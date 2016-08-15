@@ -1,7 +1,7 @@
 /* eslint-env browser */
 
 import renderGraph from './lib/displayProjectsGraph';
-import { renderHierarchy, buildItemHierarchyAnchors, getHierarchy, selectedHierarchyItem} from './lib/hierarchy';
+import { renderHierarchy, buildItemHierarchyAnchors, getHierarchy, selectedHierarchyItem } from './lib/hierarchy';
 import { buildProjectAnchors, selectedProject } from './lib/project';
 
 let projects = document.querySelector('#projects');
@@ -15,27 +15,26 @@ document.addEventListener('DOMContentLoaded', () => {
     document.location.href = '/logout';
   });
 
-  
   // Manage the selection of a project and item hierarchy
   buildProjectAnchors().then(() => {
-      let requests = [
-        getHierarchy(selectedProject),
-        getGraph(selectedProject)
-      ];
-      // Fetch both the hierarchy and graph payload and then return the promise with the values
-      document.body.style.cursor = 'wait';
-      return Promise.all(requests);
-    }).then(payloads => {
-      // Render the hierarchy display and add click handlers and store the project graph JSON
-      let hierarchyPayload = payloads[0];
-      graphData = payloads[1];
+    let requests = [
+      getHierarchy(selectedProject),
+      getGraph(selectedProject)
+    ];
+    // Fetch both the hierarchy and graph payload and then return the promise with the values
+    document.body.style.cursor = 'wait';
+    return Promise.all(requests);
+  }).then(payloads => {
+    // Render the hierarchy display and add click handlers and store the project graph JSON
+    let hierarchyPayload = payloads[0];
+    graphData = payloads[1];
 
-      renderHierarchy(hierarchyPayload);
-      buildItemHierarchyAnchors();
-      toggle(projects);
-      toggle(hierarchy);
-      document.body.style.cursor = 'default';
-    });
+    renderHierarchy(hierarchyPayload);
+    buildItemHierarchyAnchors();
+    toggle(projects);
+    toggle(hierarchy);
+    document.body.style.cursor = 'default';
+  });
 
   document.getElementById('renderButton').addEventListener('click', () => {
     let rootId = isNaN(parseInt(selectedHierarchyItem)) ? null : parseInt(selectedHierarchyItem);
@@ -61,7 +60,6 @@ function toggle (element) {
     element.classList.add('hidden');
   }
 }
-
 
 /**
  * Makes an AJAX request to the provided endpoint for the project graph.
