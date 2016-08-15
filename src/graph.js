@@ -1,11 +1,11 @@
 /* eslint-env browser */
 
 import renderGraph from './lib/displayProjectsGraph';
+import { renderHierarchy, buildItemHierarchyAnchors, getHierarchy, selectedHierarchyItem} from './lib/hierarchy';
+import { buildProjectAnchors, selectedProject } from './lib/project';
 
 let projects = document.querySelector('#projects');
 let hierarchy = document.querySelector('#hierarchy');
-let selectedProject;
-let selectedHierarchyItem = null;
 let graphData;
 
 // TODO: Hook this up to the log out button on the graph view. It is currently not hooked up to anything,
@@ -17,17 +17,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
   
   // Manage the selection of a project and item hierarchy
-  buildProjectAnchors()
-    .then(() => {
+  buildProjectAnchors().then(() => {
       let requests = [
         getHierarchy(selectedProject),
         getGraph(selectedProject)
       ];
-      // Fetch the hierarchy and graph payload and then return the promise with the values
+      // Fetch both the hierarchy and graph payload and then return the promise with the values
       document.body.style.cursor = 'wait';
       return Promise.all(requests);
-    })
-    .then(payloads => {
+    }).then(payloads => {
       // Render the hierarchy display and add click handlers and store the project graph JSON
       let hierarchyPayload = payloads[0];
       graphData = payloads[1];
@@ -46,36 +44,13 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
-function buildProjectAnchors () {
-  return new Promise((resolve) => {
-    querySelectorAll('#projects a').forEach(projectAnchor => {
-      projectAnchor.addEventListener('click', event => {
-        selectedProject = event.target.getAttribute('data-id');
-          resolve();
-      });
-    });
-  });
-}
-
-/**
- * Listens for mouse clicks on the Item hierarchy list and sets the selected
- * variable to that items ID
- */
-function buildItemHierarchyAnchors () {
-  querySelectorAll('#itemHierarchyList a').forEach(hierarchyAnchor => {
-    hierarchyAnchor.addEventListener('click', event => {
-      selectedHierarchyItem = event.target.getAttribute('data-id');
-    });
-  });
-}
-
 /**
  * Query the page for a set of elements given a CSS selector.
  *
  * @param selector CSS selector
  * @returns {*} Array of matched elements
  */
-function querySelectorAll (selector) {
+export function querySelectorAll (selector) {
   return Array.from(document.querySelectorAll(selector));
 }
 
@@ -87,58 +62,6 @@ function toggle (element) {
   }
 }
 
-/**
- * Makes an AJAX request to the provided endpoint for the item hierarchy tree.
- *
- * @param projectId
- * @returns {*}
- */
-function getHierarchy (projectId) {
-  // TODO: Refactor to use the request module?
-  return new Promise((resolve, reject) => {
-    let httpRequest = new XMLHttpRequest();
-    httpRequest.onreadystatechange = () => {
-      if (httpRequest.readyState === XMLHttpRequest.DONE) {
-        if (httpRequest.status === 200) {
-          resolve(JSON.parse(httpRequest.responseText));
-        } else {
-          console.log('There was a problem requesting to the hierarchy endpoint.');
-          reject({status: httpRequest.status, response: httpRequest.responseText});
-        }
-      }
-    };
-    httpRequest.open('GET', '/hierarchy?project=' + projectId);
-    httpRequest.send();
-  });
-}
-
-function renderHierarchy (hierarchyPayload) {
-  let itemHierarchyList = document.getElementById('itemHierarchyList');
-  if (hierarchyPayload) {
-    hierarchyPayload.forEach(item => {
-      itemHierarchyList.appendChild(getHierarchyItemWithChildren(item));
-    });
-  } else {
-    itemHierarchyList.appendChild(document.createTextNode('Sorry, this project has no items to display.'));
-  }
-}
-
-function getHierarchyItemWithChildren (item) {
-  let listItem = document.createElement('li');
-  let itemAnchor = document.createElement('a');
-  itemAnchor.setAttribute('href', '#rootId=' + item.id);
-  itemAnchor.appendChild(document.createTextNode(item.name));
-  itemAnchor.setAttribute('data-id', item.id);
-  listItem.appendChild(itemAnchor);
-  if (item.children) {
-    let unorderedList = document.createElement('ul');
-    item.children.forEach(function (subItem) {
-      unorderedList.appendChild(getHierarchyItemWithChildren(subItem));
-    });
-    listItem.appendChild(unorderedList);
-  }
-  return listItem;
-}
 
 /**
  * Makes an AJAX request to the provided endpoint for the project graph.
