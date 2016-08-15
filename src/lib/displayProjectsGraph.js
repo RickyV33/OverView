@@ -80,11 +80,11 @@ export default function renderGraph (graphData, selectedProjectId, rootId) {
 function insertProjectNode (graphData, rootId) {
   // Create a project node and add it to the nodes list
   projectNode = {id: noRoot, name: graphData.name, image: '', type: -1};
-  graphData.nodes.unshift(projectNode);
+  graphData.items.unshift(projectNode);
 
   // Add a relationship from project node to root id if one was passed in
   if (rootId !== noRoot && rootId !== null && rootId !== undefined) {
-    graphData.edges.push({id: -1, source: -1, target: rootId, type: -1});
+    graphData.relationships.push({id: -1, source: -1, target: rootId, type: -1});
   }
 }
 
@@ -132,7 +132,7 @@ function configureD3Graph () {
  * @param {object} graphData
  */
 function mapNodesToEdges (graphData) {
-  graphData.nodes.forEach(function (item) {
+  graphData.items.forEach(function (item) {
     let thisItem = nodeToEdgeMap[item.id] = {};
     thisItem.node = item;
     thisItem.node.isCollapsed = true;
@@ -141,7 +141,7 @@ function mapNodesToEdges (graphData) {
     thisItem.node.downStream = [];
 
     // thisItem.edges refers to the downStream nodes
-    thisItem.edges = graphData.edges.filter(function (relItem) {
+    thisItem.edges = graphData.relationships.filter(function (relItem) {
       relItem.visited = false;
       if (relItem.source === item.id) {
         thisItem.node.downStream.push(relItem.target);  // Add the target to the downStream nodes
@@ -149,7 +149,7 @@ function mapNodesToEdges (graphData) {
       }
     });
 
-    thisItem.edgesUpstream = graphData.edges.filter(function (relItem) {
+    thisItem.edgesUpstream = graphData.relationships.filter(function (relItem) {
       if (relItem.target === item.id) {
         return relItem; // Filter all of the edges that have this item source id
       }
@@ -170,8 +170,8 @@ function filterJSON (graphData, rootId) {
   if (rootId !== noRoot && rootId !== null && rootId !== undefined) {
     filterJSONRecursive(nodeToEdgeMap[rootId]);
   } else {
-    nodesToRender = graphData.nodes;
-    edgesToRender = graphData.edges;
+    nodesToRender = graphData.items;
+    edgesToRender = graphData.relationships;
   }
 }
 
@@ -213,7 +213,7 @@ function clearGraph () {
 function updateGraph (graphData, rootId = noRoot) {
   if (!relationsChecked) {
     // For each relationship, add the target to the source node
-    graphData.edges.forEach(function (relItem) {
+    graphData.relationships.forEach(function (relItem) {
       // Find node object based on the relationship source id
       let srcNode = nodeToEdgeMap[relItem.source];
       let trgNode = nodeToEdgeMap[relItem.target];
@@ -228,7 +228,7 @@ function updateGraph (graphData, rootId = noRoot) {
     });
 
     // Check if there are relations for each node and set a flag
-    graphData.nodes.forEach(function (item) {
+    graphData.items.forEach(function (item) {
       if (typeof item.downStream === 'undefined') {
         item.noRelations = true;
       } else {
@@ -243,8 +243,8 @@ function updateGraph (graphData, rootId = noRoot) {
   console.log(edgesToRender);
 
   force  // Set the force nodes, edges and start the graph
-    .nodes(nodesToRender)  // .nodes(graphData.nodes)
-    .links(edgesToRender) // .links(graphData.edges)
+    .nodes(nodesToRender)  // .nodes(graphData.items)
+    .links(edgesToRender) // .links(graphData.relationships)
     .charge(function (d) {  // Variable Charge
       let chargeVal = -500;
       return d.downStream ? chargeVal + (-200 * d.downStream.length) : chargeVal - 200;
