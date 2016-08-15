@@ -26,6 +26,7 @@ let debug = true;         // To display the function console logs
 
 // ////// DEMO VARS//////
 
+let allCollapsed = false;
 let curves = false;
 let physics = true;
 let itemNames = true;
@@ -70,9 +71,12 @@ export default function renderGraph (graphData, selectedProjectId, rootId) {
 
     configureD3Graph();
     updateGraph(graphData, rootId);  // Render the graph
-    if (rootId) {
-      collapseAll(rootId);  // Collapses all the nodes except the root node
-    }
+
+    // Collapses all the nodes except the root node
+    // NOTE - If you collapse all, then you need to set the isVisible = false and isCollapsed = true
+    // default values in mapNodesToEdges()
+    // collapseAll(rootId);
+
     updateOpacity();
     checkOpacity();
     currentRootId = rootId;
@@ -145,7 +149,7 @@ function mapNodesToEdges (graphData) {
   graphData.items.forEach(function (item) {
     let thisItem = nodeToEdgeMap[item.id] = {};
     thisItem.node = item;
-    thisItem.node.isCollapsed = true;
+    thisItem.node.isCollapsed = false;
     thisItem.node.isVisible = true;
     thisItem.node.isHighlighted = false;
     thisItem.node.downStream = [];
@@ -688,7 +692,10 @@ function nodeDoubleClick (clickedNode) {
     }
   } else {
     if (clickedNode.downStream.length > 0) {
-      collapse(clickedNode.id);
+      clickedNode.downStream.forEach(function (item) {
+        collapse(item);
+      });
+      clickedNode.isCollapsed = true;
     }
   }
   resetVisitedFlag();
@@ -702,13 +709,14 @@ function nodeDoubleClick (clickedNode) {
  */
 function collapse (id) {
   if (debug) {
-    // console.log('-- collapse *' + id + '* [' + count + '] --');
+    console.log('-- collapse *' + id);
   }
 
   let thisNode = nodeToEdgeMap[id];
   if (!thisNode.node.visited || thisNode.node.visited === 'undefined') {
     thisNode.node.visited = true;
-    if (thisNode.node.isCollapsed === false) {
+
+    if (!thisNode.node.isCollapsed) {
       if (thisNode.edges.length > 0) {
         // Hide each downStream edge and recurse to downStream node
         thisNode.edges.forEach(function (relItem) {
@@ -722,9 +730,9 @@ function collapse (id) {
           relItem.target.isVisible = false;
         });
       }
-      thisNode.node.isCollapsed = true;
-      thisNode.node.isVisible = true;
     }
+    thisNode.node.isCollapsed = true;
+    thisNode.node.isVisible = false;
   }
 }
 
