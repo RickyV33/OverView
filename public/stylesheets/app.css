@@ -14,7 +14,7 @@ body {
 
 header {
     position: relative;
-    height: 4.5rem;
+    min-height: 72px;
 }
 
 svg {
