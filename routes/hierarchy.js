@@ -5,11 +5,7 @@ let router = express.Router();
 router.get('/', (req, res, next) => {
   hierarchy.getAllItems(req.session.username, req.session.password, req.session.teamName, req.query.project)
     .then(allItems => {
-      res.send(200).json(hierarchy.parseItemHierarchy(allItems));
- /*     res.render('hierarchy', {
-        title: 'Select a Root Item (Optional) ',
-        itemHierarchy: req.session.itemHierarchy
-      });*/
+      res.json(hierarchy.parseItemHierarchy(allItems));
     });
  /* req.session.save(function (err) {
     if (err) {
