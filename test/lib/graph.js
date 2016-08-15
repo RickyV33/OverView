@@ -204,7 +204,7 @@ describe('Graph class module', () => {
       let graph = new Graph();
       graph.nodes = nodes;
       graph.edges = edges;
-      let relGraphBlob = {'items': nodes, 'relationships': edges};
+      let relGraphBlob = {name: 'test', 'items': nodes, 'relationships': edges};
       let newGraph = Graph.fromJson(relGraphBlob);
       expect(newGraph.nodes).to.deep.equal(nodes);
       expect(newGraph.edges).to.deep.equal(edges);

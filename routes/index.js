@@ -20,7 +20,7 @@ router.post('/', (req, res, next) => {
           // TODO Session save Error message
           res.render('index', { title: 'JamaTrace', teamName: req.body.teamName, error: true });
         }
-        res.redirect('/projects');
+        res.redirect('/graph');
       });
     }, () => {
       res.status(401);

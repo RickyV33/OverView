@@ -20,7 +20,7 @@ describe('projects', function () {
   describe('get request', function () {
     it('should render projects view with no projects when session.projects is null', function () {
       data = {title: 'Projects', projects: []};
-      path = join(__dirname, '../../views/projects.ejs');
+      path = join(__dirname, '../../views/partials/projects.ejs');
       renderedView = ejs.compile(read(path, 'utf8'), {filename: path})(data);
       app = require('../../app');
       chai.request(app)
@@ -36,7 +36,7 @@ describe('projects', function () {
     });
     it('should render projects view with projects when session.projects is not null', function () {
       data = {title: 'Projects', projects: [{id: 1, name: 'Project 1'}, {id: 2, name: 'Project 2'}]};
-      path = join(__dirname, '../../views/projects.ejs');
+      path = join(__dirname, '../../views/partials/projects.ejs');
       renderedView = ejs.compile(read(path, 'utf8'), {filename: path})(data);
       app = require('./mockApp');
       chai.request(app)
