@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
    * Listens for mouse clicks on the Item hierarchy list and sets the selected
    * variable to that items ID
    */
-  document.getElementById('itemHierarchy').addEventListener('click', event => {
+  document.getElementById('itemHierarchyList').addEventListener('click', event => {
     if (event.target.nodeName === 'LI') {
       selected = event.target.id;
     }
@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
    * Sets the  selected variable to the item id, nd sends the selected
    * Item to the render graph function
    */
-  document.getElementById('itemHierarchy').addEventListener('keydown', event => {
+  document.getElementById('itemHierarchyList').addEventListener('keydown', event => {
     if (event.keyCode === 13) {
       selected = event.target.id;
       if (selected !== undefined) {
