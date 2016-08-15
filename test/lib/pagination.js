@@ -16,7 +16,6 @@ let startAt = 0;
 
 // variables to be used for testing within all resolved request stubs
 let page = 0;
-let maxPossible = Number.MAX_SAFE_INTEGER;
 
 /**
  * Create an array of n elements of type integer from 0 to counter - 1. Return this array of n elements
