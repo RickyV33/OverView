@@ -73,10 +73,12 @@ function arrayOfPageData (resolvedObjects) {
  *
  * @return {Object} callback that returns with an error message to indicate a failed request
  */
-let rejectedRequestStub = function (options, callback) {
-  process.nextTick(function () {
-    callback('this is an error');
-  });
+let rejectedRequestStub = (error = 'this is an error', status = {statusCode: 200}) => {
+  return (options, callback) => {
+    process.nextTick(() => {
+      callback(error, status);
+    });
+  };
 };
 
 /**
