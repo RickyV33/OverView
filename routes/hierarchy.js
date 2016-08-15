@@ -3,7 +3,7 @@ let hierarchy = require('../lib/hierarchy');
 let router = express.Router();
 
 router.get('/', (req, res, next) => {
-  hierarchy.getItemHierarchy(req.session.username, req.session.password, req.session.teamName, req.session.projectId)
+  hierarchy.getAllItems(req.session.username, req.session.password, req.session.teamName, req.query.project)
     .then(allItems => {
       res.send(200).json(hierarchy.parseItemHierarchy(allItems));
  /*     res.render('hierarchy', {
