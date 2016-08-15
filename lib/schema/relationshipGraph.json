@@ -2,6 +2,9 @@
   "title": "Graph",
   "type": "object",
   "properties": {
+    "name": {
+      "type": "string"
+    },
     "items": {
       "type": "array",
       "uniqueItems": true,
@@ -54,6 +57,6 @@
       }
     }
   },
-  "required": ["items", "relationships"],
+  "required": ["name", "items", "relationships"],
   "additionalProperties": false
 }

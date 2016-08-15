@@ -63,10 +63,10 @@ describe('Relationship Graph JSON', () => {
   // Passing test cases for relationship graph JSON
   let passingTestCases = [
       {title: 'should return true when JSON contains at least 1 item and at least 1 relationship',
-          body: {items: [{id: 34, name: 'story', type: 35, image: 'url'}],
+          body: {name: 'test', items: [{id: 34, name: 'story', type: 35, image: 'url'}],
               relationships: [{id: 1, source: 34, target: 35, type: 35, suspect: false}]}},
       {title: 'should return true when JSON contains many items and many relationships with valid properties',
-          body: {items: [{id: 34, name: 'story', type: 35, image: 'url'}, {id: 1, name: 'story', type: 35, image: 'url'},
+          body: {name: 'test', items: [{id: 34, name: 'story', type: 35, image: 'url'}, {id: 1, name: 'story', type: 35, image: 'url'},
             {id: 2, name: 'req', type: 36, image: 'url'}, {id: 3, name: 'story', type: 35, image: 'url'},
             {id: 4, name: 'story', type: 35, image: 'url'}, {id: 5, name: 'req', type: 36, image: 'url'},
             {id: 6, name: 'epic', type: 34, image: 'url'}],
