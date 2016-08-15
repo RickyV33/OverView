@@ -559,8 +559,38 @@ function unHighlightNodes (d) {
       }
       if (count !== curNode.node.downStream.length) { // If all the downstream nodes were not highlighted, we can unhighlight this node
         curNode.node.isHighlighted = false;
+      } else {
+        curNode.downStream.forEach(function (dItem) {
+          nodeToEdgeMap[dItem.id].node.isHighlighted = true;
+        });
       }
     });
+  }
+}
+
+/**
+ * Check all the downStream nodes of your array to see if they are highlighted. This prevents
+ * issues when we have a cycle and are un-highlighting nodes.
+ * @param {object} d
+ * @param {int} count
+ */
+function downStreamHighlightCheck (d, count) {
+  console.log('====> downStreamHighlightCheck()');
+  count = -1;
+  // This checks whether we should be highlighting or un-highlighting nodes by counting the number of downstream
+  // nodes that are highlighted and returning that count.
+  if (d.downStream.length > 0) {
+    d.downStream.forEach(function (curID) {
+      let curNode = nodeToEdgeMap[curID.id];
+      // The 'visited' flag is true when a node that WAS highlighted had been flipped to being UnHighlighted.
+      if ((curNode.edges && curNode.node.isHighlighted) || curNode.node.visited) {
+        count = (count === -1) ? 1 : count + 1;
+      }
+      curID.visited = true;
+    });
+    console.log('count is: ' + count);
+    console.log('downstream length is: ' + d.downStream.length);
+    return count;
   }
 }
 
@@ -577,29 +607,6 @@ function highlightNodes (d) {
       let curNode = nodeToEdgeMap[curID];
       curNode.node.isHighlighted = true;
     });
-  }
-}
-
-/**
- * Check all the downStream nodes of your array to see if they are highlighted. This prevents
- * issues when we have a cycle and are un-highlighting nodes.
- * @param {object} d
- * @param {int} count
- */
-function downStreamHighlightCheck (d, count) {
-  console.log('====> downStreamHighlightCheck()');
-  // This checks whether we should be highlighting or un-highlighting nodes by counting the number of downstream
-  // nodes that are highlighted and returning that count.
-  if (d.downStream.length > 0) {
-    d.downStream.forEach(function (curID) {
-      let curNode = nodeToEdgeMap[curID.id];
-      // The 'visited' flag is true when a node that WAS highlighted had been flipped to being UnHighlighted.
-      if ((curNode.edges && curNode.node.isHighlighted) || curNode.node.visited) {
-        count = (count === -1) ? 1 : count + 1;
-      }
-      curID.visited = true;
-    });
-    return count;
   }
 }
 
