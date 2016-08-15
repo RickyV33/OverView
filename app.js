@@ -43,7 +43,7 @@ app.use('/', routes);
 app.use('/projects', projects);
 app.use('/logout', logout);
 app.use('/hierarchy', hierarchy);
-app.use('/graph', project);
+app.use('/graph', graph);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
