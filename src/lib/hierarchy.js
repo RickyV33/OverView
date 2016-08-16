@@ -6,6 +6,7 @@ import renderGraph from './displayProjectsGraph';
 import { selectedProject } from './project';
 
 export let selectedHierarchyItem = null;
+let hierarchy = document.querySelector('#hierarchy');
 
 document.addEventListener('DOMContentLoaded', () => {
   /**
@@ -17,7 +18,6 @@ document.addEventListener('DOMContentLoaded', () => {
     renderGraph(graphData, selectedProject, rootId);
   });
 });
-
 
 /**
  * Makes an AJAX request to the provided endpoint for the item hierarchy tree.
