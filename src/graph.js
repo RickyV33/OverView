@@ -1,12 +1,11 @@
 /* eslint-env browser */
 
-import renderGraph from './lib/displayProjectsGraph';
-import { renderHierarchy, buildItemHierarchyAnchors, getHierarchy, selectedHierarchyItem } from './lib/hierarchy';
+import { renderHierarchy, buildItemHierarchyAnchors, getHierarchy } from './lib/hierarchy';
 import { buildProjectAnchors, selectedProject } from './lib/project';
 
 let projects = document.querySelector('#projects');
 let hierarchy = document.querySelector('#hierarchy');
-let graphData;
+export let graphData;
 
 // TODO: Hook this up to the log out button on the graph view. It is currently not hooked up to anything,
 // but functions properly
@@ -21,7 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
       getHierarchy(selectedProject),
       getGraph(selectedProject)
     ];
-    // Fetch both the hierarchy and graph payload and then return the promise with the values
+    // Fetch both the hierarchy and graph payload and then return the promise with the payloads
     document.body.style.cursor = 'wait';
     return Promise.all(requests);
   }).then(payloads => {
@@ -35,12 +34,6 @@ document.addEventListener('DOMContentLoaded', () => {
     toggle(hierarchy);
     document.body.style.cursor = 'default';
   });
-
-  document.getElementById('renderButton').addEventListener('click', () => {
-    let rootId = isNaN(parseInt(selectedHierarchyItem)) ? null : parseInt(selectedHierarchyItem);
-    toggle(hierarchy);
-    renderGraph(graphData, selectedProject, rootId);
-  });
 });
 
 /**
@@ -53,7 +46,7 @@ export function querySelectorAll (selector) {
   return Array.from(document.querySelectorAll(selector));
 }
 
-function toggle (element) {
+export function toggle (element) {
   if (element.classList.contains('hidden')) {
     element.classList.remove('hidden');
   } else {

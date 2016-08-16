@@ -1,9 +1,21 @@
 /* eslint-env browser */
 //
 
-import { querySelectorAll } from '../graph';
+import { querySelectorAll, graphData, toggle } from '../graph';
+import renderGraph from './displayProjectsGraph';
+import { selectedProject } from './project';
 
 export let selectedHierarchyItem = null;
+
+document.addEventListener('DOMContentLoaded', () => {
+  
+  document.getElementById('renderButton').addEventListener('click', () => {
+    let rootId = isNaN(parseInt(selectedHierarchyItem)) ? null : parseInt(selectedHierarchyItem);
+    toggle(hierarchy);
+    renderGraph(graphData, selectedProject, rootId);
+  });
+});
+
 
 /**
  * Makes an AJAX request to the provided endpoint for the item hierarchy tree.
