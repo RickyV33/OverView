@@ -5,7 +5,7 @@ let router = express.Router();
 
 /* GET home page. */
 router.get('/', (req, res, next) => {
-  res.render('index', {title: 'JamaTrace', teamName: process.env.TEAM_NAME});
+  res.render('index', {title: 'JamaTrace'});
 });
 
 router.post('/', (req, res, next) => {
@@ -19,15 +19,15 @@ router.post('/', (req, res, next) => {
       req.session.save(err => {
         if (err) {
           // TODO Session save Error message
-          res.render('index', { title: 'JamaTrace', teamName: teamName, error: true });
+          res.render('index', { title: 'JamaTrace', error: true });
         }
         res.redirect('/graph');
       });
     }, () => {
-      res.render('index', { title: 'JamaTrace', teamName: teamName, error: true });
+      res.render('index', { title: 'JamaTrace', error: true });
     });
   } else {
-    res.render('index', { title: 'JamaTrace', teamName: teamName, error: true });
+    res.render('index', { title: 'JamaTrace', error: true });
   }
 });
 

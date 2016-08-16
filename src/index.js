@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('logIn').addEventListener('submit', (event) => {
     let username = document.getElementById('username').value;
     let password = document.getElementById('password').value;
-    let teamName = document.getElementById('teamName').value;
+    let teamName = process.env.TEAM_NAME;
     let credentials = {body: {username: username, password: password, teamName: teamName}};
 
     if (auth.validate(credentials)) {
