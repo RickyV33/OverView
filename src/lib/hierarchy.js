@@ -87,7 +87,7 @@ function createHierarchyItemWithChildren (item) {
 
 /**
  * Listens for mouse clicks on the Item hierarchy list and sets the selectedHierarchyItem
- * variable to that items ID
+ * variable to that item's ID
  */
 export function buildItemHierarchyAnchors () {
   querySelectorAll('#itemHierarchyList a').forEach(hierarchyAnchor => {

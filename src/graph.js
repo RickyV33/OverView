@@ -46,6 +46,11 @@ export function querySelectorAll (selector) {
   return Array.from(document.querySelectorAll(selector));
 }
 
+/**
+ * Toggles the visibility of the passed in element.
+ *
+ * @param element the element that will be hidden/displayed
+ */
 export function toggle (element) {
   if (element.classList.contains('hidden')) {
     element.classList.remove('hidden');
