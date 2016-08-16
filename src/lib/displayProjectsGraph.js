@@ -301,6 +301,8 @@ function updateGraph (graphData, rootId = noRoot) {
       }
       return strClass;
     })
+    .on('mouseover', nodeMouseOver)
+    .on('mouseout', nodeMouseOut)
     .on('click', function (d) {
       if (clickedOnce) {  // This only occurs if someone clicks twice before the timeout below
         nodeDoubleClick(d);  // Call the double click function
@@ -495,6 +497,16 @@ function updateGraph (graphData, rootId = noRoot) {
     nodeItem.downStreamEdges.push(edge);  // Add the target ID to list of downStream nodes
     nodeItem.noRelations = false;
   }
+}
+
+// ============ Click events for nodes =============
+
+function nodeMouseOver () {
+  return nodeInfoPanel.style('visibility', 'visible');
+}
+
+function nodeMouseOut () {
+  return nodeInfoPanel.style('visibility', 'hidden');
 }
 
 //
