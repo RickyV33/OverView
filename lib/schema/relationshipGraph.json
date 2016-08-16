@@ -23,9 +23,12 @@
           },
           "image": {
             "type": "string"
+          },
+          "description": {
+            "type": "string"
           }
         },
-        "required": ["id", "name", "type", "image"],
+        "required": ["id", "name", "type", "image", "description"],
         "additionalProperties": false
       }
 
