@@ -63,13 +63,15 @@ describe('Relationship Graph JSON', () => {
   // Passing test cases for relationship graph JSON
   let passingTestCases = [
       {title: 'should return true when JSON contains at least 1 item and at least 1 relationship',
-          body: {name: 'test', items: [{id: 34, name: 'story', type: 35, image: 'url'}],
+          body: {name: 'test', items: [{id: 34, name: 'story', type: 35, image: 'url', description: 'description'}],
               relationships: [{id: 1, source: 34, target: 35, type: 35, suspect: false}]}},
       {title: 'should return true when JSON contains many items and many relationships with valid properties',
-          body: {name: 'test', items: [{id: 34, name: 'story', type: 35, image: 'url'}, {id: 1, name: 'story', type: 35, image: 'url'},
-            {id: 2, name: 'req', type: 36, image: 'url'}, {id: 3, name: 'story', type: 35, image: 'url'},
-            {id: 4, name: 'story', type: 35, image: 'url'}, {id: 5, name: 'req', type: 36, image: 'url'},
-            {id: 6, name: 'epic', type: 34, image: 'url'}],
+          body: {name: 'test', items: [
+            {id: 34, name: 'story', type: 35, image: 'url', description: 'description'},
+            {id: 1, name: 'story', type: 35, image: 'url', description: 'description'},
+            {id: 2, name: 'req', type: 36, image: 'url', description: 'description'}, {id: 3, name: 'story', type: 35, image: 'url', description: 'description'},
+            {id: 4, name: 'story', type: 35, image: 'url', description: 'description'}, {id: 5, name: 'req', type: 36, image: 'url', description: 'description'},
+            {id: 6, name: 'epic', type: 34, image: 'url', description: 'description'}],
        relationships: [{id: 1, source: 6, target: 2, type: 37, suspect: false}, {id: 2, source: 6, target: 5, type: 37, suspect: false},
            {id: 3, source: 2, target: 1, type: 38, suspect: false}, {id: 4, source: 5, target: 4, type: 38, suspect: false},
            {id: 5, source: 5, target: 3, type: 38, suspect: false}, {id: 6, source: 4, target: 3, type: 39, suspect: false}]}}
