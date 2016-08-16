@@ -8,7 +8,9 @@ import { selectedProject } from './project';
 export let selectedHierarchyItem = null;
 
 document.addEventListener('DOMContentLoaded', () => {
-  
+  /**
+   * Toggles the hierarchy div and displays the D3 graph representation of the data based on the passed in parameters
+   */
   document.getElementById('renderButton').addEventListener('click', () => {
     let rootId = isNaN(parseInt(selectedHierarchyItem)) ? null : parseInt(selectedHierarchyItem);
     toggle(hierarchy);
@@ -42,18 +44,31 @@ export function getHierarchy (projectId) {
   });
 }
 
+/**
+ * Takes in a JSON containing the item hierarchy structure, then creates the item hierarchy anchor list in the
+ * hierarchy partial. If no items exist for the project, then it adds text to the item hierarchy list that says so.
+ *
+ * @param hierarchyPayload the JSON object containing the item hierarchy that will be displayed
+ */
 export function renderHierarchy (hierarchyPayload) {
   let itemHierarchyList = document.getElementById('itemHierarchyList');
   if (hierarchyPayload) {
     hierarchyPayload.forEach(item => {
-      itemHierarchyList.appendChild(getHierarchyItemWithChildren(item));
+      itemHierarchyList.appendChild(createHierarchyItemWithChildren(item));
     });
   } else {
     itemHierarchyList.appendChild(document.createTextNode('Sorry, this project has no items to display.'));
   }
 }
 
-function getHierarchyItemWithChildren (item) {
+/**
+ * Takes a hierarchy item and recursively creates a list item for itself and all of it's children, where the project items
+ * are anchors. It then returns the hierarchy item with all it's children as an HTML element.
+ *
+ * @param item the hierarchy item with children
+ * @returns {Element} the HTML element composed from the hierarchy item with children
+ */
+function createHierarchyItemWithChildren (item) {
   let listItem = document.createElement('li');
   let itemAnchor = document.createElement('a');
   itemAnchor.setAttribute('href', '#rootId=' + item.id);
@@ -63,7 +78,7 @@ function getHierarchyItemWithChildren (item) {
   if (item.children) {
     let unorderedList = document.createElement('ul');
     item.children.forEach(function (subItem) {
-      unorderedList.appendChild(getHierarchyItemWithChildren(subItem));
+      unorderedList.appendChild(createHierarchyItemWithChildren(subItem));
     });
     listItem.appendChild(unorderedList);
   }
@@ -71,7 +86,7 @@ function getHierarchyItemWithChildren (item) {
 }
 
 /**
- * Listens for mouse clicks on the Item hierarchy list and sets the selected
+ * Listens for mouse clicks on the Item hierarchy list and sets the selectedHierarchyItem
  * variable to that items ID
  */
 export function buildItemHierarchyAnchors () {
