@@ -15,6 +15,7 @@ let nodeToEdgeMap = {};   // Hold the mapping of node to edges
 let projectNode = null;   // The project name node
 let node = null;          // The collection of node html objects
 let path = null;          // The collection of path html objects
+let nodeInfoTip = null; // The node information panel that displays on mouse over
 
 let svg = null;           // The svg window
 let force = null;         // The force layout for d3
@@ -83,7 +84,7 @@ function insertProjectNode (graphData, rootId) {
   graphData.items.unshift(projectNode);
 
   // Add a relationship from project node to root id if one was passed in
-  if (rootId !== noRoot && rootId !== null && rootId !== undefined) {
+  if (rootId && rootId !== noRoot) {
     graphData.relationships.push({id: -1, source: -1, target: rootId, type: -1});
   }
 }
@@ -119,6 +120,10 @@ function configureD3Graph () {
     .append('svg:path')
     .attr('d', 'M0,-5L10,0L0,5')
     .attr('class', 'arrow');
+
+  nodeInfoTip = d3.select('body').append('div')
+    .attr('class', 'nodeInfoTip')
+    .text('');
 
   force = d3.layout.force()
     .size([width, height])
@@ -167,7 +172,7 @@ function mapNodesToEdges (graphData) {
  * @param {object} graphData
  */
 function filterJSON (graphData, rootId) {
-  if (rootId !== noRoot && rootId !== null && rootId !== undefined) {
+  if (rootId && rootId !== noRoot) {
     filterJSONRecursive(nodeToEdgeMap[rootId]);
   } else {
     nodesToRender = graphData.items;
@@ -341,11 +346,6 @@ function updateGraph (graphData, rootId = noRoot) {
     .attr('x', '-9px')
     .attr('y', '-9px');
 
-  node.append('svg:title')  // Add Text for hovering that shows full filename
-    .text(function (d) {
-      return (d.id + ' - ' + d.name);
-    });
-
   if (itemNames) {
     node.append('text') // Add the name of the node as text
     .attr('class', 'nodeText')
@@ -501,12 +501,45 @@ function updateGraph (graphData, rootId = noRoot) {
 
 // ============ Click events for nodes =============
 
-function nodeMouseOver () {
-  return nodeInfoPanel.style('visibility', 'visible');
+/**
+ * Mouse over event for node object that displays a tooltip and changes node circle size to a larger radius
+ * @param overNode
+ */
+function nodeMouseOver (overNode) {
+  // Make the node circle larger and change opacity
+  d3.select(this).select('circle').transition()
+    .duration(500)
+    .attr('r', 17)
+    .attr('opacity', 1);
+
+  let idVal = overNode.id >= 0 ? overNode.id + ' - ' : '';
+  let imageVal = overNode.image ? '<img src="' + overNode.image + '">' : '';
+  let nodeText = '<h5>' + imageVal + idVal + overNode.name + '</h5>';
+
+  if (overNode.description) {
+    let strDesc = overNode.description.length > 100 ? overNode.description.substring(0, 100) + '...' : overNode.description;
+    nodeText = nodeText + '<div class="content">' + strDesc + '</div>';
+  }
+
+  // Set the tip html and position
+  nodeInfoTip.html(nodeText)
+    .style('left', (d3.event.pageX) + 'px')
+    .style('top', (d3.event.pageY + 30) + 'px')
+    .style('visibility', 'visible');
 }
 
-function nodeMouseOut () {
-  return nodeInfoPanel.style('visibility', 'hidden');
+/**
+ * Mouse out event for node object that hides a tooltip and changes node circle back to original size
+ * @param overNode
+ */
+function nodeMouseOut (overNode) {
+  d3.select(this).select('circle').transition()
+    .duration(500)
+    .attr('r', 13)
+    .attr('opacity', 0.9);
+
+  nodeInfoTip.html('')
+    .style('visibility', 'hidden');
 }
 
 //
