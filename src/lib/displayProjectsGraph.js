@@ -1,4 +1,4 @@
-/* global d3, event */
+/* global d3 */
 /* exported renderGraph */
 let clickedOnce = false;  // For monitoring the click event on node
 let timer;                // For click event monitoring
@@ -26,7 +26,7 @@ let debug = true;         // To display the function console logs
 
 // ////// DEMO VARS//////
 
-let allCollapsed = false;
+// let allCollapsed = false;
 let curves = false;
 let physics = true;
 let itemNames = true;
@@ -125,10 +125,10 @@ function configureD3Graph () {
     .enter().append('svg:marker')    // This section adds in the arrows
     .attr('id', String)
     .attr('viewBox', '0 -5 10 10')
-    .attr('refX', 21)
-    .attr('refY', -0.5)
-    .attr('markerWidth', 6)
-    .attr('markerHeight', 6)
+    .attr('refX', 18)
+    .attr('refY', 0)
+    .attr('markerWidth', 4)
+    .attr('markerHeight', 4)
     .attr('orient', 'auto')
     .append('svg:path')
     .attr('d', 'M0,-5L10,0L0,5')
@@ -760,12 +760,12 @@ function unCollapse (id) {
 /**
  * Hides all of the graph nodes except the root id
  */
-function collapseAll (rootId) {
-  // Set all nodes to be invisible
-  nodesToRender.forEach(function (item) {
-    item.isVisible = (item.id === projectRootId || item.id === rootId);
-  });
-}
+// function collapseAll (rootId) {
+//   // Set all nodes to be invisible
+//   nodesToRender.forEach(function (item) {
+//     item.isVisible = (item.id === projectRootId || item.id === rootId);
+//   });
+// }
 
 /**
  * Cycle through all of the nodes and edges and set the visited flag to false

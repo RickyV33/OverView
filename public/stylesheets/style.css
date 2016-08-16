@@ -64,8 +64,8 @@ h1 {
 /*  === Graph Styles === */
 path.link {
   fill: none;
-  stroke: #cfcfcf;
-  stroke-width: 2px;
+  stroke: #73a8cf;
+  stroke-width: 4px;
 }
 
 path.link-dash {
@@ -84,9 +84,9 @@ path.link-dot {
 }
 
 .arrow {
-  fill: #afafaf;
-  stroke: #afafaf;
-  stroke-width: 2px !important;
+  fill: #4087ba;
+  stroke: #4087ba;
+  stroke-width: 1px !important;
 }
 
 .node {
@@ -95,7 +95,7 @@ path.link-dot {
 
 .node circle {
   stroke-width: 2px;
-  fill-opacity: 0.80;
+  fill-opacity: 1;
   fill: #76D3F5;
   stroke: #fff;
 }
@@ -135,9 +135,9 @@ rect {
   stroke-width: 3px;
   stroke-linecap: butt;
   stroke-linejoin: miter;
-  font: 10px sans-serif;
+  font: 11px sans-serif;
   pointer-events: none;
-  stroke-opacity: 0.7;
+  stroke-opacity: 0.85;
 }
 
 image {
