@@ -1,21 +1,21 @@
 /* eslint-env browser */
 //
 
-import { querySelectorAll, graphData, toggle } from '../graph';
+import * as graph from '../graph';
+import * as project from './project'
 import renderGraph from './displayProjectsGraph';
-import { selectedProject } from './project';
 
-export let selectedHierarchyItem = null;
+let selectedHierarchyItem = null;
 
 document.addEventListener('DOMContentLoaded', () => {
   /**
    * Toggles the hierarchy div and displays the D3 graph representation of the data based on the passed in parameters
    */
   document.getElementById('renderButton').addEventListener('click', () => {
-    let hierarchy = document.querySelector('#hierarchy');
     let rootId = isNaN(parseInt(selectedHierarchyItem)) ? null : parseInt(selectedHierarchyItem);
-    toggle(hierarchy);
-    renderGraph(graphData, selectedProject, rootId);
+    graph.toggle(document.querySelector('#hierarchy'));
+    graph.toggle(document.querySelector('#d3Container'));
+    renderGraph(graph.graphData, project.selectedProject, rootId);
   });
 });
 
@@ -90,7 +90,7 @@ function createHierarchyItemWithChildren (item) {
  * variable to that item's ID
  */
 export function buildItemHierarchyAnchors () {
-  querySelectorAll('#itemHierarchyList a').forEach(hierarchyAnchor => {
+  graph.querySelectorAll('#itemHierarchyList a').forEach(hierarchyAnchor => {
     hierarchyAnchor.addEventListener('click', event => {
       selectedHierarchyItem = event.target.getAttribute('data-id');
     });
