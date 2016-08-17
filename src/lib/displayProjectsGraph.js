@@ -78,7 +78,6 @@ export default function renderGraph (graphData, selectedProjectId, rootId) {
     // collapseAll(rootId);
 
     updateOpacity();
-    checkOpacity();
     currentRootId = rootId;
   }
 }
@@ -559,14 +558,12 @@ function nodeClick (d) {
       highlightNodes(d);
     } else {
       unHighlightNodes(d);
-      // checkOpacity();
     }
   } else {
     highlightNodes(d);
   }
   updateOpacity();
   // Check Opacity only makes changes if ALL the nodes are unhighlighted.
-  checkOpacity();
   resetVisitedFlag();
 }
 
@@ -654,26 +651,6 @@ function highlightNodes (d) {
 }
 
 /**
- * Check if all the nodes are un-highlighted. If they are, highlight all the nodes on the graph.
- */
-function checkOpacity () {
-  let highlight = false; // flag to see if anyone is highlighted.
-  nodesToRender.forEach(function (d) {
-    if (d.isVisible && d.isHighlighted) {
-      highlight = true; // If ANY node is highlighted set this flag.
-    }
-  });
-  if (highlight === false) {  // Only executes if ALL nodes are NOT highlighted.
-    node.style('opacity', function (d) {
-      return d.isVisible ? 1 : 0;
-    });// Turn Everyone on
-    path.style('opacity', function (d) {
-      return (nodeToEdgeMap[d.source.id].node.isVisible && nodeToEdgeMap[d.target.id].node.isVisible) ? 1 : 0;
-    }); // Turn on all the edges.
-  }
-}
-
-/**
  * Node double click event hides all of the children nodes for double clicked node.
  *
  * @param {Object} clickedNode is the node that was clicked on
@@ -700,7 +677,6 @@ function nodeDoubleClick (clickedNode) {
   }
   resetVisitedFlag();
   updateOpacity();
-  checkOpacity();
 }
 
 /**
@@ -760,12 +736,6 @@ function unCollapse (id) {
 /**
  * Hides all of the graph nodes except the root id
  */
-// function collapseAll (rootId) {
-//   // Set all nodes to be invisible
-//   nodesToRender.forEach(function (item) {
-//     item.isVisible = (item.id === projectRootId || item.id === rootId);
-//   });
-// }
 
 /**
  * Cycle through all of the nodes and edges and set the visited flag to false
@@ -802,4 +772,32 @@ function updateOpacity () {
       return (curPath.source.isHighlighted && curPath.target.isHighlighted) ? 1 : reducedOpacity;
     } else { return 0; }
   });
+  checkOpacity();
+}
+
+// function collapseAll (rootId) {
+//   // Set all nodes to be invisible
+//   nodesToRender.forEach(function (item) {
+//     item.isVisible = (item.id === projectRootId || item.id === rootId);
+//   });
+// }
+
+/**
+ * Check if all the nodes are un-highlighted. If they are, highlight all the nodes on the graph.
+ */
+function checkOpacity () {
+  let highlight = false; // flag to see if anyone is highlighted.
+  nodesToRender.forEach(function (d) {
+    if (d.isVisible && d.isHighlighted) {
+      highlight = true; // If ANY node is highlighted set this flag.
+    }
+  });
+  if (highlight === false) {  // Only executes if ALL nodes are NOT highlighted.
+    node.style('opacity', function (d) {
+      return d.isVisible ? 1 : 0;
+    });// Turn Everyone on
+    path.style('opacity', function (d) {
+      return (nodeToEdgeMap[d.source.id].node.isVisible && nodeToEdgeMap[d.target.id].node.isVisible) ? 1 : 0;
+    }); // Turn on all the edges.
+  }
 }
