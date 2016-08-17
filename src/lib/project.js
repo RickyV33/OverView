@@ -19,7 +19,7 @@ export function buildProjectAnchors () {
         // Fetch both the hierarchy and graph payload and then return the promise with the payloads when both async
         // calls are fulfilled
         document.body.style.cursor = 'wait';
-        let requests = [hierarchy.getHierarchy(selectedProject), graph.getGraph(selectedProject)];
+        let requests = [ hierarchy.getHierarchy(selectedProject), graph.getGraph(selectedProject) ];
         resolve(Promise.all(requests));
       }).then(payloads => {
           // Render the hierarchy display and add click handlers and store the project graph JSON
@@ -27,8 +27,8 @@ export function buildProjectAnchors () {
           graph.graphData = payloads[1];
           hierarchy.renderHierarchy(hierarchyPayload);
           hierarchy.buildItemHierarchyAnchors();
-          graph.toggle(graph.projectsContainer);
-          graph.toggle(graph.hierarchyContainer);
+          graph.toggle(document.querySelector('#projects'));
+          graph.toggle(document.querySelector('#hierarchy'));
           document.body.style.cursor = 'default';
         });
     });
