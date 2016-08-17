@@ -52,6 +52,7 @@ export function getHierarchy (projectId) {
  */
 export function renderHierarchy (hierarchyPayload) {
   let itemHierarchyList = document.getElementById('itemHierarchyList');
+  destroyHierarchy(); // Refresh the list every time renderHierarchy is called
   if (hierarchyPayload) {
     hierarchyPayload.forEach(item => {
       itemHierarchyList.appendChild(createHierarchyItemWithChildren(item));
@@ -61,6 +62,13 @@ export function renderHierarchy (hierarchyPayload) {
   }
 }
 
+
+function destroyHierarchy () {
+  let hierarchyListItems = document.getElementById('itemHierarchyList');
+  Array.from(hierarchyListItems.children).forEach(item => {
+    hierarchyListItems.removeChild(item);
+  });
+}
 /**
  * Takes a hierarchy item and recursively creates a list item for itself and all of it's children, where the project items
  * are anchors. It then returns the hierarchy item with all it's children as an HTML element.
