@@ -117,11 +117,18 @@ function renderHierarchy (hierarchyPayload) {
 
 function getHierarchyItemWithChildren (item) {
   let listItem = document.createElement('li');
-  let itemAnchor = document.createElement('a');
-  itemAnchor.setAttribute('href', '#rootId=' + item.id);
-  itemAnchor.appendChild(document.createTextNode(item.name));
-  itemAnchor.setAttribute('data-id', item.id);
-  listItem.appendChild(itemAnchor);
+  if(!item.isSet) {
+    console.log('is set apparently' + item.name);
+
+    let itemAnchor = document.createElement('a');
+    itemAnchor.setAttribute('href', '#rootId=' + item.id);
+    itemAnchor.appendChild(document.createTextNode(item.name));
+    itemAnchor.setAttribute('data-id', item.id);
+    listItem.appendChild(itemAnchor);
+  }
+  else {
+    listItem.appendChild(document.createTextNode(item.name));
+  }
   if (item.children) {
     let unorderedList = document.createElement('ul');
     item.children.forEach(function (subItem) {
