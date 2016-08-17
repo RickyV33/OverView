@@ -1,38 +1,16 @@
 /* eslint-env browser */
 
-import { renderHierarchy, buildItemHierarchyAnchors, getHierarchy } from './lib/hierarchy';
-import { buildProjectAnchors, selectedProject } from './lib/project';
+import * as project from './lib/project';
 
-let projects = document.querySelector('#projects');
-let hierarchy = document.querySelector('#hierarchy');
 export let graphData;
 
 // TODO: Hook this up to the log out button on the graph view. It is currently not hooked up to anything,
 // but functions properly
 document.addEventListener('DOMContentLoaded', () => {
+  project.buildProjectAnchors();
+  
   document.getElementById('logOut').addEventListener('click', () => {
     document.location.href = '/logout';
-  });
-
-  // Manage the selection of a project and item hierarchy
-  buildProjectAnchors().then(() => {
-    let requests = [
-      getHierarchy(selectedProject),
-      getGraph(selectedProject)
-    ];
-    // Fetch both the hierarchy and graph payload and then return the promise with the payloads
-    document.body.style.cursor = 'wait';
-    return Promise.all(requests);
-  }).then(payloads => {
-    // Render the hierarchy display and add click handlers and store the project graph JSON
-    let hierarchyPayload = payloads[0];
-    graphData = payloads[1];
-
-    renderHierarchy(hierarchyPayload);
-    buildItemHierarchyAnchors();
-    toggle(projects);
-    toggle(hierarchy);
-    document.body.style.cursor = 'default';
   });
 });
 
@@ -65,7 +43,7 @@ export function toggle (element) {
  * @param projectId
  * @returns {*}
  */
-function getGraph (projectId) {
+export function getGraph (projectId) {
   // TODO: Refactor to use the request module and promises
   return new Promise((resolve, reject) => {
     let httpRequest = new XMLHttpRequest();
