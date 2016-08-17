@@ -172,7 +172,11 @@ describe('displayProjectsGraph()', function () {
   });
 
   describe('mapNodesToEdges', function () {
+    it('should return a map with node id as the index and an object containing node, edges and upstreamEdges', function () {
+      let map = displayProjectsGraph.mapNodesToEdges(testData);
 
+      //expect(map).to.have.property(node);
+    });
   });
 
   describe('nodeClick', function () {
