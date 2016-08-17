@@ -1,4 +1,4 @@
-/* global d3 */
+/* global d3*/
 /* exported renderGraph */
 let clickedOnce = false;  // For monitoring the click event on node
 let timer;                // For click event monitoring
@@ -15,6 +15,7 @@ let nodeToEdgeMap = {};   // Hold the mapping of node to edges
 let projectNode = null;   // The project name node
 let node = null;          // The collection of node html objects
 let path = null;          // The collection of path html objects
+let nodeInfoTip = null; // The node information panel that displays on mouse over
 
 let svg = null;           // The svg window
 let force = null;         // The force layout for d3
@@ -132,6 +133,10 @@ function configureD3Graph () {
     .append('svg:path')
     .attr('d', 'M0,-5L10,0L0,5')
     .attr('class', 'arrow');
+
+  nodeInfoTip = d3.select('body').append('div')
+    .attr('class', 'nodeInfoTip')
+    .text('');
 
   force = d3.layout.force()
     .size([width, height])
@@ -332,6 +337,8 @@ function updateGraph (graphData, rootId = projectRootId) {
       }
       return strClass;
     })
+    .on('mouseover', nodeMouseOver)
+    .on('mouseout', nodeMouseOut)
     .on('click', function (d) {
       if (clickedOnce) {  // This only occurs if someone clicks twice before the timeout below
         nodeDoubleClick(d);  // Call the double click function
@@ -369,11 +376,6 @@ function updateGraph (graphData, rootId = projectRootId) {
     })
     .attr('x', '-9px')
     .attr('y', '-9px');
-
-  node.append('svg:title')  // Add Text for hovering that shows full filename
-    .text(function (d) {
-      return (d.id + ' - ' + d.name);
-    });
 
   if (itemNames) {
     node.append('text') // Add the name of the node as text
@@ -526,6 +528,49 @@ function updateGraph (graphData, rootId = projectRootId) {
     nodeItem.downStreamEdges.push(edge);  // Add the target ID to list of downStream nodes
     nodeItem.noRelations = false;
   }
+}
+
+// ============ Click events for nodes =============
+
+/**
+ * Mouse over event for node object that displays a tooltip and changes node circle size to a larger radius
+ * @param overNode
+ */
+function nodeMouseOver (overNode) {
+  // Make the node circle larger and change opacity
+  d3.select(this).select('circle').transition()
+    .duration(500)
+    .attr('r', 17)
+    .attr('opacity', 1);
+
+  let idVal = overNode.id >= 0 ? overNode.id + ' - ' : '';
+  let imageVal = overNode.image ? '<img src="' + overNode.image + '">' : '';
+  let nodeText = '<h5>' + imageVal + idVal + overNode.name + '</h5>';
+
+  if (overNode.description) {
+    let strDesc = overNode.description.length > 100 ? overNode.description.substring(0, 100) + '...' : overNode.description;
+    nodeText = nodeText + '<div class="content">' + strDesc + '</div>';
+  }
+
+  // Set the tip html and position
+  nodeInfoTip.html(nodeText)
+    .style('left', (d3.event.pageX) + 'px')
+    .style('top', (d3.event.pageY + 30) + 'px')
+    .style('visibility', 'visible');
+}
+
+/**
+ * Mouse out event for node object that hides a tooltip and changes node circle back to original size
+ * @param overNode
+ */
+function nodeMouseOut (overNode) {
+  d3.select(this).select('circle').transition()
+    .duration(500)
+    .attr('r', 13)
+    .attr('opacity', 0.9);
+
+  nodeInfoTip.html('')
+    .style('visibility', 'hidden');
 }
 
 //

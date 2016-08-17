@@ -153,3 +153,46 @@ image {
   stroke: #F2622B;
   stroke-width: 2px;
 }
+
+.nodeInfoTip {
+  position: absolute;
+  z-index: 10;
+  visibility: hidden;
+  padding: 0px;
+  width: 300px;
+  background-color: #f9f9f9;
+
+  /*Drop shadow*/
+  -webkit-box-shadow: 0px 0px 64px -36px rgba(0,0,0,0.57);
+  -moz-box-shadow: 0px 0px 64px -36px rgba(0,0,0,0.57);
+  box-shadow: 0px 0px 64px -36px rgba(0,0,0,0.57);
+
+  /* Rounded Corners */
+  border-radius: 0px 10px 10px 10px;
+  -moz-border-radius: 0px 10px 10px 10px;
+  -webkit-border-radius: 0px 10px 10px 10px;
+  border: 1px solid #cfcfcf;
+}
+
+/* Small triangle extender for the node tooltip */
+.nodeInfoTip:before {
+  font-size: 10px;
+  display: inline;
+  width: 100%;
+  text-align: center;
+  line-height: 1;
+  color: #f9f9f9;
+  box-sizing: border-box;
+  position: absolute;
+  content: "\25B2";
+}
+
+.nodeInfoTip > h5 {
+  margin: 0px;
+  padding: 5px 10px;
+}
+.nodeInfoTip > div.content {
+  padding: 10px 15px;
+  margin: 0px;
+  height: 100%;
+}
