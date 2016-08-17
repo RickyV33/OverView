@@ -57,19 +57,19 @@ describe('Item Hierarchy JSON', () => {
   let passingTestCases = [
     {title: 'should return true when JSON populates each required field with at least one element once',
       body: {items: [
-        {id: 1, name: 'story', type: 35, children: []}
+        {id: 1, name: 'story', type: 35, parent: 33, isSet: false, children: []}
       ]}
     },
     {title: 'should return true when JSON contains many items in the item hierarchy tree',
       body: {items: [
-        {id: 1, name: 'story', type: 35, children: [
-            {id: 2, name: 'bug', type: 40, children: []},
-            {id: 3, name: 'task', type: 45, children: []}
+        {id: 1, name: 'story', type: 35, parent: 33, isSet: true, children: [
+            {id: 2, name: 'bug', type: 40, parent: 1, isSet: false, children: []},
+            {id: 3, name: 'task', type: 45, parent: 1, isSet: false, children: []}
         ]},
-        {id: 10, name: 'story', type: 35, children: [
-            {id: 4, name: 'task', type: 45, children: []}
+        {id: 10, name: 'story', type: 35, parent: 33, isSet: true, children: [
+            {id: 4, name: 'task', type: 45, parent: 10, isSet: false, children: []}
         ]},
-        {id: 11, name: 'story', type: 35, children: []}
+        {id: 11, name: 'story', type: 35, parent: 33, isSet: false, children: []}
       ]}
     }
   ];
