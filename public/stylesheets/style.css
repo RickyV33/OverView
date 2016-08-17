@@ -1,3 +1,15 @@
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  width: 100%;
+  height: auto;
+  margin: 0;
+  padding: 0;
+}
+
 body {
   display: flex;
   flex-direction: column;
@@ -5,16 +17,35 @@ body {
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
+h1 {
+  align-self: flex-start;
+  font-size: 35pt;
+  color: #3D6272;
+  margin: 0.5rem 0;
+}
+
 a {
   color: #00B4FF;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
 }
 
 #logo {
-  max-width: 28em;
+  text-align: center;
+  width: 100%;
+}
+#logo.small {
+  position: absolute;
 }
 
-h1 {
-  align-self: center;
+#logo img {
+  max-width: 56rem;
+}
+#logo.small img {
+  max-width: 18rem;
 }
 
 #logIn {
@@ -39,8 +70,8 @@ h1 {
   font-size: 11pt;
 }
 
+input[type=button],
 #logIn > input[type=submit] {
-  float: right;
   font-size: 14pt;
   background: #F2622C;
   border: none;
@@ -51,6 +82,10 @@ h1 {
   cursor: pointer;
 }
 
+#logIn > input[type=submit] {
+  float: right;
+}
+
 #logIn > .error {
   clear: both;
   margin-top: 2.5rem;
@@ -59,97 +94,4 @@ h1 {
 .error {
   font-size: 10pt;
   color: #C94418;
-}
-
-/*  === Graph Styles === */
-path.link {
-  fill: none;
-  stroke: #cfcfcf;
-  stroke-width: 2px;
-}
-
-path.link-dash {
-  stroke: #73a8cf;
-  stroke-dasharray: 5;
-}
-
-path.suspect {
-  stroke: #73a8cf !important;
-}
-
-path.link-dot {
-  stroke: #F2622B;
-  stroke-dasharray: 5,5;
-  d: M5 20 l215 0;
-}
-
-.arrow {
-  fill: #afafaf;
-  stroke: #afafaf;
-  stroke-width: 2px !important;
-}
-
-.node {
-  fill-opacity: 0.80;
-}
-
-.node circle {
-  stroke-width: 2px;
-  fill-opacity: 0.80;
-  fill: #76D3F5;
-  stroke: #fff;
-}
-
-.hasDownstream > circle {
-  stroke: #1e4c90 !important;
-  stroke-width: 2px;
-}
-
-.hasDownstream > .downstreamCount > circle {
-  stroke: #fff !important;
-  fill: #F2622B;
-  fill-opacity: 0.90;
-  stroke-width: 1px;
-}
-
-.downstreamCountText {
-  fill: #fff;
-  font-weight: bolder;
-  font-size: 10px;
-}
-
-rect {
-  height: 19px;
-  width: 120px;
-  fill: #fff;
-  stroke: #efefef;
-  stroke-width: 2px;
-  fill-opacity: 0.80;
-  pointer-events: none;
-}
-
-.nodeText {
-  fill: #000;
-  paint-order: stroke;
-  stroke: #fff;
-  stroke-width: 3px;
-  stroke-linecap: butt;
-  stroke-linejoin: miter;
-  font: 10px sans-serif;
-  pointer-events: none;
-  stroke-opacity: 0.7;
-}
-
-image {
-  height: 18px;
-  width: 18px;
-}
-.activeNode {
-  fill: 'steelblue';
-}
-
-.projectRoot circle {
-  fill: #F2622B;
-  stroke: #F2622B;
-  stroke-width: 2px;
 }
