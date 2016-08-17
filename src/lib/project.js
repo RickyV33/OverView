@@ -1,6 +1,7 @@
 /* eslint-env browser */
 
-import { querySelectorAll } from '../graph';
+import * as graph from '../graph';
+import * as hierarchy from './hierarchy';
 
 export let selectedProject;
 
@@ -11,12 +12,25 @@ export let selectedProject;
  * @returns {Promise} signals that that the project has been selected
  */
 export function buildProjectAnchors () {
-  return new Promise((resolve) => {
-    querySelectorAll('#projects a').forEach(projectAnchor => {
+    graph.querySelectorAll('#projects a').forEach(projectAnchor => {
       projectAnchor.addEventListener('click', event => {
-        selectedProject = event.target.getAttribute('data-id');
-        resolve();
-      });
+        new Promise((resolve) => {
+          selectedProject = event.target.getAttribute('data-id');
+        // Fetch both the hierarchy and graph payload and then return the promise with the payloads when both async
+        // calls are fulfilled
+        document.body.style.cursor = 'wait';
+        let requests = [hierarchy.getHierarchy(selectedProject), graph.getGraph(selectedProject)];
+        resolve(Promise.all(requests));
+      }).then(payloads => {
+          // Render the hierarchy display and add click handlers and store the project graph JSON
+          let hierarchyPayload = payloads[0];
+          graph.graphData = payloads[1];
+          hierarchy.renderHierarchy(hierarchyPayload);
+          hierarchy.buildItemHierarchyAnchors();
+          graph.toggle(graph.projectsContainer);
+          graph.toggle(graph.hierarchyContainer);
+          document.body.style.cursor = 'default';
+        });
     });
-  });
+  })
 }
