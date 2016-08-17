@@ -18,6 +18,7 @@
         "id": { "type": "integer" },
         "name": { "type": "string" },
         "type": { "type": "integer" },
+        "parent": { "type": "integer" },
         "isSet": { "type": "boolean" },
         "children": {
           "type": "array",
