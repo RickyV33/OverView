@@ -154,7 +154,6 @@ describe('Graph class module', () => {
       newGraph = new Graph(projectId, url);
       expect(newGraph.name).to.be.empty();
       expect(newGraph.nodes).to.be.empty();
-      expect(newGraph.edges).to.be.empty();
     });
 
     it('should return a graph that contains nothing when an error not including timeout is encountered', () => {
@@ -172,7 +171,7 @@ describe('Graph class module', () => {
     let badNodes = [{'id': '10', 'name': 'item name', 'type': '99'}];
     let badEdges = [{'id': '10', 'source': '1', 'target': '2', 'type': '99'}];
     let nodes = [{'id': 10, 'name': 'item name', 'type': 99, 'image': 'url'}];
-    let edges = [{'id': 10, 'source': 1, 'target': 2, 'type': 99, 'suspect': true}];
+    let edges = [{'id': 10, 'source': 1, 'target': 2, 'type': 99, 'suspect': true, 'name': 'edge name'}];
 
     it('should print an error message if the data Graph contains is invalid', () => {
       let graph = new Graph();
@@ -193,7 +192,7 @@ describe('Graph class module', () => {
     let badNodes = [{'id': '10', 'name': 'item name', 'type': '99'}];
     let badEdges = [{'id': '10', 'source': '1', 'target': '2', 'type': '99'}];
     let nodes = [{'id': 10, 'name': 'item name', 'type': 99, 'image': 'url'}];
-    let edges = [{'id': 10, 'source': 1, 'target': 2, 'type': 99, 'suspect': false}];
+    let edges = [{'id': 10, 'source': 1, 'target': 2, 'type': 99, 'suspect': false, 'name': 'edge name'}];
 
     it('should print an error message if the data Graph contains is invalid', () => {
       let relGraphObj = {'items': badNodes, 'relationships': badEdges};
