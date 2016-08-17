@@ -12,25 +12,25 @@ export let selectedProject;
  * @returns {Promise} signals that that the project has been selected
  */
 export function buildProjectAnchors () {
-    graph.querySelectorAll('#projects a').forEach(projectAnchor => {
-      projectAnchor.addEventListener('click', event => {
-        new Promise((resolve) => {
-          selectedProject = event.target.getAttribute('data-id');
+  graph.querySelectorAll('#projects a').forEach(projectAnchor => {
+    projectAnchor.addEventListener('click', event => {
+      new Promise((resolve) => {
+        selectedProject = event.target.getAttribute('data-id');
         // Fetch both the hierarchy and graph payload and then return the promise with the payloads when both async
         // calls are fulfilled
         document.body.style.cursor = 'wait';
         let requests = [ hierarchy.getHierarchy(selectedProject), graph.getGraph(selectedProject) ];
         resolve(Promise.all(requests));
       }).then(payloads => {
-          // Render the hierarchy display and add click handlers and store the project graph JSON
-          let hierarchyPayload = payloads[0];
-          graph.graphData = payloads[1];
-          hierarchy.renderHierarchy(hierarchyPayload);
-          hierarchy.buildItemHierarchyAnchors();
-          graph.toggle(document.querySelector('#projects'));
-          graph.toggle(document.querySelector('#hierarchy'));
-          document.body.style.cursor = 'default';
-        });
+        // Render the hierarchy display and add click handlers and store the project graph JSON
+        let hierarchyPayload = payloads[0];
+        graph.graphData = payloads[1];
+        hierarchy.renderHierarchy(hierarchyPayload);
+        hierarchy.buildItemHierarchyAnchors();
+        graph.toggle(document.querySelector('#projects'));
+        graph.toggle(document.querySelector('#hierarchy'));
+        document.body.style.cursor = 'default';
+      });
     });
-  })
+  });
 }

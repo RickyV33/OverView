@@ -8,7 +8,7 @@ export let graphData;
 // but functions properly
 document.addEventListener('DOMContentLoaded', () => {
   project.buildProjectAnchors();
-  
+
   document.getElementById('logOut').addEventListener('click', () => {
     document.location.href = '/logout';
   });

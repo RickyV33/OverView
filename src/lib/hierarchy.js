@@ -2,7 +2,7 @@
 //
 
 import * as graph from '../graph';
-import * as project from './project'
+import * as project from './project';
 import renderGraph from './displayProjectsGraph';
 
 let selectedHierarchyItem = null;
@@ -62,7 +62,10 @@ export function renderHierarchy (hierarchyPayload) {
   }
 }
 
-
+/**
+ * Iterates through the ItemHierarchyList and destroys every list item in preparation for a new project's hierarchy
+ * list to be rendered.
+ */
 function destroyHierarchy () {
   let hierarchyListItems = document.getElementById('itemHierarchyList');
   Array.from(hierarchyListItems.children).forEach(item => {
