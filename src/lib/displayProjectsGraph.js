@@ -273,7 +273,7 @@ function updateGraph (graphData, rootId = noRoot) {
 
   path.append('svg:title')  // Added a string to edge hover
     .text(function (d) {
-      let strTitle = d.id + ' ==> ' + d.type;
+      let strTitle = d.name;
       if (d.suspect) {
         strTitle = strTitle + ' - Suspect';
       }
