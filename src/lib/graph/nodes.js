@@ -1,4 +1,4 @@
-import { isRoot, size, nodesEdgesMap, projectNode, debug } from './config';
+import { isRoot, size, getById, nodesEdgesMap, projectNode, debug } from './config';
 
 import configureInfoTip from './infoTip';
 import * as nodeInfoTip from './infoTip';
@@ -19,10 +19,9 @@ function highlightNodes (d) {
   // Highlight the selected node
   d.isHighlighted = true;
   // if it has downstream nodes find them and highlight them
-  if (d.downStream.length > 0) {
-    d.downStream.forEach(function (curID) {
-      let curNode = nodesEdgesMap[curID];
-      curNode.node.isHighlighted = true;
+  if (d.downstreamEdges.length > 0) {
+    d.downstreamEdges.forEach(function (edgeIndex) {
+      edges[edgeIndex].target.isHighlighted = true;
     });
   }
 }
@@ -42,19 +41,19 @@ function unHighlightNodes (d) {
   d.isHighlighted = false;
   d.visited = true;
   let count = -1; // used to check if the downstream nodes should be highlighted.
-  if (d.downStream.length > 0) {
-    d.downStream.forEach(function (curID) {
-      let curNode = nodesEdgesMap[curID];
-      curNode.node.visited = true;
+  if (d.downstreamEdges.length > 0) {
+    d.downstreamEdges.forEach(function (edgeIndex) {
+      let curNode = edges[edgeIndex].target;
+      curNode.visited = true;
       // If a node exists and it has downstream items, we need to see if they are all highlighted.
-      if (typeof curNode.node.downStream !== 'undefined' && curNode.node.downStream.length > 0) {
+      if (typeof curNode.downstreamEdges !== 'undefined' && curNode.downstreamEdges.length > 0) {
         count = downStreamHighlightCheck(curNode, count); // check downStream nodes for highlighting
       }
-      if (count !== curNode.node.downStream.length) { // If all the downstream nodes were not highlighted, we can unhighlight this node
-        curNode.node.isHighlighted = false;
+      if (count !== curNode.downstreamEdges.length) { // If all the downstream nodes were not highlighted, we can unhighlight this node
+        curNode.isHighlighted = false;
       } else {
-        curNode.downStream.forEach(function (dItem) {
-          nodesEdgesMap[dItem.id].node.isHighlighted = true;
+        curNode.downstreamEdges.forEach(function (edgeIndex) {
+          edges[edgeIndex].target.isHighlighted = true;
         });
       }
     });
@@ -75,19 +74,19 @@ function downStreamHighlightCheck (d, count) {
   count = -1;
   // This checks whether we should be highlighting or un-highlighting nodes by counting the number of downstream
   // nodes that are highlighted and returning that count.
-  if (d.downStream.length > 0) {
-    d.downStream.forEach(function (curID) {
-      let curNode = nodesEdgesMap[curID.id];
+  if (d.downstreamEdges.length > 0) {
+    d.downstreamEdges.forEach(function (edgeIndex) {
+      let curNode = edges[edgeIndex].target;
       // The 'visited' flag is true when a node that WAS highlighted had been flipped to being UnHighlighted.
-      if ((curNode.edges && curNode.node.isHighlighted) || curNode.node.visited) {
+      if ((curNode.downstreamEdges && curNode.isHighlighted) || curNode.visited) {
         count = (count === -1) ? 1 : count + 1;
       }
-      curID.visited = true;
+      // curID.visited = true;
     });
 
     if (debug) {
       console.log('count is: ' + count);
-      console.log('downstream length is: ' + d.downStream.length);
+      console.log('downstream length is: ' + d.downstreamEdges.length);
     }
 
     return count;
@@ -104,7 +103,7 @@ function collapse (id) {
   }
 
   let nodes = d3.selectAll('.node').data();
-  let thisNode = nodes.filter(n => n.id === id)[0];
+  let thisNode = getById(nodes, id);
 
   if (!thisNode.visited || thisNode.visited === 'undefined') {
     thisNode.visited = true;
@@ -114,8 +113,7 @@ function collapse (id) {
         // Hide each downStream edge and recurse to downStream node
         thisNode.edges.forEach(function (edgeIndex) {
           let edge = edges[edgeIndex];
-          let targetIndex = edge.target;
-          let targetNode = nodes[targetIndex];
+          let targetNode = edge.target;
 
           targetNode.isVisible = false;
 
@@ -124,7 +122,7 @@ function collapse (id) {
             targetNode.visited = true; // Toggle the visited flag
           }
 
-          collapse(targetIndex);  // Collapse downstream nodes
+          collapse(edge.targetId);  // Collapse downstream nodes
         });
       }
     }
@@ -143,13 +141,12 @@ function unCollapse (id) {
   }
 
   let nodes = d3.selectAll('.node').data();
-  let thisNode = nodes.filter(n => n.id === id)[0];
+  let thisNode = getById(nodes, id);
 
   if (thisNode.edges.length > 0) {
     // Hide each downStream edge and recurse to downStream node
     thisNode.edges.forEach(function (edgeIndex) {
-      let targetIndex = edges[edgeIndex].target;
-      nodes[targetIndex].isVisible = true;
+      edges[edgeIndex].target.isVisible = true;
     });
     thisNode.isCollapsed = false;
   }
@@ -241,11 +238,14 @@ function nodeClick (d) {
     console.log('===============> nodeClick');
   }
 
+  let nodes = d3.selectAll('.node').data();
+
   let highlightedCount = 0; // this will count how many downStream nodes are highlighted.
-  if (d.downStream.length > 0) {
+  if (d.downstreamEdges.length > 0) {
     let selectedNode = nodesEdgesMap[d.id];
-    selectedNode.edges.forEach(function (item) {
-      if (item.target.isHighlighted) {
+    selectedNode.downstreamEdges.forEach(function (edgeIndex) {
+      let edge = edges[edgeIndex];
+      if (nodes[edge.target].isHighlighted) {
         highlightedCount++;
       }
     });
@@ -255,7 +255,7 @@ function nodeClick (d) {
   if (d.isHighlighted) {
     // If the downstream items are not all highlighted, then we highlight all of them
     // Otherwise unHighlight all of them
-    if (d.downStream.length > 0 && (highlightedCount !== d.downStream.length)) {
+    if (d.downstreamEdges.length > 0 && (highlightedCount !== d.downstreamEdges.length)) {
       highlightNodes(d);
     } else {
       unHighlightNodes(d);
@@ -298,13 +298,13 @@ function nodeDoubleClick (clickedNode) {
   clickedOnce = false;  // For resetting the clickedOnce flag
   clearTimeout(timer);  // Reset the timer for click event
   if (clickedNode.isCollapsed) {
-    if (clickedNode.downStream.length > 0) {
+    if (clickedNode.downstreamEdges.length > 0) {
       unCollapse(clickedNode.id);
     }
   } else {
-    if (clickedNode.downStream.length > 0) {
-      clickedNode.downStream.forEach(function (item) {
-        collapse(item);
+    if (clickedNode.downstreamEdges.length > 0) {
+      clickedNode.downstreamEdges.forEach(function (edgeIndex) {
+        collapse(edges[edgeIndex].targetId);
       });
       clickedNode.isCollapsed = true;
     }
@@ -321,7 +321,7 @@ function updateOpacity () {
     console.log('nodes updateOpacity()');
   }
 
-  node.style('opacity', function (d) {
+  d3.selectAll('.node').style('opacity', function (d) {
     if (d.isVisible) {
       return (d.isHighlighted) ? 1 : reducedOpacity;
     } else { return 0; }
@@ -344,11 +344,9 @@ function checkOpacity () {
       return d.isVisible ? 1 : 0;
     });// Turn Everyone on
     d3.selectAll('path').style('opacity', function (d) {
-      let nodes = node.data();
-      let source = nodes[d.source];
-      let target = nodes[d.target];
-
-      return (source.isVisible && target.isVisible) ? 1 : 0;
+      if (d.source && d.target) {
+        return (d.source.isVisible && d.target.isVisible) ? 1 : 0;
+      }
     }); // Turn on all the edges.
   }
 }
@@ -390,9 +388,11 @@ export function update (svg, forceLayout, nodes, physics, itemNames) {
     .on('click', function (d) {
       if (clickedOnce) {  // This only occurs if someone clicks twice before the timeout below
         // nodeDoubleClick(d);  // Call the double click function
+        // update(svg, forceLayout, forceLayout.nodes(), physics, itemNames);
       } else {              // We've seen a single click
         if (d3.event.shiftKey) {  // If we see a click with a shift...
           // nodeClick(d);  // Call nodeClick() to check (un)highlighting
+          // update(svg, forceLayout, forceLayout.nodes(), physics, itemNames);
         } else {
           timer = setTimeout(function () { // If we just see a click check for double click
             clickedOnce = false;  // We timed out after 175ms so we are NOT seeing a double click

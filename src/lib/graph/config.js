@@ -15,7 +15,7 @@ export let projectNode = {};
 
 let svg = null;
 let force = null;         // The force layout for d3
-export let debug = true;         // To display the function console logs
+export let debug = false;         // To display the function console logs
 
 /**
  * For every shift of the graph, this function gets called.
@@ -133,7 +133,7 @@ export default function update (graphData, selectedProjectId, rootId = parseInt(
 
   if (rootId !== currentRootId) {
     // clearGraph(); // Clear all of the graph data
-    filterJSON(nodesEdgesMap, rootId); // Filters the JSON for only the downStream nodes from the selected item
+    // filterJSON(nodesEdgesMap, rootId); // Filters the JSON for only the downStream nodes from the selected item
     nodes.resetVisitedFlag(); // Sets all of the visited flags to false
 
     // updateGraph(graphData, rootId);  // Render the graph
@@ -156,7 +156,7 @@ export default function update (graphData, selectedProjectId, rootId = parseInt(
     console.log(nodesEdgesMap.edges);
   }
 
-  nodes.update(svg.select('#nodes'), force, nodesEdgesMap.nodes, false, true);
+  nodes.update(svg.select('#nodes'), force, nodesEdgesMap.nodes, false, false);
   edges.update(svg.select('#edges'), force, nodesEdgesMap.edges);
 
   force.on('tick', tick);
