@@ -56,3 +56,38 @@ ul > li {
     overflow-y: scroll;
     margin-bottom: 1.5rem;
 }
+
+#d3GraphOptions {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    margin-bottom: 1.5rem;
+    width: 25rem;
+    font-size: 10pt;
+}
+
+#physicsOption > *,
+#curvesOption > *,
+#itemNamesOption > *,
+#floatOption > * {
+    width: 25%;
+    padding: 0.1rem;
+    overflow: hidden;
+    float: left;
+}
+
+input[type=radio] {
+    margin: 0 0.5rem;
+}
+
+#optionLabel {
+    font-family: "Gill Sans", "Lucida Grande", Helvetica, Arial, sans-serif;
+    text-transform: uppercase;
+    margin-right: -0.8rem;
+}
+
+.optionName {
+    display: inline-flex;
+    flex-direction: row;
+    /*color: #4696B9;*/
+}
