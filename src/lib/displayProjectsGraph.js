@@ -343,6 +343,8 @@ function updateGraph (graphData, rootId = projectRootId) {
       if (clickedOnce) {  // This only occurs if someone clicks twice before the timeout below
         nodeDoubleClick(d);  // Call the double click function
       } else {              // We've seen a single click
+        d3.selectAll('.activeNode').classed('activeNode', false);
+        d3.select(this).classed('activeNode', true);
         if (d3.event.shiftKey) {  // If we see a click with a shift...
           nodeClick(d);  // Call nodeClick() to check (un)highlighting
         } else {
@@ -537,6 +539,7 @@ function updateGraph (graphData, rootId = projectRootId) {
  * @param overNode
  */
 function nodeMouseOver (overNode) {
+  d3.select(this).classed('hoverOver', true);
   // Make the node circle larger and change opacity
   d3.select(this).select('circle').transition()
     .duration(500)
@@ -568,6 +571,8 @@ function nodeMouseOut (overNode) {
     .duration(500)
     .attr('r', 13)
     .attr('opacity', 1);
+
+  d3.select(this).classed('hoverOver', false);
 
   nodeInfoTip.html('')
     .style('visibility', 'hidden');

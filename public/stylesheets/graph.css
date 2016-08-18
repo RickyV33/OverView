@@ -30,9 +30,9 @@ path.link-dot {
 }
 
 .node circle {
-    stroke-width: 1px;
-    fill: #D5EFF6;
-    stroke: #D5EFF6;
+    stroke-width: 2px;
+    fill: #93D9EC;
+    stroke: #93D9EC;
 }
 
 .hasDownstream > circle {
@@ -79,14 +79,19 @@ image {
     width: 18px;
 }
 
-.activeNode {
+.hoverOver > circle {
     fill: #FFA070;
-    stroke: #F2622B;
+    stroke: #FFA070;
+}
+
+.activeNode > circle {
+    fill: #FFB900;
+    stroke: #C38B00 !important;
 }
 
 .projectRoot circle {
     fill: #C94418;
-    stroke: #C94418;
+    stroke: #C94418 !important;
     stroke-width: 2px;
 }
 
