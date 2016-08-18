@@ -24,16 +24,13 @@ function curvedEdges (d) {
  * @returns {string}
  */
 function straightEdges (d) {
-  if (d.source && d.target)
-  {
-    return 'M' + d.source.x + ',' + d.source.y +
-      'S' + d.source.x + ',' + d.source.y +
-      ' ' + d.target.x + ',' + d.target.y;
-  }
+  return 'M' + d.source.x + ',' + d.source.y +
+    'S' + d.source.x + ',' + d.source.y +
+    ' ' + d.target.x + ',' + d.target.y;
 }
 
 /**
- * Float the nodes to the bottom of their upstream node
+ * Float the edges to the bottom of their upstream node
  */
 function floatEdgesDown (e) {
   var offset = 10 * e.alpha; // For the node offset
@@ -98,7 +95,7 @@ export function tick (e) {
     console.log('edges.tick()');
   }
 
-  d3.selectAll('.link').call(d => {
+  d3.selectAll('.link').attr('d', d => {
     if (curves) {
       return curvedEdges(d);
     } else {

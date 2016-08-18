@@ -45,8 +45,10 @@ function config() {
       .on('zoom', function () {
         svg.attr('transform', 'translate(' + d3.event.translate + ')' + ' scale(' + d3.event.scale + ')');
       }))
-    .on('dblclick.zoom', null)  // To remove the double click zoom function
-    .append('g').attr('id', 'nodes'); // Add a group element within it to encompass all the nodes - this fixes the chrome
+    .on('dblclick.zoom', null);  // To remove the double click zoom function
+
+  svg.append('svg:g').attr('id', 'edges');
+  svg.append('g').attr('id', 'nodes'); // Add a group element within it to encompass all the nodes - this fixes the chrome
 
   // ============ build the arrows ================
   svg.append('svg:defs').selectAll('marker')
@@ -62,8 +64,6 @@ function config() {
     .append('svg:path')
     .attr('d', 'M0,-5L10,0L0,5')
     .attr('class', 'arrow');
-
-  svg.append('svg:g').attr('id', 'edges');
 
   force = d3.layout.force()
     .size([width, height])
