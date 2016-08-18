@@ -14,7 +14,6 @@ export let nodesEdgesMap = {};
 export let projectNode = {};
 
 let svg = null;
-let pathGroup = null;
 let force = null;         // The force layout for d3
 export let debug = true;         // To display the function console logs
 
@@ -45,7 +44,7 @@ function config() {
         svg.attr('transform', 'translate(' + d3.event.translate + ')' + ' scale(' + d3.event.scale + ')');
       }))
     .on('dblclick.zoom', null)  // To remove the double click zoom function
-    .append('g'); // Add a group element within it to encompass all the nodes - this fixes the chrome
+    .append('g').attr('id', 'nodes'); // Add a group element within it to encompass all the nodes - this fixes the chrome
 
   // ============ build the arrows ================
   svg.append('svg:defs').selectAll('marker')
@@ -62,7 +61,7 @@ function config() {
     .attr('d', 'M0,-5L10,0L0,5')
     .attr('class', 'arrow');
 
-  pathGroup = svg.append('svg:g');
+  svg.append('svg:g').attr('id', 'edges');
 
   force = d3.layout.force()
     .size([width, height])
@@ -154,8 +153,8 @@ export default function update (graphData, selectedProjectId, rootId = parseInt(
     console.log(nodesEdgesMap.edges);
   }
 
-  nodes.update(svg, force, nodesEdgesMap.nodes, false, true);
-  edges.update(pathGroup, force, nodesEdgesMap.edges);
+  nodes.update(svg.select('#nodes'), force, nodesEdgesMap.nodes, false, true);
+  edges.update(svg.select('#edges'), force, nodesEdgesMap.edges);
 
   force.start();
 
