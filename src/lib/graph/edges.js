@@ -90,10 +90,21 @@ export function update (svg, forceLayout, edges) {
     });
 }
 
-export function tick (d) {
-  if (curves) {
-    return curvedEdges(d);
-  } else {
-    return straightEdges(d);
+export function tick (e) {
+  if (debug) {
+    console.log('edges.tick()');
   }
+
+  d3.selectAll('.link').call(d => {
+    if (debug) {
+      console.log('link:');
+      console.log(d);
+    }
+
+    if (curves) {
+      return curvedEdges(d);
+    } else {
+      return straightEdges(d);
+    }
+  });
 }

@@ -465,6 +465,10 @@ export function update (svg, forceLayout, nodes, physics, itemNames) {
 }
 
 export function tick(e) {
+  if (debug) {
+    console.log('nodes.tick()');
+  }
+
   // Move the edge depending on node location
   node.attr('transform', function (d) {
     return 'translate(' + d.x + ',' + d.y + ')';
