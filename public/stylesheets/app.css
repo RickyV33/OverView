@@ -89,5 +89,5 @@ input[type=radio] {
 .optionName {
     display: inline-flex;
     flex-direction: row;
-    /*color: #4696B9;*/
+    margin-right: 1.5rem;
 }

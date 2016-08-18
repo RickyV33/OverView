@@ -6,11 +6,13 @@ import renderGraph from './displayProjectsGraph';
 
 let selectedHierarchyItem = null;
 let d3GraphOptions = {
-  curves: false,
-  physics: false,
-  itemNames: true,
-  floatDown: false,
+  curves: true,
+  physics: true,
+  itemNamesRight: true,
+  itemNamesBelow: false,
+  itemNamesMix: false,
   floatRight: true,
+  floatDown: false,
   noFloat: false
 };
 
@@ -46,9 +48,7 @@ function initializeD3Options () {
     }
   });
   graph.querySelectorAll('input[name="itemNames"]').forEach(option => {
-    if (option.value === d3GraphOptions.itemNames.toString()) {
-      option.checked = true;
-    }
+    option.checked = d3GraphOptions[option.id];
   });
   graph.querySelectorAll('input[name="float"]').forEach(option => {
     option.checked = d3GraphOptions[option.id];
