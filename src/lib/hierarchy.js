@@ -1,21 +1,21 @@
 /* eslint-env browser */
 //
 
-import { querySelectorAll, graphData, toggle } from '../graph';
+import * as graph from '../graph';
+import * as project from './project';
 import renderGraph from './displayProjectsGraph';
-import { selectedProject } from './project';
 
-export let selectedHierarchyItem = null;
+let selectedHierarchyItem = null;
 
 document.addEventListener('DOMContentLoaded', () => {
   /**
    * Toggles the hierarchy div and displays the D3 graph representation of the data based on the passed in parameters
    */
   document.getElementById('renderButton').addEventListener('click', () => {
-    let hierarchy = document.querySelector('#hierarchy');
     let rootId = isNaN(parseInt(selectedHierarchyItem)) ? null : parseInt(selectedHierarchyItem);
-    toggle(hierarchy);
-    renderGraph(graphData, selectedProject, rootId);
+    graph.toggle(document.querySelector('#hierarchy'));
+    graph.toggle(document.querySelector('#d3Container'));
+    renderGraph(graph.graphData, project.selectedProject, rootId);
   });
 });
 
@@ -52,6 +52,7 @@ export function getHierarchy (projectId) {
  */
 export function renderHierarchy (hierarchyPayload) {
   let itemHierarchyList = document.getElementById('itemHierarchyList');
+  destroyHierarchy(); // Refresh the list every time renderHierarchy is called
   if (hierarchyPayload) {
     hierarchyPayload.forEach(item => {
       itemHierarchyList.appendChild(createHierarchyItemWithChildren(item));
@@ -61,6 +62,16 @@ export function renderHierarchy (hierarchyPayload) {
   }
 }
 
+/**
+ * Iterates through the ItemHierarchyList and destroys every list item in preparation for a new project's hierarchy
+ * list to be rendered.
+ */
+function destroyHierarchy () {
+  let hierarchyListItems = document.getElementById('itemHierarchyList');
+  Array.from(hierarchyListItems.children).forEach(item => {
+    hierarchyListItems.removeChild(item);
+  });
+}
 /**
  * Takes a hierarchy item and recursively creates a list item for itself and all of it's children, where the project items
  * are anchors. It then returns the hierarchy item with all it's children as an HTML element.
@@ -89,8 +100,8 @@ function createHierarchyItemWithChildren (item) {
  * Listens for mouse clicks on the Item hierarchy list and sets the selectedHierarchyItem
  * variable to that item's ID
  */
-export function buildItemHierarchyAnchors () {
-  querySelectorAll('#itemHierarchyList a').forEach(hierarchyAnchor => {
+export function addItemHierachyAnchorClickHandler () {
+  graph.querySelectorAll('#itemHierarchyList a').forEach(hierarchyAnchor => {
     hierarchyAnchor.addEventListener('click', event => {
       selectedHierarchyItem = event.target.getAttribute('data-id');
     });
