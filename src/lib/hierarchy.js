@@ -1,5 +1,4 @@
 /* eslint-env browser */
-//
 
 import * as graph from '../graph';
 import * as project from './project';
@@ -16,7 +15,6 @@ let d3GraphOptions = {
 };
 
 document.addEventListener('DOMContentLoaded', () => {
-  //document.querySelector('input[name="genderS"]:checked').value;
   initializeD3Options();
   addD3GraphOptionOnChangeHandler();
 
@@ -31,23 +29,39 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
-
-function initializeD3Options() {
-  // document.querySelector('input[name="curves"]:checked').value = d3GraphOptions.curves;
-  document.getElementById('curvesOff').checked = true;
-  document.getElementById('physicsOff').checked = true;
-  document.getElementById('itemNamesOn').checked = true;
-  document.getElementById('floatRight').checked = true;
+/**
+ * Initializes the D3 graph options.
+ */
+function initializeD3Options () {
+  // Selects all radio buttons with the specified name and sets the checked value according to the corresponding
+  // d3GraphObject boolean value.
+  graph.querySelectorAll('input[name="curves"]').forEach(option => {
+    if (option.value === d3GraphOptions.curves.toString()) {
+      option.checked = true;
+    }
+  });
+  graph.querySelectorAll('input[name="physics"]').forEach(option => {
+    if (option.value === d3GraphOptions.physics.toString()) {
+      option.checked = true;
+    }
+  });
+  graph.querySelectorAll('input[name="itemNames"]').forEach(option => {
+    if (option.value === d3GraphOptions.itemNames.toString()) {
+      option.checked = true;
+    }
+  });
+  graph.querySelectorAll('input[name="float"]').forEach(option => {
+    option.checked = d3GraphOptions[option.id];
+  });
 }
 
 /**
- * Listens for mouse clicks on the Item hierarchy list and sets the selectedHierarchyItem
- * variable to that item's ID
+ * Listens for input change on radio buttons and sets value within the D3GraphOptions object accordingly.
  */
 function addD3GraphOptionOnChangeHandler () {
   graph.querySelectorAll('#d3GraphOptions input[type=radio]').forEach(option => {
     option.addEventListener('change', event => {
-      event.target;
+      d3GraphOptions[event.target.getAttribute('name')] = (event.target.getAttribute('value') === 'true');
     });
   });
 }
