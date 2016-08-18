@@ -70,11 +70,12 @@ function config() {
     // negative charge results in node repulsion, while positive value results in node attraction
     .charge(d => {  // Variable Charge
       let chargeVal = -500;
-      return d.downStream ? chargeVal + (-200 * d.downStream.length) : chargeVal - 200;
+      return d.downstreamEdges ? chargeVal + (-200 * d.downstreamEdges.length) : chargeVal - 200;
     })
     .linkStrength(d => {  // Variable link Strength
       let strengthVal = 1;
-      return d.downStream ? strengthVal + (-0.12 * (d.source.downStream.length)) : strengthVal - 0.12;
+      let sourceNode = getById(nodesEdgesMap.nodes, d.sourceId);
+      return d.downstreamEdges ? strengthVal + (-0.12 * (sourceNode.downstreamEdges.length)) : strengthVal - 0.12;
     });
 
   force.tick(tick);
