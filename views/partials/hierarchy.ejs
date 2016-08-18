@@ -3,39 +3,35 @@
         or click the "Render Graph" button to view the traceability graph:</p>
     <ul id="itemHierarchyList">
     </ul>
-    <div id="d3ConfigOptions">
+    <div id="d3GraphOptions">
         <fieldset>
             <legend>Graph Options</legend>
             <div>
                 <p>on off</p>
             </div>
-            <div id="curvesOptionContainer">
-                <label for="curves">
-                    Curves
-                    <input type="radio" id="curves" value="curvesOn" name="curves"/>
-                    <input type="radio" id="curves" value="curvesOff" name="curves"/>
-                </label>
+            <div id="curvesOption">
+                <label for="curves">Curves</label>
+                <input type="radio" id="curvesOn" value="true" name="curves"/>
+                <input type="radio" id="curvesOff" value="false" name="curves"/>
             </div>
-            <div id="physicsOptionContainer">
-                <label for="physics">
-                    Physics
-                    <input type="radio" id="physics" value="physicsOn" name="physics"/>
-                    <input type="radio" id="physics" value="physicsOff" name="physics"/>
-                </label>
+            <div id="physicsOption">
+                <label for="physics">Physics</label>
+                <input type="radio" id="physicsOn" value="true" name="physics"/>
+                <input type="radio" id="physicsOff" value="false" name="physics"/>
             </div>
-            <div id="itemNamesOptionContainer">
+            <div id="itemNamesOption">
                 <label for="itemNames">Item Names</label>
-                <input type="radio" id="itemNames" value="itemNamesOn" name="itemNames"/>
-                <input type="radio" id="itemNames" value="itemNamesOff" name="itemNames"/>
+                <input type="radio" id="itemNamesOn" value="true" name="itemNames"/>
+                <input type="radio" id="itemNamesOff" value="false" name="itemNames"/>
             </div>
-            <div id="floatOptionContainer">
+            <div id="floatOption">
                 <div>
                     <label for="float">Float Down</label>
-                    <input type="radio" id="floatDownOn" value="floatDownOn" name="float"/>
+                    <input type="radio" id="floatDown" value="true" name="float"/>
                     <label for="float">Float Right</label>
-                    <input type="radio" id="floatRightOn" value="floatRightOn" name="float"/>
+                    <input type="radio" id="floatRight" value="true" name="float"/>
                     <label for="float">No Float</label>
-                    <input type="radio" id="noFloatOn" value="noFloatOn" name="float"/>
+                    <input type="radio" id="noFloat" value="true" name="float"/>
                 </div>
             </div>
         </fieldset>
