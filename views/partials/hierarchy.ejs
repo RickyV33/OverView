@@ -5,3 +5,40 @@
     </ul>
     <div><input id="renderButton" type="button" value="Render Graph" ></div>
 </div>
+<div id="d3ConfigOptions">
+    <fieldset>
+        <legend>Graph Options</legend>
+        <div>
+            <p>on off</p>
+        </div>
+        <div id="curvesOptionContainer">
+            <label for="curves">
+                Curves
+                <input type="radio" id="curves" value="curvesOn" name="curves"/>
+                <input type="radio" id="curves" value="curvesOff" name="curves" checked/>
+            </label>
+        </div>
+        <div id="physicsOptionContainer">
+            <label for="physics">
+                Physics
+                <input type="radio" id="physics" value="physicsOn" name="physics"/>
+                <input type="radio" id="physics" value="physicsOff" name="physics" checked/>
+            </label>
+        </div>
+        <div id="itemNamesOptionContainer">
+            <label for="itemNames">Item Names</label>
+            <input type="radio" id="itemNames" value="itemNamesOn" name="itemNames" checked/>
+            <input type="radio" id="itemNames" value="itemNamesOff" name="itemNames"/>
+        </div>
+        <div id="floatOptionContainer">
+            <div>
+                <label for="float">Float Down</label>
+                <input type="radio" id="floatDownOn" value="floatDownOn" name="float" checked/>
+                <label for="float">Float Right</label>
+                <input type="radio" id="floatRightOn" value="floatRightOn" name="float"/>
+                <label for="float">No Float</label>
+                <input type="radio" id="noFloatOn" value="noFloatOn" name="float"/>
+            </div>
+        </div>
+    </fieldset>
+</div>
