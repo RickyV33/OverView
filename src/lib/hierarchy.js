@@ -6,8 +6,20 @@ import * as project from './project';
 import renderGraph from './displayProjectsGraph';
 
 let selectedHierarchyItem = null;
+let d3GraphOptions = {
+  curves: false,
+  physics: false,
+  itemNames: true,
+  floatDown: false,
+  floatRight: true,
+  noFloat: false
+};
 
 document.addEventListener('DOMContentLoaded', () => {
+  //document.querySelector('input[name="genderS"]:checked').value;
+  initializeD3Options();
+  addD3GraphOptionOnChangeHandler();
+
   /**
    * Toggles the hierarchy div and displays the D3 graph representation of the data based on the passed in parameters
    */
@@ -18,6 +30,27 @@ document.addEventListener('DOMContentLoaded', () => {
     renderGraph(graph.graphData, project.selectedProject, rootId);
   });
 });
+
+
+function initializeD3Options() {
+  // document.querySelector('input[name="curves"]:checked').value = d3GraphOptions.curves;
+  document.getElementById('curvesOff').checked = true;
+  document.getElementById('physicsOff').checked = true;
+  document.getElementById('itemNamesOn').checked = true;
+  document.getElementById('floatRight').checked = true;
+}
+
+/**
+ * Listens for mouse clicks on the Item hierarchy list and sets the selectedHierarchyItem
+ * variable to that item's ID
+ */
+function addD3GraphOptionOnChangeHandler () {
+  graph.querySelectorAll('#d3GraphOptions input[type=radio]').forEach(option => {
+    option.addEventListener('change', event => {
+      event.target;
+    });
+  });
+}
 
 /**
  * Makes an AJAX request to the provided endpoint for the item hierarchy tree.
