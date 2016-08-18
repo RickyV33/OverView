@@ -31,8 +31,8 @@ path.link-dot {
 
 .node circle {
     stroke-width: 1px;
-    fill: #B2D4DD;
-    stroke: #B2D4DD;
+    fill: #D5EFF6;
+    stroke: #D5EFF6;
 }
 
 .hasDownstream > circle {
