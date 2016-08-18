@@ -805,7 +805,7 @@ function updateOpacity () {
   // Node checking
   node.style('opacity', function (d) {
     if (d.isVisible) {
-      return (d.isHighlighted) ? 1 : 0.4;
+      return (d.isHighlighted) ? 1 : reducedOpacity;
     } else { return 0; }
   });
 
