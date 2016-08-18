@@ -6,8 +6,6 @@ export const PROJECT_AS_ROOT = -1;
 let width = 1000;         // D3 window Width
 let height = 800;         // D3 window height
 
-let relationsChecked = false;   // Flag to see if relations check was run
-
 let currentProjectId = PROJECT_AS_ROOT;
 let currentRootId;
 let nodesToRender = [];   // Gets passed into the D3 force nodes function
@@ -151,87 +149,15 @@ export default function update (graphData, selectedProjectId, rootId = parseInt(
     console.log('graph.update()');
   }
 
-  if (!relationsChecked) {
-    // For each relationship, add the target to the source node
-    // nodesEdgesMap.edges.forEach(edge => {
-    //   let sourceNode = nodesEdgesMap.nodes[edge.source];
-    //   let targetNode = nodesEdgesMap.nodes[edge.target];
-    //
-    //   if (sourceNode && targetNode) {
-    //     relItem.source = srcNode.node;
-    //     relItem.target = trgNode.node;
-    //     adddownStreamItemToNode(srcNode, relItem);  // Check if downStream nodes array exists
-    //   }
-    // });
-    //
-    // // For each relationship, add the target to the source node
-    // graphData.relationships.forEach(function (relItem) {
-    //   // Find node object based on the relationship source id
-    //   let srcNode = nodesEdgesMap[relItem.source];
-    //   let trgNode = nodesEdgesMap[relItem.target];
-    //
-    //   // Set the relationship source and target values
-    //   // Note - Use objects only and not just ids of the nodes
-    //   if (srcNode && trgNode) {
-    //     relItem.source = srcNode.node;
-    //     relItem.target = trgNode.node;
-    //     adddownStreamItemToNode(srcNode, relItem);  // Check if downStream nodes array exists
-    //   }
-    // });
-
-    // Check if there are relations for each node and set a flag
-    // graphData.items.forEach(function (item) {
-    //   if (typeof item.downStream === 'undefined') {
-    //     item.noRelations = true;
-    //   } else {
-    //     item.noRelations = (item.downStream.length === 0);
-    //   }
-    // });
-
-    // relationsChecked = true;
-  }
-
   if (debug) {
     console.log(nodesEdgesMap.nodes);
     console.log(nodesEdgesMap.edges);
-
-    // Find blank links, which give the error
-    // "Uncaught TypeError: Cannot read property 'weight' of undefined"
-    nodesEdgesMap.edges.forEach(function(link) {
-      if (typeof nodesEdgesMap.nodes[link.source] === 'undefined') {
-        console.log('undefined source', link);
-      }
-      if (typeof nodesEdgesMap.nodes[link.target] === 'undefined') {
-        console.log('undefined target', link);
-      }
-    });
   }
 
   nodes.update(svg, force, nodesEdgesMap.nodes, false, true);
   edges.update(pathGroup, force, nodesEdgesMap.edges);
 
   force.start();
-
-  // /**
-  //  * Adds a downStream item and downStream edge to a given Node
-  //  *
-  //  * @param {Object} nodeItem is a node item
-  //  * @param {Object} edge is an edge object that is going to be added to the nodeItem
-  //  */
-  // function adddownStreamItemToNode (nodeItem, edge) {
-  //   // Check if downStream nodes array exists
-  //   if (typeof nodeItem.downStream === 'undefined') {
-  //     nodeItem.downStream = [];
-  //   }
-  //   nodeItem.downStream.push(edge.target);  // Add the target ID to list of downStream nodes
-  //
-  //   // Check if downStream Edges array exists
-  //   if (typeof nodeItem.downStreamEdges === 'undefined') {
-  //     nodeItem.downStreamEdges = [];
-  //   }
-  //   nodeItem.downStreamEdges.push(edge);  // Add the target ID to list of downStream nodes
-  //   nodeItem.noRelations = false;
-  // }
 
   /**
    * Filters the graph input to be filtered by the rootId and all its downStream nodes
