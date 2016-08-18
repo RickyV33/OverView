@@ -23,16 +23,53 @@ let relationsChecked = false;   // Flag to see if relations check was run
 
 let currentProjectId;
 let currentRootId;
-let debug = true;         // To display the function console logs
+let debug = false;         // To display the function console logs
 
 // ////// DEMO VARS//////
 
 // let allCollapsed = false;
-let curves = false;
-let physics = false;
-let itemNames = true;
-let floatDown = true;
+let curves = true;
+let physics = true;
 
+// 0 - right, 1 - below, 2 - mix
+let itemNames = 1;
+// 0 - right, 1 - down, 2 - no float
+let float = 0;
+
+let example = 0;
+
+switch (example) {
+  case 0:
+    console.log('float down, item names below');
+    float = 1;
+    itemNames = 1;
+    break;
+  case 1:
+    console.log('float right, item names right');
+    float = 0;
+    itemNames = 0;
+    break;
+  case 2:
+    console.log('float right, item names mix');
+    float = 0;
+    itemNames = 2;
+    break;
+  case 3:
+    console.log('float down, item names mix');
+    float = 1;
+    itemNames = 2;
+    break;
+  case 4:
+    console.log('No float, item names mix');
+    float = 2;
+    itemNames = 2;
+    break;
+  case 5:
+    console.log('No float, item names below');
+    float = 2;
+    itemNames = 1;
+    break;
+}
 // /////////////////////
 
 /**
@@ -383,31 +420,39 @@ function updateGraph (graphData, rootId = projectRootId) {
     .attr('x', '-9px')
     .attr('y', '-9px');
 
-  if (itemNames) {
+  if (itemNames === 2) {
     node.append('text') // Add the name of the node as text
-    .attr('class', 'nodeText')
-    .attr('x', function (d) {
-      return d.downStream.length > 0 ? 0 : 20; // Move text to right if the node has downstream items
-    })
-    .attr('dy', function (d) {
-      return d.downStream.length > 0 ? 30 : 0; // Move text down if the node has downstream items
-    })
-    .attr('text-anchor', function (d) {
-      return d.downStream.length > 0 ? 'middle' : 'right';
-    })
-    .text(function (d) { // Limit the length of the name text
-      return d.name.length > 18 ? d.name.substring(0, 15) + '...' : d.name;
-    });
-  } else {
+      .attr('class', 'nodeText')
+      .attr('x', function (d) {
+        return d.downStream.length > 0 ? 0 : 20; // Move text to right if the node has downstream items
+      })
+      .attr('dy', function (d) {
+        return d.downStream.length > 0 ? 30 : 0; // Move text down if the node has downstream items
+      })
+      .attr('text-anchor', function (d) {
+        return d.downStream.length > 0 ? 'middle' : 'right';
+      })
+      .text(function (d) { // Limit the length of the name text
+        return d.name.length > 18 ? d.name.substring(0, 15) + '...' : d.name;
+      });
+  } else if (itemNames === 1) {
     node.append('text') // Add the name of the node as text
-  // .attr('x', 20)
-    .attr('x', 0)
-    .attr('dy', 30)
-    .attr('class', 'nodeText')
-    .attr('text-anchor', 'middle')
-    .text(function (d) { // Limit the length of the name text
-      return d.name.length > 18 ? d.name.substring(0, 15) + '...' : d.name;
-    });
+      .attr('x', 0)
+      .attr('dy', 30)
+      .attr('class', 'nodeText')
+      .attr('text-anchor', 'middle')
+      .text(function (d) { // Limit the length of the name text
+        return d.name.length > 18 ? d.name.substring(0, 15) + '...' : d.name;
+      });
+  } else if (itemNames === 0) {
+    node.append('text') // Add the name of the node as text
+      .attr('x', 20)
+      .attr('dy', 0)
+      .attr('class', 'nodeText')
+      .attr('text-anchor', 'right')
+      .text(function (d) { // Limit the length of the name text
+        return d.name.length > 18 ? d.name.substring(0, 15) + '...' : d.name;
+      });
   }
 
   // Add a downstream item count circle to each node that has downstream items
@@ -448,7 +493,16 @@ function updateGraph (graphData, rootId = projectRootId) {
       return 'translate(' + d.x + ',' + d.y + ')';
     });
 
-    floatDown ? floatNodesDown(e) : floatNodesRight(e);  // Toggle the float down and the float right
+    switch (float) {
+      case 0:
+        floatNodesRight(e);
+        break;
+      case 1:
+        floatNodesDown(e);
+        break;
+      case 2:
+        break;
+    }
 
     // Set the node position
     node.attr('cx', function (d) { return 5 * d.x; })
