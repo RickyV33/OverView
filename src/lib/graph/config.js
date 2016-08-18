@@ -81,6 +81,7 @@ function config() {
     });
 
   force.tick(tick);
+  force.start();
 }
 
 export function rootId (rootId) {
