@@ -59,7 +59,5 @@ export function getGraph (projectId) {
     };
     httpRequest.open('GET', '?project=' + projectId);
     httpRequest.send();
-    let graphContainer = document.getElementById('d3Container');
-    graphContainer.className = ''; // Remove the hidden tag
   });
 }
