@@ -1,5 +1,5 @@
+import { debug } from './config';
 
-let force = null;
 let path = null;
 
 let curves = false;
@@ -62,11 +62,14 @@ function updateOpacity () {
   checkOpacity();
 }
 
-export default function config (svg, forceLayout) {
-  force = forceLayout;
+export function update (svg, forceLayout, edges) {
+  if (debug) {
+    console.log('edges.update()');
+  }
 
-  path = svg.append('svg:g').selectAll('path')
-    .data(force.links())
+  forceLayout.links(edges);
+
+  let path = svg.selectAll('.link').data(forceLayout.links())
     .enter().append('svg:path')
     .attr('id', d => d.id)
     .attr('class', thisPath => {
@@ -85,15 +88,6 @@ export default function config (svg, forceLayout) {
       }
       return strTitle;
     });
-}
-
-export function get () {
-  return path;
-}
-
-export function data (edges) {
-  force.links(edges);
-  path.data(force.links());
 }
 
 export function tick (d) {
