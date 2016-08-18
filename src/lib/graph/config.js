@@ -24,9 +24,10 @@ export let debug = true;         // To display the function console logs
  * @param {Object} e
  */
 function tick (e) {
-  if (path.get()) {
-    path.get().call(path.tick);
+  if (debug) {
+    console.log('graph.tick()');
   }
+
   nodes.tick(e);
 }
 
