@@ -3,7 +3,6 @@ import { isRoot, size, nodesEdgesMap, projectNode, debug } from './config';
 import configureInfoTip from './infoTip';
 import * as nodeInfoTip from './infoTip';
 
-let node = null;
 let edges = null;
 
 let timer;                // For click event monitoring
@@ -104,7 +103,7 @@ function collapse (id) {
     console.log('-- collapse *' + id);
   }
 
-  let nodes = node.data();
+  let nodes = d3.selectAll('.node').data();
   let thisNode = nodes.filter(n => n.id === id)[0];
 
   if (!thisNode.visited || thisNode.visited === 'undefined') {
@@ -143,7 +142,7 @@ function unCollapse (id) {
     // console.log('-- unCollapse() --');
   }
 
-  let nodes = node.data();
+  let nodes = d3.selectAll('.node').data();
   let thisNode = nodes.filter(n => n.id === id)[0];
 
   if (thisNode.edges.length > 0) {
@@ -180,14 +179,16 @@ function floatNodesDown (e) {
   var offset = 10 * e.alpha; // For the node offset
 
   d3.selectAll('path').each(function (d) {
-    d.source.y -= offset;  // Offset sources up
-    d.target.y += offset;  // Offset targets down
-  }).attr('x1', function (d) { return d.source.x; })
-    .attr('y1', function (d) { return d.source.y; })
-    .attr('x2', function (d) { return d.target.x; })
-    .attr('y2', function (d) { return d.target.y; });
+    if (d.source && d.target) {
+      d.source.y -= offset;  // Offset sources up
+      d.target.y += offset;  // Offset targets down
+    }
+  }).attr('x1', function (d) { if (d.source) { return d.source.x; } })
+    .attr('y1', function (d) { if (d.source) { return d.source.y; } })
+    .attr('x2', function (d) { if (d.target) { return d.target.x; } })
+    .attr('y2', function (d) { if (d.target) { return d.target.y; } });
 
-  node.attr('cx', function (d) { return d.x; })
+  d3.selectAll('.node').attr('cx', function (d) { return d.x; })
     .attr('cy', function (d) { return d.y; });
 }
 
@@ -275,6 +276,8 @@ export function resetVisitedFlag () {
     console.log('resetVisitedFlag()');
   }
 
+  let node = d3.selectAll('.node');
+
   if (node !== null && node.data()) {
     node.data().forEach(function (item) {item.visited = false;});
     edges.forEach(function (item) {item.visited = false;});
@@ -331,13 +334,13 @@ function updateOpacity () {
  */
 function checkOpacity () {
   let highlight = false; // flag to see if anyone is highlighted.
-  node.data().forEach(function (d) {
+  d3.selectAll('.node').data().forEach(function (d) {
     if (d.isVisible && d.isHighlighted) {
       highlight = true; // If ANY node is highlighted set this flag.
     }
   });
   if (highlight === false) {  // Only executes if ALL nodes are NOT highlighted.
-    node.style('opacity', function (d) {
+    d3.selectAll('.node').style('opacity', function (d) {
       return d.isVisible ? 1 : 0;
     });// Turn Everyone on
     d3.selectAll('path').style('opacity', function (d) {
@@ -363,7 +366,7 @@ export function update (svg, forceLayout, nodes, physics, itemNames) {
 
   forceLayout.nodes(nodes);
 
-  node = svg.selectAll('.node').data(forceLayout.nodes())
+  let node = svg.selectAll('.node').data(forceLayout.nodes())
     .enter()
     .append('g')
     .attr('id', function (d) {
@@ -468,6 +471,8 @@ export function tick(e) {
   if (debug) {
     console.log('nodes.tick()');
   }
+
+  let node = d3.selectAll('.node');
 
   // Move the edge depending on node location
   node.attr('transform', function (d) {

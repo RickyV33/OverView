@@ -80,7 +80,6 @@ function config() {
       return d.downstreamEdges ? strengthVal + (-0.12 * (sourceNode.downstreamEdges.length)) : strengthVal - 0.12;
     });
 
-  force.tick(tick);
   force.start();
 }
 
@@ -160,6 +159,7 @@ export default function update (graphData, selectedProjectId, rootId = parseInt(
   nodes.update(svg.select('#nodes'), force, nodesEdgesMap.nodes, false, true);
   edges.update(svg.select('#edges'), force, nodesEdgesMap.edges);
 
+  force.on('tick', tick);
   force.start();
 
   /**

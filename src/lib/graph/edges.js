@@ -24,9 +24,12 @@ function curvedEdges (d) {
  * @returns {string}
  */
 function straightEdges (d) {
-  return 'M' + d.source.x + ',' + d.source.y +
-    'S' + d.source.x + ',' + d.source.y +
-    ' ' + d.target.x + ',' + d.target.y;
+  if (d.source && d.target)
+  {
+    return 'M' + d.source.x + ',' + d.source.y +
+      'S' + d.source.x + ',' + d.source.y +
+      ' ' + d.target.x + ',' + d.target.y;
+  }
 }
 
 /**
@@ -96,11 +99,6 @@ export function tick (e) {
   }
 
   d3.selectAll('.link').call(d => {
-    if (debug) {
-      console.log('link:');
-      console.log(d);
-    }
-
     if (curves) {
       return curvedEdges(d);
     } else {
