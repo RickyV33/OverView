@@ -29,6 +29,7 @@ function tick (e) {
   }
 
   nodes.tick(e);
+  edges.tick(e);
 }
 
 document.addEventListener('DOMContentLoaded', () => {
