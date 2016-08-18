@@ -304,9 +304,27 @@ function updateOpacity () {
   checkOpacity();
 }
 
-export default function config (svg, forceLayout, physics, itemNames) {
-  force = forceLayout;
+/**
+ * Check if all the nodes are un-highlighted. If they are, highlight all the nodes on the graph.
+ */
+function checkOpacity () {
+  let highlight = false; // flag to see if anyone is highlighted.
+  nodesToRender.forEach(function (d) {
+    if (d.isVisible && d.isHighlighted) {
+      highlight = true; // If ANY node is highlighted set this flag.
+    }
+  });
+  if (highlight === false) {  // Only executes if ALL nodes are NOT highlighted.
+    node.style('opacity', function (d) {
+      return d.isVisible ? 1 : 0;
+    });// Turn Everyone on
+    path.style('opacity', function (d) {
+      return (nodesEdgesMap[d.source.id].node.isVisible && nodesEdgesMap[d.target.id].node.isVisible) ? 1 : 0;
+    }); // Turn on all the edges.
+  }
+}
 
+export function update (svg, force, physics, itemNames) {
   configureInfoTip();
 
   node = svg.selectAll('.node')

@@ -1,6 +1,4 @@
-import configNodes from './nodes';
 import * as node from './nodes';
-import configEdges from './edges';
 import * as path from './edges';
 
 export const PROJECT_AS_ROOT = -1;
@@ -18,6 +16,7 @@ export let nodesEdgesMap = {};
 export let projectNode = {};
 
 let svg = null;
+let pathGroup = null;
 let force = null;         // The force layout for d3
 let debug = true;         // To display the function console logs
 
@@ -65,8 +64,11 @@ function config() {
     .attr('d', 'M0,-5L10,0L0,5')
     .attr('class', 'arrow');
 
+  pathGroup = svg.append('svg:g');
+
   force = d3.layout.force()
     .size([width, height])
+    .nodes([]).links([])
     .linkDistance(100)  // sets the target distance between linked nodes to the specified value
     // negative charge results in node repulsion, while positive value results in node attraction
     .charge(d => {  // Variable Charge
@@ -77,9 +79,6 @@ function config() {
       let strengthVal = 1;
       return d.downStream ? strengthVal + (-0.12 * (d.source.downStream.length)) : strengthVal - 0.12;
     });
-
-  configNodes(svg, force, false, true);
-  configEdges(svg, force);
 }
 
 export function rootId (rootId) {
@@ -178,6 +177,10 @@ export default function update (graphData, selectedProjectId, rootId = parseInt(
 
   node.data(nodesToRender);
   path.data(edgesToRender);
+
+  node.update(svg, force, false, true);
+  path.update(pathGroup, force);
+
   force.tick(tick);
   force.start();
 
@@ -322,23 +325,3 @@ function resetVisitedFlag () {
 //     item.isVisible = (item.id === projectRootId || item.id === rootId);
 //   });
 // }
-
-/**
- * Check if all the nodes are un-highlighted. If they are, highlight all the nodes on the graph.
- */
-function checkOpacity () {
-  let highlight = false; // flag to see if anyone is highlighted.
-  nodesToRender.forEach(function (d) {
-    if (d.isVisible && d.isHighlighted) {
-      highlight = true; // If ANY node is highlighted set this flag.
-    }
-  });
-  if (highlight === false) {  // Only executes if ALL nodes are NOT highlighted.
-    node.style('opacity', function (d) {
-      return d.isVisible ? 1 : 0;
-    });// Turn Everyone on
-    path.style('opacity', function (d) {
-      return (nodesEdgesMap[d.source.id].node.isVisible && nodesEdgesMap[d.target.id].node.isVisible) ? 1 : 0;
-    }); // Turn on all the edges.
-  }
-}

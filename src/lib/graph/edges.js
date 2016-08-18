@@ -62,10 +62,10 @@ function updateOpacity () {
   checkOpacity();
 }
 
-export default function config (svg, forceLayout) {
+export function update (pathGroup, forceLayout) {
   force = forceLayout;
 
-  path = svg.append('svg:g').selectAll('path')
+  let path = pathGroup.selectAll('path')
     .data(force.links())
     .enter().append('svg:path')
     .attr('id', d => d.id)
