@@ -4,11 +4,15 @@
     <title><%= title %></title>
     <link rel='stylesheet' href='/stylesheets/style.css' />
     <link rel='stylesheet' href='/stylesheets/app.css' />
+    <link rel='stylesheet' href='/stylesheets/graph.css' />
 </head>
 <body>
     <!-- Goes to d3 -->
-    <h1><%= title %></h1>
-    <h3><%= subtitle %></h3>
+    <header>
+        <div id="logo" class="small"><img src="img/logo.png" alt="<%= title %>" /></div>
+        <div id="logOutContainer"><input id="logOut" type="button" value="Log Out" ></div>
+    </header>
+    <div><h1><%= subtitle %></h1></div>
     <% include partials/projects.ejs %>
     <% include partials/hierarchy.ejs %>
     <% include partials/d3Container.ejs %>

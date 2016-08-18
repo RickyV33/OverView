@@ -1,3 +1,15 @@
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  width: 100%;
+  height: auto;
+  margin: 0;
+  padding: 0;
+}
+
 body {
   display: flex;
   flex-direction: column;
@@ -5,16 +17,35 @@ body {
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
+h1 {
+  align-self: flex-start;
+  font-size: 35pt;
+  color: #3D6272;
+  margin: 0.5rem 0;
+}
+
 a {
   color: #00B4FF;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
 }
 
 #logo {
-  max-width: 28em;
+  text-align: center;
+  width: 100%;
+}
+#logo.small {
+  position: absolute;
 }
 
-h1 {
-  align-self: center;
+#logo img {
+  max-width: 56rem;
+}
+#logo.small img {
+  max-width: 18rem;
 }
 
 #logIn {
@@ -39,8 +70,8 @@ h1 {
   font-size: 11pt;
 }
 
+input[type=button],
 #logIn > input[type=submit] {
-  float: right;
   font-size: 14pt;
   background: #F2622C;
   border: none;
@@ -49,6 +80,10 @@ h1 {
   text-transform: uppercase;
   text-shadow: 0 1px 0 #C94418;
   cursor: pointer;
+}
+
+#logIn > input[type=submit] {
+  float: right;
 }
 
 #logIn > .error {
