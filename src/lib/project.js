@@ -6,12 +6,13 @@ import * as hierarchy from './hierarchy';
 export let selectedProject;
 
 /**
- * Listens for mouse clicks on the project list and sets the selectedProject variable to that project's ID. It returns
- * a promise that signals that the project has been selected.
+ * Listens for mouse clicks on the project list and sets the selectedProject variable to that project's ID. The click handler
+ * returns a promise that signals that the project has been selected, and that the hierarchy and graph have been retrieved.
+ * Then it renders the hierarchy into the hierarchy partial, and adds click handlers to each item hierarchy anchor.
  *
  * @returns {Promise} signals that that the project has been selected
  */
-export function buildProjectAnchors () {
+export function addProjectAnchorClickHandler () {
   graph.querySelectorAll('#projects a').forEach(projectAnchor => {
     projectAnchor.addEventListener('click', event => {
       new Promise((resolve) => {
@@ -26,7 +27,7 @@ export function buildProjectAnchors () {
         let hierarchyPayload = payloads[0];
         graph.graphData = payloads[1];
         hierarchy.renderHierarchy(hierarchyPayload);
-        hierarchy.buildItemHierarchyAnchors();
+        hierarchy.addItemHierachyAnchorClickHandler();
         graph.toggle(document.querySelector('#projects'));
         graph.toggle(document.querySelector('#hierarchy'));
         document.body.style.cursor = 'default';

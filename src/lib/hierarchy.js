@@ -100,7 +100,7 @@ function createHierarchyItemWithChildren (item) {
  * Listens for mouse clicks on the Item hierarchy list and sets the selectedHierarchyItem
  * variable to that item's ID
  */
-export function buildItemHierarchyAnchors () {
+export function addItemHierachyAnchorClickHandler () {
   graph.querySelectorAll('#itemHierarchyList a').forEach(hierarchyAnchor => {
     hierarchyAnchor.addEventListener('click', event => {
       selectedHierarchyItem = event.target.getAttribute('data-id');

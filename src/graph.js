@@ -7,7 +7,7 @@ export let graphData;
 // TODO: Hook this up to the log out button on the graph view. It is currently not hooked up to anything,
 // but functions properly
 document.addEventListener('DOMContentLoaded', () => {
-  project.buildProjectAnchors();
+  project.addProjectAnchorClickHandler();
 
   document.getElementById('logOut').addEventListener('click', () => {
     document.location.href = '/logout';
