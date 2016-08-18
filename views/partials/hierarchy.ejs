@@ -4,37 +4,27 @@
     <ul id="itemHierarchyList">
     </ul>
     <div id="d3GraphOptions">
-        <fieldset>
-            <legend>Graph Options</legend>
-            <div>
-                <p>on off</p>
-            </div>
-            <div id="curvesOption">
-                <label for="curves">Curves</label>
-                <input type="radio" id="curvesOn" value="true" name="curves"/>
-                <input type="radio" id="curvesOff" value="false" name="curves"/>
-            </div>
-            <div id="physicsOption">
-                <label for="physics">Physics</label>
-                <input type="radio" id="physicsOn" value="true" name="physics"/>
-                <input type="radio" id="physicsOff" value="false" name="physics"/>
-            </div>
-            <div id="itemNamesOption">
-                <label for="itemNames">Item Names</label>
-                <input type="radio" id="itemNamesOn" value="true" name="itemNames"/>
-                <input type="radio" id="itemNamesOff" value="false" name="itemNames"/>
-            </div>
-            <div id="floatOption">
-                <div>
-                    <label for="float">Float Down</label>
-                    <input type="radio" id="floatDown" value="true" name="float"/>
-                    <label for="float">Float Right</label>
-                    <input type="radio" id="floatRight" value="true" name="float"/>
-                    <label for="float">No Float</label>
-                    <input type="radio" id="noFloat" value="true" name="float"/>
-                </div>
-            </div>
-        </fieldset>
+        <div id="curvesOption">
+            <label for="curves" class="optionName">Curves</label>
+            <label id="optionLabel"><input type="radio" id="curvesOn" value="true" name="curves"/>on</label>
+            <label id="optionLabel"><input type="radio" id="curvesOff" value="false" name="curves"/>off</label>
+        </div>
+        <div id="physicsOption">
+            <label for="physics" class="optionName">Physics</label>
+            <label id="optionLabel"><input type="radio" id="physicsOn" value="true" name="physics"/>on</label>
+            <label id="optionLabel"><input type="radio" id="physicsOff" value="false" name="physics"/>off</label>
+        </div>
+        <div id="itemNamesOption">
+            <label for="itemNames" class="optionName">Item Names</label>
+            <label id="optionLabel"><input type="radio" id="itemNamesRight" value="true" name="itemNames"/>right</label>
+            <label id="optionLabel"><input type="radio" id="itemNamesDown" value="false" name="itemNames"/>down</label>
+        </div>
+        <div id="floatOption">
+            <label for="float" class="optionName">Float</label>
+            <label id="optionLabel"><input type="radio" id="floatRight" value="true" name="float"/>right</label>
+            <label id="optionLabel"><input type="radio" id="floatDown" value="true" name="float"/>down</label>
+            <label id="optionLabel"><input type="radio" id="noFloat" value="true" name="float"/>none</label>
+        </div>
     </div>
     <div><input id="renderButton" type="button" value="Render Graph" ></div>
 </div>
