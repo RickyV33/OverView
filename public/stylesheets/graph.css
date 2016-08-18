@@ -23,6 +23,12 @@ path.link-dot {
     fill: #BEBEBE;
     stroke: #BEBEBE;
     stroke-width: 2px !important;
+ }
+
+.arrow-suspect {
+    fill: #F94306 ;
+    stroke: #F94306 ;
+    stroke-width: 2px !important;
 }
 
 .node {
@@ -136,4 +142,9 @@ image {
     padding: 10px 15px;
     margin: 0px;
     height: 100%;
+}
+.nodeInfoTip img {
+    position: relative;
+    top: 0.2rem;
+    margin-right: 0.2rem;
 }

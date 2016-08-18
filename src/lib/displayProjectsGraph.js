@@ -120,19 +120,23 @@ function configureD3Graph () {
     .append('g');
 
   // ============ build the arrows ================
+  let arrowData = [
+    { id: 'arr', name: 'arrow', path: 'M0,-5L10,0L0,5', viewbox: '0 -5 10 10', class: 'arrow'},
+    { id: 'arr-sus', name: 'arrow-suspect', path: 'M0,-5L10,0L0,5', viewbox: '0 -5 10 10', class: 'arrow-suspect'},
+  ];
   svg.append('svg:defs').selectAll('marker')
-    .data(['end'])      // Different link/path types can be defined here
-    .enter().append('svg:marker')    // This section adds in the arrows
-    .attr('id', String)
-    .attr('viewBox', '0 -5 10 10')
+    .data(arrowData)      // Different link/path types can be defined here
+    .enter().append('svg:marker')    // This section adds in the arrows
+    .attr('id', function(d) { return 'marker-' + d.name })
+    .attr('viewBox', function(d) { return d.viewbox })
     .attr('refX', 28)
     .attr('refY', 0)
     .attr('markerWidth', 4)
     .attr('markerHeight', 4)
     .attr('orient', 'auto')
     .append('svg:path')
-    .attr('d', 'M0,-5L10,0L0,5')
-    .attr('class', 'arrow');
+    .attr('d', function(d) { return d.path })
+    .attr('class', function(d) { return d.class });
 
   nodeInfoTip = d3.select('body').append('div')
     .attr('class', 'nodeInfoTip')
@@ -305,7 +309,7 @@ function updateGraph (graphData, rootId = projectRootId) {
 
       return result;
     })
-    .attr('marker-end', 'url(#end)');
+    .attr('marker-end', function (d) { return d.suspect ? 'url(#marker-arrow-suspect)' : 'url(#marker-arrow)' });
 
   path.append('svg:title')  // Added a string to edge hover
     .text(function (d) {
