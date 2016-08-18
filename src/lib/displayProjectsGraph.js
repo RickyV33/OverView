@@ -29,7 +29,7 @@ let debug = true;         // To display the function console logs
 
 // let allCollapsed = false;
 let curves = false;
-let physics = true;
+let physics = false;
 let itemNames = true;
 let floatDown = true;
 
@@ -125,7 +125,7 @@ function configureD3Graph () {
     .enter().append('svg:marker')    // This section adds in the arrows
     .attr('id', String)
     .attr('viewBox', '0 -5 10 10')
-    .attr('refX', 18)
+    .attr('refX', 28)
     .attr('refY', 0)
     .attr('markerWidth', 4)
     .attr('markerHeight', 4)
@@ -567,7 +567,7 @@ function nodeMouseOut (overNode) {
   d3.select(this).select('circle').transition()
     .duration(500)
     .attr('r', 13)
-    .attr('opacity', 0.9);
+    .attr('opacity', 1);
 
   nodeInfoTip.html('')
     .style('visibility', 'hidden');
@@ -805,7 +805,7 @@ function updateOpacity () {
   // Node checking
   node.style('opacity', function (d) {
     if (d.isVisible) {
-      return (d.isHighlighted) ? 1 : reducedOpacity;
+      return (d.isHighlighted) ? 1 : 0.4;
     } else { return 0; }
   });
 
