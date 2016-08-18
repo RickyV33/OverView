@@ -210,11 +210,11 @@ function copyObject(object) {
 }
 
 function getDownstreamEdges (edges, node) {
-  return edges.filter(edge => edge.source === node.id);
+  return edges.filter(edge => edge.sourceId === node.id);
 }
 
 function getUpstreamEdges (edges, node) {
-  return edges.filter(edge => edge.target === node.id);
+  return edges.filter(edge => edge.targetId === node.id);
 }
 
 export function getById (object, id) {
@@ -229,13 +229,19 @@ export function getById (object, id) {
 function mapNodesToEdges (graphData) {
   let edges = graphData.relationships.map(copyObject);
 
+  edges = edges.map(edge => {
+    edge.sourceId = edge.source;
+    edge.targetId = edge.target;
+
+    return edge;
+  });
+
   let nodes = graphData.items.map(item => {
     let node = copyObject(item);
 
     node.isCollapsed = false;
     node.isVisible = true;
     node.isHighlighted = false;
-    node.downStream = [];
     node.visited = false;
 
     let downstreamEdges = getDownstreamEdges(edges, node).map(edge => {
@@ -254,8 +260,6 @@ function mapNodesToEdges (graphData) {
   });
 
   edges = edges.map(edge => {
-    edge.sourceId = edge.source;
-    edge.targetId = edge.target;
     edge.source = nodes.indexOf(getById(nodes, edge.sourceId));
     edge.target = nodes.indexOf(getById(nodes, edge.targetId));
 
@@ -281,7 +285,6 @@ function insertProjectNode (graphData, name, rootId) {
   projectNode.isCollapsed = false;
   projectNode.isVisible = true;
   projectNode.isHighlighted = false;
-  projectNode.downStream = [];
   projectNode.visited = false;
 
   let downstreamEdges = getDownstreamEdges(graphData.edges, projectNode).map(edge => {
