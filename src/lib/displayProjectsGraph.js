@@ -94,7 +94,7 @@ function insertProjectNode (graphData, rootId) {
 function configureD3Graph () {
   // Append the SVG object to the body
   // Add a group element within it to encompass all the nodes - this fixes the chrome
-  svg = d3.select('body').append('svg')
+  svg = d3.select('#d3Container').append('svg')
     .attr('id', 'graphSVG')
     .attr('width', '100%')
     .attr('height', height)
