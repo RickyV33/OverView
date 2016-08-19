@@ -20,11 +20,22 @@ describe('Graph class module', () => {
     console.error = oldError;
   });
   describe('constructor', () => {
+    let url = 'url';
+    let projectId = 3;
+    let graph = new Graph(projectId, url);
+    expect(graph.url).to.equal(url);
+    expect(graph.projectId).to.equal(projectId);
+    expect(graph.name).to.be.empty();
+    expect(graph.nodes).to.be.empty();
+    expect(graph.edges).to.be.empty();
+  });
+
+  describe('buildGraph function', () => {
     let projectId = 1;
     let url = 'url';
     let stubs = {};
     let data = [];
-    let Graph = proxyquire('../../lib/graph', {'./projects': stubs});
+    let Graph = proxyquire('../../lib/graph', {'Promises': stubs});
     let newGraph;
     let resolvedNamePromise = () => {
       return new Promise((resolve, reject) => {
@@ -61,8 +72,7 @@ describe('Graph class module', () => {
       stubs.getProjectName = () => resolvedNamePromise();
       stubs.getProjectItems = () => resolvedItemsPromise();
       stubs.getProjectRelationships = () => resolvedRelationshipsPromise();
-      newGraph = new Graph(projectId, url);
-      setTimeout(() => {
+      newGraph = new Graph(projectId, url).buildGraph().then(() => {
         expect(newGraph.name).to.equal('mocked project name');
         expect(newGraph.nodes[0].id).to.equal(10);
         expect(newGraph.nodes[0].name).to.equal('item name');
@@ -71,7 +81,7 @@ describe('Graph class module', () => {
         expect(newGraph.edges[0].source).to.equal(1);
         expect(newGraph.edges[0].target).to.equal(2);
         expect(newGraph.edges[0].type).to.equal(99);
-      }, 5000);
+      });
     });
 
     it('should return a graph that contains nothing when either project ID or url are invalid.', () => {
@@ -88,7 +98,7 @@ describe('Graph class module', () => {
       stubs.getProjectName = () => rejectedTimeoutPromise();
       stubs.getProjectItems = () => resolvedItemsPromise();
       stubs.getProjectRelationships = () => resolvedRelationshipsPromise();
-      newGraph = new Graph(projectId, url);
+      newGraph = new Graph(projectId, url).buildGraph();
       expect(newGraph.name).to.be.empty();
       expect(newGraph.nodes).to.be.empty();
       expect(newGraph.edges).to.be.empty();
@@ -98,7 +108,7 @@ describe('Graph class module', () => {
       stubs.getProjectName = () => resolvedNamePromise();
       stubs.getProjectItems = () => rejectedTimeoutPromise();
       stubs.getProjectRelationships = () => resolvedRelationshipsPromise();
-      newGraph = new Graph(projectId, url);
+      newGraph = new Graph(projectId, url).buildGraph();
       expect(newGraph.name).to.be.empty();
       expect(newGraph.nodes).to.be.empty();
       expect(newGraph.edges).to.be.empty();
@@ -108,7 +118,7 @@ describe('Graph class module', () => {
       stubs.getProjectName = () => resolvedNamePromise();
       stubs.getProjectItems = () => resolvedItemsPromise();
       stubs.getProjectRelationships = () => rejectedTimeoutPromise();
-      newGraph = new Graph(projectId, url);
+      newGraph = new Graph(projectId, url).buildGraph();
       expect(newGraph.name).to.be.empty();
       expect(newGraph.nodes).to.be.empty();
       expect(newGraph.edges).to.be.empty();
@@ -119,7 +129,7 @@ describe('Graph class module', () => {
         stubs.getProjectName = () => rejectedTimeoutPromise();
         stubs.getProjectItems = () => rejectedTimeoutPromise();
         stubs.getProjectRelationships = () => resolvedRelationshipsPromise();
-        newGraph = new Graph(projectId, url);
+        newGraph = new Graph(projectId, url).buildGraph();
         expect(newGraph.name).to.be.empty();
         expect(newGraph.nodes).to.be.empty();
         expect(newGraph.edges).to.be.empty();
@@ -130,7 +140,7 @@ describe('Graph class module', () => {
       stubs.getProjectName = () => resolvedNamePromise();
       stubs.getProjectItems = () => rejectedTimeoutPromise();
       stubs.getProjectRelationships = () => rejectedTimeoutPromise();
-      newGraph = new Graph(projectId, url);
+      newGraph = new Graph(projectId, url).buildGraph();
       expect(newGraph.name).to.be.empty();
       expect(newGraph.nodes).to.be.empty();
       expect(newGraph.edges).to.be.empty();
