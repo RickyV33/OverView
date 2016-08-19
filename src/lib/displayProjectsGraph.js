@@ -157,23 +157,24 @@ function configureD3Graph () {
     .append('g');
 
   // ============ build the arrows ================
+  // Different link/path types can be defined in the arrow data which then get appended to the marker defs
   let arrowData = [
-    { id: 'arr', name: 'arrow', path: 'M0,-5L10,0L0,5', viewbox: '0 -5 10 10', class: 'arrow'},
-    { id: 'arr-sus', name: 'arrow-suspect', path: 'M0,-5L10,0L0,5', viewbox: '0 -5 10 10', class: 'arrow-suspect'},
+    { id: 'arr', name: 'arrow', path: 'M0,-5L10,0L0,5', viewbox: '0 -5 10 10', class: 'arrow' },
+    { id: 'arr-sus', name: 'arrow-suspect', path: 'M0,-5L10,0L0,5', viewbox: '0 -5 10 10', class: 'arrow-suspect' }
   ];
   svg.append('svg:defs').selectAll('marker')
-    .data(arrowData)      // Different link/path types can be defined here
-    .enter().append('svg:marker')    // This section adds in the arrows
-    .attr('id', function(d) { return 'marker-' + d.name })
-    .attr('viewBox', function(d) { return d.viewbox })
+    .data(arrowData)
+    .enter().append('svg:marker')
+    .attr('id', function (d) { return 'marker-' + d.name; })
+    .attr('viewBox', function (d) { return d.viewbox; })
     .attr('refX', 28)
     .attr('refY', 0)
     .attr('markerWidth', 4)
     .attr('markerHeight', 4)
     .attr('orient', 'auto')
     .append('svg:path')
-    .attr('d', function(d) { return d.path })
-    .attr('class', function(d) { return d.class });
+    .attr('d', function (d) { return d.path; })
+    .attr('class', function (d) { return d.class; });
 
   nodeInfoTip = d3.select('body').append('div')
     .attr('class', 'nodeInfoTip')
@@ -343,7 +344,7 @@ function updateGraph (graphData, rootId = projectRootId) {
       result = (thisPath.suspect) ? result + ' suspect' : result;  // Check the type and add a style according to type
       return result;
     })
-    .attr('marker-end', function (d) { return d.suspect ? 'url(#marker-arrow-suspect)' : 'url(#marker-arrow)' })
+    .attr('marker-end', function (d) { return d.suspect ? 'url(#marker-arrow-suspect)' : 'url(#marker-arrow)'; })
     .on('mouseover', edgeMouseOver)
     .on('mouseout', edgeMouseOut);
 
@@ -643,7 +644,7 @@ function edgeMouseOver (overEdge) {
   let strSuspect = overEdge.suspect ? 'Suspect' : '';
   let strTitle = overEdge.suspect ? '<h5 class="critical">' + strSuspect + '</h5>' : '';
   let strRelType = '<h5>' + overEdge.relationshipType + '</h5>';
-  let tipText = strTitle + '<div class="content">' + strSource + '<br>---><br>' + strTarget + '</div>';
+  let tipText = strTitle + strRelType + '<div class="content">' + strSource + '<br>---><br>' + strTarget + '</div>';
 
   // Set the tip html and position
   nodeInfoTip.html(tipText)
