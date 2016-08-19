@@ -337,25 +337,15 @@ function updateGraph (graphData, rootId = projectRootId) {
   path = svg.append('svg:g').selectAll('path')
     .data(force.links())
     .enter().append('svg:path')
-    .attr('id', function (d) {
-      return d.id;  // Add an id element to each edge
-    })
+    .attr('id', function (d) { return d.id; })
     .attr('class', thisPath => {
       let result = 'link';
       result = (thisPath.suspect) ? result + ' suspect' : result;  // Check the type and add a style according to type
-
       return result;
     })
-    .attr('marker-end', function (d) { return d.suspect ? 'url(#marker-arrow-suspect)' : 'url(#marker-arrow)' });
-
-  path.append('svg:title')  // Added a string to edge hover
-    .text(function (d) {
-      let strTitle = d.id + ' ==> ' + d.type;
-      if (d.suspect) {
-        strTitle = strTitle + ' - Suspect';
-      }
-      return strTitle;
-    });
+    .attr('marker-end', function (d) { return d.suspect ? 'url(#marker-arrow-suspect)' : 'url(#marker-arrow)' })
+    .on('mouseover', edgeMouseOver)
+    .on('mouseout', edgeMouseOut);
 
   // ============ Node Properties Definition ===========
   node = svg.selectAll('.node')
@@ -631,6 +621,48 @@ function nodeMouseOut (overNode) {
     .attr('opacity', 1);
 
   d3.select(this).classed('hoverOver', false);
+
+  nodeInfoTip.html('')
+    .style('visibility', 'hidden');
+}
+
+/**
+ * Mouse over event for edge object that displays a tooltip
+ * @param overEdge
+ */
+function edgeMouseOver (overEdge) {
+  d3.select(this).classed('hoverOverEdge', true);
+  // Make the node circle larger and change opacity
+  // d3.select(this).select('circle').transition()
+  //   .duration(500)
+  //   .attr('r', 17)
+  //   .attr('opacity', 1);
+
+  let strTarget = overEdge.target.name;
+  let strSource = overEdge.source.name;
+  let strSuspect = overEdge.suspect ? 'Suspect' : '';
+  let strTitle = overEdge.suspect ? '<h5 class="critical">' + strSuspect + '</h5>' : '';
+  let strRelType = '<h5>' + overEdge.relationshipType + '</h5>';
+  let tipText = strTitle + '<div class="content">' + strSource + '<br>---><br>' + strTarget + '</div>';
+
+  // Set the tip html and position
+  nodeInfoTip.html(tipText)
+    .style('left', (d3.event.pageX) + 'px')
+    .style('top', (d3.event.pageY + 30) + 'px')
+    .style('visibility', 'visible');
+}
+
+/**
+ * Mouse out event for edge object that hides a tooltip and changes edge back to original size
+ * @param overEdge
+ */
+function edgeMouseOut (overEdge) {
+  // d3.select(this).select('circle').transition()
+  //   .duration(500)
+  //   .attr('r', 13)
+  //   .attr('opacity', 1);
+
+  d3.select(this).classed('hoverOverEdge', false);
 
   nodeInfoTip.html('')
     .style('visibility', 'hidden');

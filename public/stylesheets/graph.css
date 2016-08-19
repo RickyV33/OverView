@@ -90,6 +90,12 @@ image {
     stroke: #FFA070;
 }
 
+.hoverOverEdge {
+    stroke: #FFA070 !important;
+    stroke-dasharray: 5;
+    stroke-width: 3px;
+}
+
 .activeNode > circle {
     fill: #FFB900;
     stroke: #C38B00 !important;
@@ -138,6 +144,13 @@ image {
     margin: 0px;
     padding: 5px 10px;
 }
+
+.nodeInfoTip > h5.critical {
+    margin: 0px;
+    padding: 5px 10px;
+    color: red;
+}
+
 .nodeInfoTip > div.content {
     padding: 10px 15px;
     margin: 0px;
