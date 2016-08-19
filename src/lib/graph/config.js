@@ -1,12 +1,10 @@
-import * as node from './nodes';
-import * as path from './edges';
+import * as nodes from './nodes';
+import * as edges from './edges';
 
 export const PROJECT_AS_ROOT = -1;
 
 let width = 1000;         // D3 window Width
 let height = 800;         // D3 window height
-
-let relationsChecked = false;   // Flag to see if relations check was run
 
 let currentProjectId = PROJECT_AS_ROOT;
 let currentRootId;
@@ -18,7 +16,7 @@ export let projectNode = {};
 let svg = null;
 let pathGroup = null;
 let force = null;         // The force layout for d3
-let debug = true;         // To display the function console logs
+export let debug = false;         // To display the function console logs
 
 /**
  * For every shift of the graph, this function gets called.
@@ -27,10 +25,12 @@ let debug = true;         // To display the function console logs
  * @param {Object} e
  */
 function tick (e) {
-  if (path.get()) {
-    path.get().call(path.tick);
+  if (debug) {
+    console.log('graph.tick()');
   }
-  node.tick(e);
+
+  nodes.tick(e);
+  edges.tick(e);
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -44,13 +44,16 @@ function config() {
     .attr('height', height)
     .call(d3.behavior.zoom().scaleExtent([1, 10])
       .on('zoom', function () {
-        svg.attr('transform', 'translate(' + d3.event.translate + ')' + ' scale(' + d3.event.scale + ')');
+        svg.select('g').attr('transform', 'translate(' + d3.event.translate + ')' + ' scale(' + d3.event.scale + ')');
       }))
-    .on('dblclick.zoom', null)  // To remove the double click zoom function
-    .append('g'); // Add a group element within it to encompass all the nodes - this fixes the chrome
+    .on('dblclick.zoom', null);  // To remove the double click zoom function
+
+  let mainGroup = svg.append('g');
+  mainGroup.append('g').attr('id', 'edges');
+  mainGroup.append('g').attr('id', 'nodes');
 
   // ============ build the arrows ================
-  svg.append('svg:defs').selectAll('marker')
+  svg.append('defs').selectAll('marker')
     .data(['end'])      // Different link/path types can be defined here
     .enter().append('svg:marker')    // This section adds in the arrows
     .attr('id', String)
@@ -73,12 +76,15 @@ function config() {
     // negative charge results in node repulsion, while positive value results in node attraction
     .charge(d => {  // Variable Charge
       let chargeVal = -500;
-      return d.downStream ? chargeVal + (-200 * d.downStream.length) : chargeVal - 200;
+      return d.downstreamEdges ? chargeVal + (-200 * d.downstreamEdges.length) : chargeVal - 200;
     })
     .linkStrength(d => {  // Variable link Strength
       let strengthVal = 1;
-      return d.downStream ? strengthVal + (-0.12 * (d.source.downStream.length)) : strengthVal - 0.12;
+      let sourceNode = getById(nodesEdgesMap.nodes, d.sourceId);
+      return d.downstreamEdges ? strengthVal + (-0.12 * (sourceNode.downstreamEdges.length)) : strengthVal - 0.12;
     });
+
+  force.start();
 }
 
 export function rootId (rootId) {
@@ -87,6 +93,10 @@ export function rootId (rootId) {
   } else {
     currentRootId = rootId;
   }
+}
+
+export function isRoot(node) {
+  return node.id === currentRootId || node.id === currentProjectId;
 }
 
 export function projectRootId() {
@@ -113,19 +123,22 @@ export default function update (graphData, selectedProjectId, rootId = parseInt(
   }
 
   if (currentProjectId !== selectedProjectId) {
-    insertProjectNode(graphData, rootId);
+    let projectName = graphData.name;
     nodesEdgesMap = mapNodesToEdges(graphData);  // Pre-process data for faster data retrieval
+    insertProjectNode(nodesEdgesMap, projectName, rootId);
+    nodes.setEdges(nodesEdgesMap.edges);
     currentProjectId = selectedProjectId;
   }
 
   if (debug) {
-    console.log(nodesEdgesMap[rootId]);
+    console.log('root node:');
+    console.log(getById(nodesEdgesMap.nodes, rootId));
   }
 
   if (rootId !== currentRootId) {
     // clearGraph(); // Clear all of the graph data
-    filterJSON(graphData, rootId); // Filters the JSON for only the downStream nodes from the selected item
-    resetVisitedFlag(); // Sets all of the visited flags to false
+    // filterJSON(nodesEdgesMap, rootId); // Filters the JSON for only the downStream nodes from the selected item
+    nodes.resetVisitedFlag(); // Sets all of the visited flags to false
 
     // updateGraph(graphData, rootId);  // Render the graph
 
@@ -139,87 +152,36 @@ export default function update (graphData, selectedProjectId, rootId = parseInt(
   }
 
   if (debug) {
-    console.log('updateGraph()');
-  }
-
-  if (!relationsChecked) {
-    // For each relationship, add the target to the source node
-    graphData.relationships.forEach(function (relItem) {
-      // Find node object based on the relationship source id
-      let srcNode = nodesEdgesMap[relItem.source];
-      let trgNode = nodesEdgesMap[relItem.target];
-
-      // Set the relationship source and target values
-      // Note - Use objects only and not just ids of the nodes
-      if (srcNode && trgNode) {
-        relItem.source = srcNode.node;
-        relItem.target = trgNode.node;
-        adddownStreamItemToNode(srcNode, relItem);  // Check if downStream nodes array exists
-      }
-    });
-
-    // Check if there are relations for each node and set a flag
-    graphData.items.forEach(function (item) {
-      if (typeof item.downStream === 'undefined') {
-        item.noRelations = true;
-      } else {
-        item.noRelations = (item.downStream.length === 0);
-      }
-    });
-
-    relationsChecked = true;
+    console.log('graph.update()');
   }
 
   if (debug) {
-    console.log(nodesToRender);
-    console.log(edgesToRender);
+    console.log(nodesEdgesMap.nodes);
+    console.log(nodesEdgesMap.edges);
   }
 
-  node.data(nodesToRender);
-  path.data(edgesToRender);
+  nodes.update(svg.select('#nodes'), force, nodesEdgesMap.nodes, false, false);
+  edges.update(svg.select('#edges'), force, nodesEdgesMap.edges);
 
-  node.update(svg, force, false, true);
-  path.update(pathGroup, force);
-
-  force.tick(tick);
+  force.on('tick', tick);
   force.start();
-
-  /**
-   * Adds a downStream item and downStream edge to a given Node
-   *
-   * @param {Object} nodeItem is a node item
-   * @param {Object} edge is an edge object that is going to be added to the nodeItem
-   */
-  function adddownStreamItemToNode (nodeItem, edge) {
-    // Check if downStream nodes array exists
-    if (typeof nodeItem.downStream === 'undefined') {
-      nodeItem.downStream = [];
-    }
-    nodeItem.downStream.push(edge.target);  // Add the target ID to list of downStream nodes
-
-    // Check if downStream Edges array exists
-    if (typeof nodeItem.downStreamEdges === 'undefined') {
-      nodeItem.downStreamEdges = [];
-    }
-    nodeItem.downStreamEdges.push(edge);  // Add the target ID to list of downStream nodes
-    nodeItem.noRelations = false;
-  }
 
   /**
    * Filters the graph input to be filtered by the rootId and all its downStream nodes
    * @param {number} rootId
-   * @param {object} graphData
+   * @param {object} nodesEdgesMap
    */
-  function filterJSON (graphData, rootId) {
+  function filterJSON (nodesEdgesMap, rootId) {
     if (debug) {
       console.log('Filter JSON: rootid = ' + rootId);
     }
 
-    if (rootId && rootId !== projectRootId) {
-      filterJSONRecursive(nodesEdgesMap[rootId]);
+    if (rootId && rootId !== currentProjectId) {
+      console.log('node where id = ' + rootId + ': ' + getById(nodesEdgesMap.nodes, rootId));
+      filterJSONRecursive(getById(nodesEdgesMap.nodes, rootId));
     } else {
-      nodesToRender = graphData.items;
-      edgesToRender = graphData.relationships;
+      nodesToRender = nodesEdgesMap.nodes;
+      edgesToRender = nodesEdgesMap.edges;
     }
   }
 
@@ -228,22 +190,42 @@ export default function update (graphData, selectedProjectId, rootId = parseInt(
    * @param thisNode
    */
   function filterJSONRecursive (thisNode) {
-    if (debug) {
-      console.log('filterJSONRecursive(thisNode)');
-    }
-
-    if (!thisNode.node.visited || thisNode.node.visited === 'undefined') {
-      thisNode.node.visited = true;
-      nodesToRender.push(thisNode.node);
+    if (!thisNode.visited || thisNode.visited === 'undefined') {
+      thisNode.visited = true;
+      nodesToRender.push(thisNode);
 
       if (thisNode.edges.length > 0) {
-        thisNode.edges.forEach(function (relItem) {
-          edgesToRender.push(relItem);
-          filterJSONRecursive(nodesEdgesMap[relItem.target]);  // Traverse down the relations
+        thisNode.edges.forEach(function (edgeIndex) {
+          let edge = nodesEdgesMap.edges[edgeIndex];
+          let targetNode = nodesEdgesMap.nodes[edge.target];
+          edgesToRender.push(edge);
+          filterJSONRecursive(targetNode);  // Traverse down the relations
         });
       }
     }
   }
+}
+
+function copyObject(object) {
+  let copy = {};
+
+  Object.keys(object).forEach(property => {
+    copy[property] = object[property];
+  });
+
+  return copy;
+}
+
+function getDownstreamEdges (edges, node) {
+  return edges.filter(edge => edge.sourceId === node.id);
+}
+
+function getUpstreamEdges (edges, node) {
+  return edges.filter(edge => edge.targetId === node.id);
+}
+
+export function getById (object, id) {
+  return object.filter(object => object.id === id)[0];
 }
 
 /**
@@ -252,68 +234,95 @@ export default function update (graphData, selectedProjectId, rootId = parseInt(
  * @param {object} graphData
  */
 function mapNodesToEdges (graphData) {
-  let nodesEdgesMap = {};
+  let edges = graphData.relationships.map(copyObject);
 
-  graphData.items.forEach(function (item) {
-    let thisItem = nodesEdgesMap[item.id] = {};
-    thisItem.node = item;
-    thisItem.node.isCollapsed = false;
-    thisItem.node.isVisible = true;
-    thisItem.node.isHighlighted = false;
-    thisItem.node.downStream = [];
+  edges = edges.map(edge => {
+    edge.sourceId = edge.source;
+    edge.targetId = edge.target;
 
-    // thisItem.edges refers to the downStream nodes
-    thisItem.edges = graphData.relationships.filter(function (relItem) {
-      relItem.visited = false;
-      if (relItem.source === item.id) {
-        thisItem.node.downStream.push(relItem.target);  // Add the target to the downStream nodes
-        return relItem; // Filter all of the edges that have this item source id
-      }
-    });
-
-    thisItem.edgesUpstream = graphData.relationships.filter(function (relItem) {
-      if (relItem.target === item.id) {
-        return relItem; // Filter all of the edges that have this item source id
-      }
-    });
-
-    thisItem.node.downStreamEdges = thisItem.edges;
-    thisItem.node.noRelations = (thisItem.edges.length === 0); // Set the no relations flag
-    item.visited = false;
+    return edge;
   });
 
-  return nodesEdgesMap;
+  let nodes = graphData.items.map(item => {
+    let node = copyObject(item);
+
+    node.isCollapsed = false;
+    node.isVisible = true;
+    node.isHighlighted = false;
+    node.visited = false;
+
+    let downstreamEdges = getDownstreamEdges(edges, node).map(edge => {
+      return edges.indexOf(edge);
+    });
+    let upstreamEdges = getUpstreamEdges(edges, node).map(edge => {
+      return edges.indexOf(edge);
+    });
+
+    node.downstreamEdges = node.edges = downstreamEdges;
+    node.upstreamEdges = upstreamEdges;
+
+    node.noRelations = (node.downstreamEdges.length === 0);
+
+    return node;
+  });
+
+  edges = edges.map(edge => {
+    edge.source = nodes.indexOf(getById(nodes, edge.sourceId));
+    edge.target = nodes.indexOf(getById(nodes, edge.targetId));
+
+    return edge;
+  });
+
+  return {
+    edges: edges,
+    nodes: nodes
+  };
 }
 
 /**
  * Adds a project node to the graph
  * @param graphData
+ * @param name
+ * @param rootId
  */
-function insertProjectNode (graphData, rootId) {
+function insertProjectNode (graphData, name, rootId) {
   // Create a project node and add it to the nodes list
-  projectNode = {id: projectRootId, name: graphData.name, image: '', type: -1};
-  graphData.items.unshift(projectNode);
+  projectNode = {id: currentProjectId, name: name, image: '', type: -1};
+
+  projectNode.isCollapsed = false;
+  projectNode.isVisible = true;
+  projectNode.isHighlighted = false;
+  projectNode.visited = false;
+
+  let downstreamEdges = getDownstreamEdges(graphData.edges, projectNode).map(edge => {
+    return edges.indexOf(edge);
+  });
+  let upstreamEdges = getUpstreamEdges(graphData.edges, projectNode).map(edge => {
+    return edges.indexOf(edge);
+  });
+
+  projectNode.downstreamEdges = projectNode.edges = downstreamEdges;
+  projectNode.upstreamEdges = upstreamEdges;
+
+  projectNode.noRelations = (projectNode.downstreamEdges.length === 0);
+
+  graphData.nodes.unshift(projectNode);
 
   // Add a relationship from project node to root id if one was passed in
   if (debug) {
     console.log('insertProjectNode() ===> rootID=' + rootId);
   }
 
-  if (rootId && rootId !== projectRootId) {
-    graphData.relationships.push({id: projectRootId, source: projectRootId, target: rootId, type: -1});
+  if (rootId && rootId !== currentProjectId) {
+    graphData.edges.push({
+      id: currentProjectId,
+      sourceId: currentProjectId,
+      targetId: rootId,
+      source: graphData.nodes.indexOf(getById(graphData.nodes, currentProjectId)),
+      target: graphData.nodes.indexOf(getById(graphData.nodes, rootId)),
+      type: -1
+    });
   }
-}
-
-/**
- * Cycle through all of the nodes and edges and set the visited flag to false
- */
-function resetVisitedFlag () {
-  if (debug) {
-    console.log('resetVisitedFlag()');
-  }
-
-  nodesToRender.forEach(function (item) { item.visited = false; });
-  edgesToRender.forEach(function (item) { item.visited = false; });
 }
 
 /**

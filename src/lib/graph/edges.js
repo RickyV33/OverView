@@ -1,5 +1,5 @@
+import { debug } from './config';
 
-let force = null;
 let path = null;
 
 let curves = false;
@@ -30,7 +30,7 @@ function straightEdges (d) {
 }
 
 /**
- * Float the nodes to the bottom of their upstream node
+ * Float the edges to the bottom of their upstream node
  */
 function floatEdgesDown (e) {
   var offset = 10 * e.alpha; // For the node offset
@@ -62,11 +62,14 @@ function updateOpacity () {
   checkOpacity();
 }
 
-export function update (pathGroup, forceLayout) {
-  force = forceLayout;
+export function update (svg, forceLayout, edges) {
+  if (debug) {
+    console.log('edges.update()');
+  }
 
-  let path = pathGroup.selectAll('path')
-    .data(force.links())
+  forceLayout.links(edges);
+
+  let path = svg.selectAll('.link').data(forceLayout.links())
     .enter().append('svg:path')
     .attr('id', d => d.id)
     .attr('class', thisPath => {
@@ -87,19 +90,16 @@ export function update (pathGroup, forceLayout) {
     });
 }
 
-export function get () {
-  return path;
-}
-
-export function data (edges) {
-  force.links(edges);
-  path.data(force.links());
-}
-
-export function tick (d) {
-  if (curves) {
-    return curvedEdges(d);
-  } else {
-    return straightEdges(d);
+export function tick (e) {
+  if (debug) {
+    console.log('edges.tick()');
   }
+
+  d3.selectAll('.link').attr('d', d => {
+    if (curves) {
+      return curvedEdges(d);
+    } else {
+      return straightEdges(d);
+    }
+  });
 }

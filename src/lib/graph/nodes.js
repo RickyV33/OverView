@@ -1,10 +1,9 @@
-import { rootId, projectRootId, size, nodesEdgesMap, projectNode } from './config';
+import { isRoot, size, getById, nodesEdgesMap, projectNode, debug } from './config';
 
 import configureInfoTip from './infoTip';
 import * as nodeInfoTip from './infoTip';
 
-let force = null;
-let node = null;
+let edges = null;
 
 let timer;                // For click event monitoring
 let clickedOnce = false;  // For monitoring the click event on node
@@ -13,17 +12,16 @@ let reducedOpacity = 0.2; // highlight opacity to reduce to
 let floatDown = true;
 
 /**
- * Highlight the selected node "d" then highlight the nodes in it's downStream array
+ * Highlight the selected node "d" then highlight the downstreamEdges target nodes
  * @param {object} d
  */
 function highlightNodes (d) {
   // Highlight the selected node
   d.isHighlighted = true;
   // if it has downstream nodes find them and highlight them
-  if (d.downStream.length > 0) {
-    d.downStream.forEach(function (curID) {
-      let curNode = nodesEdgesMap[curID];
-      curNode.node.isHighlighted = true;
+  if (d.downstreamEdges.length > 0) {
+    d.downstreamEdges.forEach(function (edgeIndex) {
+      edges[edgeIndex].target.isHighlighted = true;
     });
   }
 }
@@ -43,19 +41,19 @@ function unHighlightNodes (d) {
   d.isHighlighted = false;
   d.visited = true;
   let count = -1; // used to check if the downstream nodes should be highlighted.
-  if (d.downStream.length > 0) {
-    d.downStream.forEach(function (curID) {
-      let curNode = nodesEdgesMap[curID];
-      curNode.node.visited = true;
+  if (d.downstreamEdges.length > 0) {
+    d.downstreamEdges.forEach(function (edgeIndex) {
+      let curNode = edges[edgeIndex].target;
+      curNode.visited = true;
       // If a node exists and it has downstream items, we need to see if they are all highlighted.
-      if (typeof curNode.node.downStream !== 'undefined' && curNode.node.downStream.length > 0) {
+      if (typeof curNode.downstreamEdges !== 'undefined' && curNode.downstreamEdges.length > 0) {
         count = downStreamHighlightCheck(curNode, count); // check downStream nodes for highlighting
       }
-      if (count !== curNode.node.downStream.length) { // If all the downstream nodes were not highlighted, we can unhighlight this node
-        curNode.node.isHighlighted = false;
+      if (count !== curNode.downstreamEdges.length) { // If all the downstream nodes were not highlighted, we can unhighlight this node
+        curNode.isHighlighted = false;
       } else {
-        curNode.downStream.forEach(function (dItem) {
-          nodesEdgesMap[dItem.id].node.isHighlighted = true;
+        curNode.downstreamEdges.forEach(function (edgeIndex) {
+          edges[edgeIndex].target.isHighlighted = true;
         });
       }
     });
@@ -76,19 +74,19 @@ function downStreamHighlightCheck (d, count) {
   count = -1;
   // This checks whether we should be highlighting or un-highlighting nodes by counting the number of downstream
   // nodes that are highlighted and returning that count.
-  if (d.downStream.length > 0) {
-    d.downStream.forEach(function (curID) {
-      let curNode = nodesEdgesMap[curID.id];
+  if (d.downstreamEdges.length > 0) {
+    d.downstreamEdges.forEach(function (edgeIndex) {
+      let curNode = edges[edgeIndex].target;
       // The 'visited' flag is true when a node that WAS highlighted had been flipped to being UnHighlighted.
-      if ((curNode.edges && curNode.node.isHighlighted) || curNode.node.visited) {
+      if ((curNode.downstreamEdges && curNode.isHighlighted) || curNode.visited) {
         count = (count === -1) ? 1 : count + 1;
       }
-      curID.visited = true;
+      // curID.visited = true;
     });
 
     if (debug) {
       console.log('count is: ' + count);
-      console.log('downstream length is: ' + d.downStream.length);
+      console.log('downstream length is: ' + d.downstreamEdges.length);
     }
 
     return count;
@@ -104,27 +102,32 @@ function collapse (id) {
     console.log('-- collapse *' + id);
   }
 
-  let thisNode = nodesEdgesMap[id];
-  if (!thisNode.node.visited || thisNode.node.visited === 'undefined') {
-    thisNode.node.visited = true;
+  let nodes = d3.selectAll('.node').data();
+  let thisNode = getById(nodes, id);
 
-    if (!thisNode.node.isCollapsed) {
+  if (!thisNode.visited || thisNode.visited === 'undefined') {
+    thisNode.visited = true;
+
+    if (!thisNode.isCollapsed) {
       if (thisNode.edges.length > 0) {
         // Hide each downStream edge and recurse to downStream node
-        thisNode.edges.forEach(function (relItem) {
-          if (!relItem.visited) {
-            relItem.isCollapsed = true;
-            relItem.isVisible = false;
-            relItem.visited = true; // Toggle the visited flag
+        thisNode.edges.forEach(function (edgeIndex) {
+          let edge = edges[edgeIndex];
+          let targetNode = edge.target;
+
+          targetNode.isVisible = false;
+
+          if (!targetNode.visited) {
+            targetNode.isCollapsed = true;
+            targetNode.visited = true; // Toggle the visited flag
           }
 
-          collapse(relItem.target.id);  // Traverse downstream nodes
-          relItem.target.isVisible = false;
+          collapse(edge.targetId);  // Collapse downstream nodes
         });
       }
     }
-    thisNode.node.isCollapsed = true;
-    thisNode.node.isVisible = false;
+    thisNode.isCollapsed = true;
+    thisNode.isVisible = false;
   }
 }
 
@@ -137,16 +140,17 @@ function unCollapse (id) {
     // console.log('-- unCollapse() --');
   }
 
-  let thisNode = nodesEdgesMap[id];
+  let nodes = d3.selectAll('.node').data();
+  let thisNode = getById(nodes, id);
 
   if (thisNode.edges.length > 0) {
     // Hide each downStream edge and recurse to downStream node
-    thisNode.edges.forEach(function (relItem) {
-      relItem.target.isVisible = true;
+    thisNode.edges.forEach(function (edgeIndex) {
+      edges[edgeIndex].target.isVisible = true;
     });
-    thisNode.node.isCollapsed = false;
+    thisNode.isCollapsed = false;
   }
-  thisNode.node.isVisible = true;
+  thisNode.isVisible = true;
 }
 
 /**
@@ -156,7 +160,7 @@ function floatNodesRight (e) {
   let offset = 10 * e.alpha; // For the node offset
 
   // This section pushes sources up and targets down to form a weak tree-like structure.
-  path.each(function (d) {
+  d3.selectAll('path').each(function (d) {
     d.source.x -= offset;  // Offset sources left
     d.target.x += offset;  // Offset target right
   }).attr('x1', function (d) { return d.source.x; })
@@ -171,15 +175,17 @@ function floatNodesRight (e) {
 function floatNodesDown (e) {
   var offset = 10 * e.alpha; // For the node offset
 
-  // path.each(function (d) {
-  //   d.source.y -= offset;  // Offset sources up
-  //   d.target.y += offset;  // Offset targets down
-  // }).attr('x1', function (d) { return d.source.x; })
-  //   .attr('y1', function (d) { return d.source.y; })
-  //   .attr('x2', function (d) { return d.target.x; })
-  //   .attr('y2', function (d) { return d.target.y; });
+  d3.selectAll('path').each(function (d) {
+    if (d.source && d.target) {
+      d.source.y -= offset;  // Offset sources up
+      d.target.y += offset;  // Offset targets down
+    }
+  }).attr('x1', function (d) { if (d.source) { return d.source.x; } })
+    .attr('y1', function (d) { if (d.source) { return d.source.y; } })
+    .attr('x2', function (d) { if (d.target) { return d.target.x; } })
+    .attr('y2', function (d) { if (d.target) { return d.target.y; } });
 
-  node.attr('cx', function (d) { return d.x; })
+  d3.selectAll('.node').attr('cx', function (d) { return d.x; })
     .attr('cy', function (d) { return d.y; });
 }
 
@@ -225,38 +231,54 @@ function nodeMouseOut (overNode) {
 //
 /**
  * Handles the logic for highlighting and un-highlighting nodes on single-click
- * @param {Object} d is the node that was just clicked
+ * @param {Object} selectedNode is the node that was just clicked
  */
-function nodeClick (d) {
+function nodeClick (selectedNode) {
   if (debug) {
     console.log('===============> nodeClick');
   }
 
   let highlightedCount = 0; // this will count how many downStream nodes are highlighted.
-  if (d.downStream.length > 0) {
-    let selectedNode = nodesEdgesMap[d.id];
-    selectedNode.edges.forEach(function (item) {
-      if (item.target.isHighlighted) {
+  if (selectedNode.downstreamEdges.length > 0) {
+    selectedNode.downstreamEdges.forEach(function (edgeIndex) {
+      let targetNode = edges[edgeIndex].target;
+      if (targetNode.isHighlighted) {
         highlightedCount++;
       }
     });
   }
 
   // highlightedCount = downStreamHighlightCheck(d, highlightedCount);
-  if (d.isHighlighted) {
+  if (selectedNode.isHighlighted) {
     // If the downstream items are not all highlighted, then we highlight all of them
     // Otherwise unHighlight all of them
-    if (d.downStream.length > 0 && (highlightedCount !== d.downStream.length)) {
-      highlightNodes(d);
+    if (selectedNode.downstreamEdges.length > 0 && (highlightedCount !== selectedNode.downstreamEdges.length)) {
+      highlightNodes(selectedNode);
     } else {
-      unHighlightNodes(d);
+      unHighlightNodes(selectedNode);
     }
   } else {
-    highlightNodes(d);
+    highlightNodes(selectedNode);
   }
   updateOpacity();
   // Check Opacity only makes changes if ALL the nodes are unhighlighted.
   resetVisitedFlag();
+}
+
+/**
+ * Cycle through all of the nodes and edges and set the visited flag to false
+ */
+export function resetVisitedFlag () {
+  if (debug) {
+    console.log('resetVisitedFlag()');
+  }
+
+  let node = d3.selectAll('.node');
+
+  if (node !== null && node.data()) {
+    node.data().forEach(function (item) {item.visited = false;});
+    edges.forEach(function (item) {item.visited = false;});
+  }
 }
 
 /**
@@ -273,13 +295,13 @@ function nodeDoubleClick (clickedNode) {
   clickedOnce = false;  // For resetting the clickedOnce flag
   clearTimeout(timer);  // Reset the timer for click event
   if (clickedNode.isCollapsed) {
-    if (clickedNode.downStream.length > 0) {
+    if (clickedNode.downstreamEdges.length > 0) {
       unCollapse(clickedNode.id);
     }
   } else {
-    if (clickedNode.downStream.length > 0) {
-      clickedNode.downStream.forEach(function (item) {
-        collapse(item);
+    if (clickedNode.downstreamEdges.length > 0) {
+      clickedNode.downstreamEdges.forEach(function (edgeIndex) {
+        collapse(edges[edgeIndex].targetId);
       });
       clickedNode.isCollapsed = true;
     }
@@ -296,7 +318,7 @@ function updateOpacity () {
     console.log('nodes updateOpacity()');
   }
 
-  node.style('opacity', function (d) {
+  d3.selectAll('.node').style('opacity', function (d) {
     if (d.isVisible) {
       return (d.isHighlighted) ? 1 : reducedOpacity;
     } else { return 0; }
@@ -309,26 +331,37 @@ function updateOpacity () {
  */
 function checkOpacity () {
   let highlight = false; // flag to see if anyone is highlighted.
-  nodesToRender.forEach(function (d) {
+  d3.selectAll('.node').data().forEach(function (d) {
     if (d.isVisible && d.isHighlighted) {
       highlight = true; // If ANY node is highlighted set this flag.
     }
   });
   if (highlight === false) {  // Only executes if ALL nodes are NOT highlighted.
-    node.style('opacity', function (d) {
+    d3.selectAll('.node').style('opacity', function (d) {
       return d.isVisible ? 1 : 0;
     });// Turn Everyone on
-    path.style('opacity', function (d) {
-      return (nodesEdgesMap[d.source.id].node.isVisible && nodesEdgesMap[d.target.id].node.isVisible) ? 1 : 0;
+    d3.selectAll('path').style('opacity', function (d) {
+      if (d.source && d.target) {
+        return (d.source.isVisible && d.target.isVisible) ? 1 : 0;
+      }
     }); // Turn on all the edges.
   }
 }
 
-export function update (svg, force, physics, itemNames) {
+export function setEdges (edgesToSet) {
+  edges = edgesToSet;
+}
+
+export function update (svg, forceLayout, nodes, physics, itemNames) {
   configureInfoTip();
 
-  node = svg.selectAll('.node')
-    .data(force.nodes())
+  if (debug) {
+    console.log('nodes.update()');
+  }
+
+  forceLayout.nodes(nodes);
+
+  let node = svg.selectAll('.node').data(forceLayout.nodes())
     .enter()
     .append('g')
     .attr('id', function (d) {
@@ -338,11 +371,11 @@ export function update (svg, force, physics, itemNames) {
       // Add projectRoot class if the node is the project node
       let strClass = 'node';
 
-      if (thisNode.id === rootId() || thisNode.id === projectRootId()) {
+      if (isRoot(thisNode)) {
         strClass = strClass + ' projectRoot';
       }
 
-      if (thisNode.downStream && thisNode.downStream.length > 0) {
+      if (thisNode.downstreamEdges.length > 0) {
         strClass = strClass + ' hasDownstream';
       }
       return strClass;
@@ -351,7 +384,7 @@ export function update (svg, force, physics, itemNames) {
     .on('mouseout', nodeMouseOut)
     .on('click', function (d) {
       if (clickedOnce) {  // This only occurs if someone clicks twice before the timeout below
-        nodeDoubleClick(d);  // Call the double click function
+        // nodeDoubleClick(d);  // Call the double click function
       } else {              // We've seen a single click
         if (d3.event.shiftKey) {  // If we see a click with a shift...
           nodeClick(d);  // Call nodeClick() to check (un)highlighting
@@ -380,20 +413,19 @@ export function update (svg, force, physics, itemNames) {
     node.append('text') // Add the name of the node as text
       .attr('class', 'nodeText')
       .attr('x', function (d) {
-        return d.downStream.length > 0 ? 0 : 20; // Move text to right if the node has downstream items
+        return d.downstreamEdges.length > 0 ? 0 : 20; // Move text to right if the node has downstream items
       })
       .attr('dy', function (d) {
-        return d.downStream.length > 0 ? 30 : 0; // Move text down if the node has downstream items
+        return d.downstreamEdges.length > 0 ? 30 : 0; // Move text down if the node has downstream items
       })
       .attr('text-anchor', function (d) {
-        return d.downStream.length > 0 ? 'middle' : 'right';
+        return d.downstreamEdges.length > 0 ? 'middle' : 'right';
       })
       .text(function (d) { // Limit the length of the name text
         return d.name.length > 18 ? d.name.substring(0, 15) + '...' : d.name;
       });
   } else {
     node.append('text') // Add the name of the node as text
-    // .attr('x', 20)
       .attr('x', 0)
       .attr('dy', 30)
       .attr('class', 'nodeText')
@@ -405,14 +437,14 @@ export function update (svg, force, physics, itemNames) {
 
   // Activate the physics if the physics flag is set
   if (physics) {
-    node.call(force.drag);
+    node.call(forceLayout.drag);
   }
 
   projectNode.fixed = true;  // Set the project Node to be fixed and not moving
   projectNode.x = size().height / 2;
   projectNode.y = size().width / 2;
 
-// Add a downstream item count circle to each node that has downstream items
+  // Add a downstream item count circle to each node that has downstream items
   let downStreamNodes = svg.selectAll('.node.hasDownstream')
     .append('g')
     .attr('class', 'downstreamCount');
@@ -426,20 +458,17 @@ export function update (svg, force, physics, itemNames) {
     .attr('dy', '-6px')
     .attr('text-anchor', 'middle')
     .text(function (d) {
-      return d.downStream.length;
+      return d.downstreamEdges.length;
     });
 }
 
-export function get() {
-  return node;
-}
-
-export function data(nodes) {
-  force.nodes(nodes);
-  node.data(force.nodes());
-}
-
 export function tick(e) {
+  if (debug) {
+    console.log('nodes.tick()');
+  }
+
+  let node = d3.selectAll('.node');
+
   // Move the edge depending on node location
   node.attr('transform', function (d) {
     return 'translate(' + d.x + ',' + d.y + ')';
