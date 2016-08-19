@@ -1,8 +1,97 @@
+* {
+  box-sizing: border-box;
+}
+
+html,
 body {
+  width: 100%;
+  height: auto;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
   padding: 50px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
+h1 {
+  align-self: flex-start;
+  font-size: 35pt;
+  color: #3D6272;
+  margin: 0.5rem 0;
+}
+
 a {
-  color: #00B7FF;
+  color: #00B4FF;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+#logo {
+  text-align: center;
+  width: 100%;
+}
+#logo.small {
+  position: absolute;
+}
+
+#logo img {
+  max-width: 56rem;
+}
+#logo.small img {
+  max-width: 18rem;
+}
+
+#logIn {
+  align-self: center;
+  width: 20rem;
+  border-radius: 1rem;
+  background-color: RGB(230,230,230);
+  padding: 2rem;
+}
+
+#logIn > div:not(.error) {
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 1rem;
+  font-size: 12pt;
+}
+
+#logIn input[type=text],
+#logIn input[type=password] {
+  height: 1.5rem;
+  margin-top: .75rem;
+  font-size: 11pt;
+}
+
+input[type=button],
+#logIn > input[type=submit] {
+  font-size: 14pt;
+  background: #F2622C;
+  border: none;
+  color: #ffffff;
+  font-family: "Gill Sans", "Lucida Grande", Helvetica, Arial, sans-serif;
+  text-transform: uppercase;
+  text-shadow: 0 1px 0 #C94418;
+  cursor: pointer;
+}
+
+#logIn > input[type=submit] {
+  float: right;
+}
+
+#logIn > .error {
+  clear: both;
+  margin-top: 2.5rem;
+}
+
+.error {
+  font-size: 10pt;
+  color: #C94418;
 }

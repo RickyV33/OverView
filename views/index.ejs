@@ -5,12 +5,9 @@
     <link rel='stylesheet' href='/stylesheets/style.css' />
   </head>
   <body>
-    <h1><%= title %></h1>
+    <div id="logo"><img src="img/logo.png" alt="<%= title %>" /></div>
+    <input type="hidden" id=teamName value=<%= teamName %>/>
     <form id="logIn" method="post">
-      <div>
-        <label for="teamName">Team Name:</label>
-        <input id="teamName" type="text" name="teamName" autofocus required maxlength="200" />
-      </div>
       <div>
         <label for="username">Username:</label>
         <input id="username" type="text" name="username" required maxlength="200" />
@@ -19,10 +16,13 @@
         <label for="password">Password:</label>
         <input id="password" type="password" name="password" required maxlength="200" minlength="6" />
       </div>
-      <input type="submit" value="Submit" />
+      <input type="submit" value="Login" />
+      <%if (typeof error !== 'undefined' && error){%>
+      <div class="error">
+        Your login attempt was not successful. The user credentials you entered were not valid, please try again.
+      </div>
+      <%}%>
     </form>
-    <!--TODO: add error messages -->
-    <!-- TODO: On a post to this page, don't change the title of the page to the error message -->
   <script src="js/index.js"></script>
   </body>
 </html>

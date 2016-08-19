@@ -1,33 +1,71 @@
 ![Alt text](/public/img/logo.png)
 
-## Developing
+## About
 
-After cloning the repo run `npm install` to install the app's dependencies.
+JamaTrace is a project between Seven Source, a Portland State University computer science senior capstone team, and
+[Jama Software](https://github.com/JamaSoftware). The team consists of seven members:
+[Iman Bilal](https://github.com/ibilal), [Mike Hansen](https://github.com/HansenML),
+[Ruben Piatnitsky](https://github.com/ruv-prog-so), [Chance Snow](https://github.com/chances),
+[Kathleen Tran](https://github.com/kathtran), [Ricardo Valencia](https://github.com/RickyV33) (Team Lead), and
+[Marcus Week](https://github.com/Marc-Week).
 
-If it doesn't already exist in your environment, create a new `.env` file in
-the project root directory, copying `.env.example` and modifying as necessary
-for the environment. (**Change the `SESSION_SECRET`!**)
+JamaTrace allows customers of Jama Software to view the downstream relationships between their project items via a
+graph that supports traceability. All data is retrieved from Jama's REST API.
 
-Implement features and corresponding unit tests.
+## Usage
 
-Lint and run all tests using `npm test`.
+After cloning the repository, run the following command to install the application's dependencies.
+```
+$ npm install
+```
 
-To simply lint your code, use `npm run lint`.
+If it doesn't already exist in your environment, create a new `.env` file in the project root directory, copying the
+`.env.example` and modifying it as is necessary for the environment. *The `SESSION_SECRET` variable must be changed to
+any unique String.*
 
-Then, to run and debug the app use `npm run debug`.
+To run the application
+```
+$ npm run start
+```
+
+To run and debug
+```
+$ npm run debug
+```
+
+To run all tests (this will also run the linter)
+```
+$ npm test
+```
+
+To run the linter
+```
+$ npm run lint
+```
+
+## Development
+
+### Process
+
+Our development process focused on pair programming, with a *hint* of mob programming. The pairs were as follows: Iman &
+Marcus, Michael & Ruben, and Kathleen & Ricardo. Chance was the technical adviser, a readily available resource for all
+team members.
+
+### Technical Stack
+
+* [Node.js](https://nodejs.org/en/)
+* [Express](https://expressjs.com)
+* JavaScript (ES6)
+* HTML5
+* CSS
+* [D3](https://d3js.org)
 
 ## Testing
 
-### Unit testing using Mocha and Chai
-
-To use Mocha, write your testing scripts in the test folder and then run the
-specific script (if mocha is installed globally) using `mocha script.js` or
-`mocha script`. (Or `./node_modules/.bin/mocha script.js` or
-`./node_modules/.bin/mocha script` using your local installation of mocha)
-
-Alternatively, lint and run all the tests using `npm test`.
+The [Mocha](https://mochajs.org) framework was used with [Chai](http://chaijs.com), an assertion library, to conduct all
+tests on JamaTrace.
 
 ## Copyright and license
 
-Code and documentation copyright 2016 Iman Bilal, Michael Hansen, Ruben Piatnitsky, Chance Snow,
-Kathleen Tran, Ricky Valencia, Marcus Week. Code and documentation is released under the MIT license.
+Code and documentation &copy; 2016 Iman Bilal, Michael Hansen, Ruben Piatnitsky, Chance Snow,
+Kathleen Tran, Ricardo Valencia, Marcus Week. Code and documentation is released under the MIT license.
