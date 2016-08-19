@@ -53,17 +53,10 @@ path.link-dot {
     stroke-width: 1px;
 }
 
-.downstreamCountText,
-.suspectText {
+.downstreamCountText {
     fill: #FFF;
     font-weight: bolder;
     font-size: 10px;
-}
-
-.isSuspect > circle {
-    fill: #F94306;
-    stroke: #F94306 !important;
-    stroke-width: 1px;
 }
 
 rect {
