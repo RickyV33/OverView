@@ -154,6 +154,7 @@ describe('Graph class module', () => {
       newGraph = new Graph(projectId, url);
       expect(newGraph.name).to.be.empty();
       expect(newGraph.nodes).to.be.empty();
+      expect(newGraph.edges).to.be.empty();
     });
 
     it('should return a graph that contains nothing when an error not including timeout is encountered', () => {
