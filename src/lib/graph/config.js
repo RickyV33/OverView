@@ -43,15 +43,16 @@ function config() {
     .attr('height', height)
     .call(d3.behavior.zoom().scaleExtent([1, 10])
       .on('zoom', function () {
-        svg.attr('transform', 'translate(' + d3.event.translate + ')' + ' scale(' + d3.event.scale + ')');
+        svg.select('g').attr('transform', 'translate(' + d3.event.translate + ')' + ' scale(' + d3.event.scale + ')');
       }))
     .on('dblclick.zoom', null);  // To remove the double click zoom function
 
-  svg.append('svg:g').attr('id', 'edges');
-  svg.append('g').attr('id', 'nodes'); // Add a group element within it to encompass all the nodes - this fixes the chrome
+  let mainGroup = svg.append('g');
+  mainGroup.append('g').attr('id', 'edges');
+  mainGroup.append('g').attr('id', 'nodes');
 
   // ============ build the arrows ================
-  svg.append('svg:defs').selectAll('marker')
+  svg.append('defs').selectAll('marker')
     .data(['end'])      // Different link/path types can be defined here
     .enter().append('svg:marker')    // This section adds in the arrows
     .attr('id', String)
