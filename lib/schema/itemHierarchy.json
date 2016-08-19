@@ -25,7 +25,7 @@
           "items": { "$ref": "item" }
         }
       },
-      "required": [ "id", "name", "type", "isSet", "children" ]
+      "required": [ "id", "name", "type", "parent", "isSet", "children" ]
     }
   }
 }

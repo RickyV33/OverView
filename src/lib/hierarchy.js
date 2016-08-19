@@ -54,7 +54,7 @@ export function renderHierarchy (hierarchyPayload) {
   let itemHierarchyList = document.getElementById('itemHierarchyList');
   destroyHierarchy(); // Refresh the list every time renderHierarchy is called
   if (hierarchyPayload) {
-    hierarchyPayload.forEach(item => {
+    hierarchyPayload.items.forEach(item => {
       itemHierarchyList.appendChild(createHierarchyItemWithChildren(item));
     });
   } else {
@@ -81,11 +81,20 @@ function destroyHierarchy () {
  */
 function createHierarchyItemWithChildren (item) {
   let listItem = document.createElement('li');
-  let itemAnchor = document.createElement('a');
-  itemAnchor.setAttribute('href', '#rootId=' + item.id);
-  itemAnchor.appendChild(document.createTextNode(item.name));
-  itemAnchor.setAttribute('data-id', item.id);
-  listItem.appendChild(itemAnchor);
+  if(item.isSet == false) {
+    console.log('false set item: ' + item.name);
+    console.log('is set apparently' + item.name);
+
+    let itemAnchor = document.createElement('a');
+    itemAnchor.setAttribute('href', '#rootId=' + item.id);
+    itemAnchor.appendChild(document.createTextNode(item.name));
+    itemAnchor.setAttribute('data-id', item.id);
+    listItem.appendChild(itemAnchor);
+  }
+  else {
+    console.log('true set item: ' + item.name);
+    listItem.appendChild(document.createTextNode(item.name));
+  }
   if (item.children) {
     let unorderedList = document.createElement('ul');
     item.children.forEach(function (subItem) {
