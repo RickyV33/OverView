@@ -64,6 +64,12 @@ describe('Graph class module', () => {
         resolve(data);
       });
     };
+    let resolvedItemTypeImagesPromise = () => {
+      return new Promise((resolve, reject) => {
+        data = [{'99': 'item image'}];
+        resolve(data);
+      });
+    };
     let rejectedTimeoutPromise = () => {
       return new Promise((resolve, reject) => {
         let error = { 'connect': true, 'code': 'ETIMEDOUT' };
@@ -81,13 +87,14 @@ describe('Graph class module', () => {
       stubs.getProjectName = () => resolvedNamePromise();
       stubs.getProjectItems = () => resolvedItemsPromise();
       stubs.getProjectRelationships = () => resolvedRelationshipsPromise();
+      stubs.getProjectItemTypeImages = () => resolvedItemTypeImagesPromise();
       newGraph = new Graph(projectId, url);
       return newGraph.buildGraph().then(() => {
-        console.log('$$$$$$$$$$$$ ' + newGraph.name);
         expect(newGraph.name).to.equal('mocked project name');
         expect(newGraph.nodes[0].id).to.equal(10);
         expect(newGraph.nodes[0].name).to.equal('item name');
         expect(newGraph.nodes[0].type).to.equal(99);
+        expect(newGraph.nodes[0].image).to.equal('item image');
         expect(newGraph.edges[0].id).to.equal(10);
         expect(newGraph.edges[0].source).to.equal(1);
         expect(newGraph.edges[0].target).to.equal(2);
@@ -99,6 +106,7 @@ describe('Graph class module', () => {
       stubs.getProjectName = () => rejectedErrorPromise();
       stubs.getProjectItems = () => rejectedErrorPromise();
       stubs.getProjectRelationships = () => rejectedErrorPromise();
+      stubs.getProjectItemTypeImages = () => rejectedErrorPromise();
       newGraph = new Graph(projectId, url);
       expect(newGraph.name).to.be.empty();
       expect(newGraph.nodes).to.be.empty();
@@ -109,6 +117,7 @@ describe('Graph class module', () => {
       stubs.getProjectName = () => rejectedTimeoutPromise();
       stubs.getProjectItems = () => resolvedItemsPromise();
       stubs.getProjectRelationships = () => resolvedRelationshipsPromise();
+      stubs.getProjectItemTypeImages = () => resolvedItemTypeImagesPromise();
       newGraph = new Graph(projectId, url).buildGraph();
       expect(newGraph.name).to.be.empty();
       expect(newGraph.nodes).to.be.empty();
@@ -119,6 +128,7 @@ describe('Graph class module', () => {
       stubs.getProjectName = () => resolvedNamePromise();
       stubs.getProjectItems = () => rejectedTimeoutPromise();
       stubs.getProjectRelationships = () => resolvedRelationshipsPromise();
+      stubs.getProjectItemTypeImages = () => resolvedItemTypeImagesPromise();
       newGraph = new Graph(projectId, url).buildGraph();
       expect(newGraph.name).to.be.empty();
       expect(newGraph.nodes).to.be.empty();
@@ -129,6 +139,7 @@ describe('Graph class module', () => {
       stubs.getProjectName = () => resolvedNamePromise();
       stubs.getProjectItems = () => resolvedItemsPromise();
       stubs.getProjectRelationships = () => rejectedTimeoutPromise();
+      stubs.getProjectItemTypeImages = () => resolvedItemTypeImagesPromise();
       newGraph = new Graph(projectId, url).buildGraph();
       expect(newGraph.name).to.be.empty();
       expect(newGraph.nodes).to.be.empty();
@@ -140,6 +151,7 @@ describe('Graph class module', () => {
         stubs.getProjectName = () => rejectedTimeoutPromise();
         stubs.getProjectItems = () => rejectedTimeoutPromise();
         stubs.getProjectRelationships = () => resolvedRelationshipsPromise();
+        stubs.getProjectItemTypeImages = () => resolvedItemTypeImagesPromise();
         newGraph = new Graph(projectId, url).buildGraph();
         expect(newGraph.name).to.be.empty();
         expect(newGraph.nodes).to.be.empty();
@@ -151,6 +163,7 @@ describe('Graph class module', () => {
       stubs.getProjectName = () => resolvedNamePromise();
       stubs.getProjectItems = () => rejectedTimeoutPromise();
       stubs.getProjectRelationships = () => rejectedTimeoutPromise();
+      stubs.getProjectItemTypeImages = () => resolvedItemTypeImagesPromise();
       newGraph = new Graph(projectId, url).buildGraph();
       expect(newGraph.name).to.be.empty();
       expect(newGraph.nodes).to.be.empty();
@@ -162,6 +175,7 @@ describe('Graph class module', () => {
       stubs.getProjectName = () => rejectedTimeoutPromise();
       stubs.getProjectItems = () => resolvedItemsPromise();
       stubs.getProjectRelationships = () => rejectedTimeoutPromise();
+      stubs.getProjectItemTypeImages = () => resolvedItemTypeImagesPromise();
       newGraph = new Graph(projectId, url).buildGraph();
       expect(newGraph.name).to.be.empty();
       expect(newGraph.nodes).to.be.empty();
@@ -172,6 +186,7 @@ describe('Graph class module', () => {
       stubs.getProjectName = () => rejectedTimeoutPromise();
       stubs.getProjectItems = () => rejectedTimeoutPromise();
       stubs.getProjectRelationships = () => rejectedTimeoutPromise();
+      stubs.getProjectItemTypeImages = () => rejectedTimeoutPromise();
       newGraph = new Graph(projectId, url).buildGraph();
       expect(newGraph.name).to.be.empty();
       expect(newGraph.nodes).to.be.empty();
@@ -182,6 +197,7 @@ describe('Graph class module', () => {
       stubs.getProjectName = () => rejectedErrorPromise();
       stubs.getProjectItems = () => rejectedErrorPromise();
       stubs.getProjectRelationships = () => rejectedErrorPromise();
+      stubs.getProjectItemTypeImages = () => rejectedErrorPromise();
       newGraph = new Graph(projectId, url).buildGraph();
       expect(newGraph.name).to.be.empty();
       expect(newGraph.nodes).to.be.empty();
