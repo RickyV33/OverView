@@ -12,7 +12,7 @@ let reducedOpacity = 0.2; // highlight opacity to reduce to
 let floatDown = true;
 
 /**
- * Highlight the selected node "d" then highlight the nodes in it's downStream array
+ * Highlight the selected node "d" then highlight the downstreamEdges target nodes
  * @param {object} d
  */
 function highlightNodes (d) {
