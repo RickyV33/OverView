@@ -231,37 +231,34 @@ function nodeMouseOut (overNode) {
 //
 /**
  * Handles the logic for highlighting and un-highlighting nodes on single-click
- * @param {Object} d is the node that was just clicked
+ * @param {Object} selectedNode is the node that was just clicked
  */
-function nodeClick (d) {
+function nodeClick (selectedNode) {
   if (debug) {
     console.log('===============> nodeClick');
   }
 
-  let nodes = d3.selectAll('.node').data();
-
   let highlightedCount = 0; // this will count how many downStream nodes are highlighted.
-  if (d.downstreamEdges.length > 0) {
-    let selectedNode = nodesEdgesMap[d.id];
+  if (selectedNode.downstreamEdges.length > 0) {
     selectedNode.downstreamEdges.forEach(function (edgeIndex) {
-      let edge = edges[edgeIndex];
-      if (nodes[edge.target].isHighlighted) {
+      let targetNode = edges[edgeIndex].target;
+      if (targetNode.isHighlighted) {
         highlightedCount++;
       }
     });
   }
 
   // highlightedCount = downStreamHighlightCheck(d, highlightedCount);
-  if (d.isHighlighted) {
+  if (selectedNode.isHighlighted) {
     // If the downstream items are not all highlighted, then we highlight all of them
     // Otherwise unHighlight all of them
-    if (d.downstreamEdges.length > 0 && (highlightedCount !== d.downstreamEdges.length)) {
-      highlightNodes(d);
+    if (selectedNode.downstreamEdges.length > 0 && (highlightedCount !== selectedNode.downstreamEdges.length)) {
+      highlightNodes(selectedNode);
     } else {
-      unHighlightNodes(d);
+      unHighlightNodes(selectedNode);
     }
   } else {
-    highlightNodes(d);
+    highlightNodes(selectedNode);
   }
   updateOpacity();
   // Check Opacity only makes changes if ALL the nodes are unhighlighted.
@@ -391,7 +388,7 @@ export function update (svg, forceLayout, nodes, physics, itemNames) {
         // update(svg, forceLayout, forceLayout.nodes(), physics, itemNames);
       } else {              // We've seen a single click
         if (d3.event.shiftKey) {  // If we see a click with a shift...
-          // nodeClick(d);  // Call nodeClick() to check (un)highlighting
+          nodeClick(d);  // Call nodeClick() to check (un)highlighting
           // update(svg, forceLayout, forceLayout.nodes(), physics, itemNames);
         } else {
           timer = setTimeout(function () { // If we just see a click check for double click
