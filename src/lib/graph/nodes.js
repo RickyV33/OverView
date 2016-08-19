@@ -444,7 +444,7 @@ export function update (svg, forceLayout, nodes, physics, itemNames) {
   projectNode.x = size().height / 2;
   projectNode.y = size().width / 2;
 
-// Add a downstream item count circle to each node that has downstream items
+  // Add a downstream item count circle to each node that has downstream items
   let downStreamNodes = svg.selectAll('.node.hasDownstream')
     .append('g')
     .attr('class', 'downstreamCount');
