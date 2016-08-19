@@ -58,7 +58,7 @@ describe('Hierarchy Module', () => {
       return (expect(hierarchy.getAllItems(username, password, teamName, projectId))
         .to.eventually.be.rejected()).then(item => {
           expect(item).to.equal(data);
-        done();
+          done();
         });
     });
     it('should return a rejected promise when the login credentials are valid, but projectId is invalid', () => {
@@ -70,23 +70,25 @@ describe('Hierarchy Module', () => {
           expect(item).to.equal(data);
         });
     });
-    it('should return an empty JSON blob when login credentials and projectId are valid', () => {
+    it('should return an empty JSON blob when login credentials and projectId are valid', (done) => {
       projectId = 33;
       data = {};
       hierarchy = proxyquire('../../lib/hierarchy', {'./pagination': resolvedPromise});
       return (expect(hierarchy.getAllItems(username, password, teamName, projectId))
         .to.eventually.be.fulfilled()).then(item => {
           expect(item).to.equal(data);
+          done();
         });
     });
     it('should return a valid JSON blob with one item and one sub item ' +
-      'when login credentials and projectId are valid, and the project contains one item and one sub item', () => {
+      'when login credentials and projectId are valid, and the project contains one item and one sub item', (done) => {
       projectId = 33;
       data = {name: 'first item', children: {name: 'sub item of first item', children: {}}};
       hierarchy = proxyquire('../../lib/hierarchy', {'./pagination': resolvedPromise});
       return (expect(hierarchy.getAllItems(username, password, teamName, projectId))
         .to.eventually.be.fulfilled()).then(item => {
           expect(item).to.equal(data);
+          done();
         });
     });
   });
@@ -99,7 +101,7 @@ describe('Hierarchy Module', () => {
         hierarchy.__set__('mergeChildren', () => mergeChildrenStub());
         hierarchy.__set__('pushChildrenToRoots', () => pushChildrenStub());
         results = hierarchy.parseItemHierarchy(data);
-        expect(results).to.deep.equal(data);
+        expect(results.items).to.deep.equal(data);
         expect(hierarchy.__get__('rootItems')).to.deep.equal(data);
         expect(hierarchy.__get__('children')).to.deep.equal(data);
       });
@@ -108,13 +110,13 @@ describe('Hierarchy Module', () => {
       'with no children', () => {
       let results;
       data = require('./singleItemHierarchy.json');
-      roots = [{id: 2140, type: 24, name: 'Input a Username', parent: 33, isSet: true, children: []}];
+      roots = [{id: 2140, type: 24, name: 'Input a Username', parent: 33, isSet: false, children: []}];
       mergedChildren = [];
       hierarchy = rewire('../../lib/hierarchy');
       hierarchy.__set__('mergeChildren', () => mergeChildrenStub());
       hierarchy.__set__('pushChildrenToRoots', () => pushChildrenStub());
       results = hierarchy.parseItemHierarchy(data);
-      expect(results).to.deep.equal(roots);
+      expect(results.items).to.deep.equal(roots);
       expect(hierarchy.__get__('rootItems')).to.deep.equal(roots);
       expect(hierarchy.__get__('children')).to.deep.equal(mergedChildren);
     });
@@ -152,7 +154,7 @@ describe('Hierarchy Module', () => {
         hierarchy.__set__('rootItems', roots);
       });
       results = hierarchy.parseItemHierarchy(data);
-      expect(results).to.deep.equal(roots);
+      expect(results.items).to.deep.equal(roots);
       expect(hierarchy.__get__('rootItems')).to.deep.equal(roots);
       expect(hierarchy.__get__('children')).to.deep.equal(mergedChildren);
     });

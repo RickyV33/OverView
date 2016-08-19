@@ -61,7 +61,7 @@ describe('index', () => {
     }
   ];
 
-  describe('get request', () => {
+  describe.skip('get request', () => {
     it('should contain a property called text', done => {
       // This makes a server request to the route location '/'
       chai.request(app)

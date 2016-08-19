@@ -81,18 +81,13 @@ function destroyHierarchy () {
  */
 function createHierarchyItemWithChildren (item) {
   let listItem = document.createElement('li');
-  if(item.isSet == false) {
-    console.log('false set item: ' + item.name);
-    console.log('is set apparently' + item.name);
-
+  if (item.isSet === false) {
     let itemAnchor = document.createElement('a');
     itemAnchor.setAttribute('href', '#rootId=' + item.id);
     itemAnchor.appendChild(document.createTextNode(item.name));
     itemAnchor.setAttribute('data-id', item.id);
     listItem.appendChild(itemAnchor);
-  }
-  else {
-    console.log('true set item: ' + item.name);
+  } else {
     listItem.appendChild(document.createTextNode(item.name));
   }
   if (item.children) {
