@@ -385,11 +385,9 @@ export function update (svg, forceLayout, nodes, physics, itemNames) {
     .on('click', function (d) {
       if (clickedOnce) {  // This only occurs if someone clicks twice before the timeout below
         // nodeDoubleClick(d);  // Call the double click function
-        // update(svg, forceLayout, forceLayout.nodes(), physics, itemNames);
       } else {              // We've seen a single click
         if (d3.event.shiftKey) {  // If we see a click with a shift...
           nodeClick(d);  // Call nodeClick() to check (un)highlighting
-          // update(svg, forceLayout, forceLayout.nodes(), physics, itemNames);
         } else {
           timer = setTimeout(function () { // If we just see a click check for double click
             clickedOnce = false;  // We timed out after 175ms so we are NOT seeing a double click
