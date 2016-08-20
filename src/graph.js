@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   document.getElementById('renderButton').addEventListener('click', event => {
     toggle(hierarchy);
-    console.log(selectedHierarchyItem);
+    console.log('Render button Click Event. Item selected --> ' + selectedHierarchyItem);
     renderGraph(graphData, selectedProject, parseInt(selectedHierarchyItem));
   });
 });
@@ -57,6 +57,7 @@ function buildItemHierarchyAnchors () {
   querySelectorAll('#itemHierarchyList a').forEach(hierarchyAnchor => {
     hierarchyAnchor.addEventListener('click', event => {
       selectedHierarchyItem = event.target.getAttribute('data-id');
+      console.log('Hierarchy click event. Id selected --> ' + selectedHierarchyItem);
     });
   });
 }

@@ -1,6 +1,5 @@
+/* global d3*/
 import { debug } from './config';
-
-let path = null;
 
 let curves = false;
 
@@ -32,66 +31,53 @@ function straightEdges (d) {
 /**
  * Float the edges to the bottom of their upstream node
  */
-function floatEdgesDown (e) {
+export function floatEdgesDown (e) {
   var offset = 10 * e.alpha; // For the node offset
 
-  path.each(function (d) {
+  d3.selectAll('path').each((d) => {
     d.source.y -= offset;  // Offset sources up
     d.target.y += offset;  // Offset targets down
-  }).attr('x1', function (d) { return d.source.x; })
-    .attr('y1', function (d) { return d.source.y; })
-    .attr('x2', function (d) { return d.target.x; })
-    .attr('y2', function (d) { return d.target.y; });
+  }).attr('x1', (d) => { return d.source.x; })
+    .attr('y1', (d) => { return d.source.y; })
+    .attr('x2', (d) => { return d.target.x; })
+    .attr('y2', (d) => { return d.target.y; });
 }
 
 /**
- * Updates the opacity of all the nodes and edges based on their current flags.
+ * Update the force links in the graph by building them.
+ * It also contains the exit event definition
+ * @param svg
+ * @param forceLayout
+ * @param edges
  */
-function updateOpacity () {
-  if (debug) {
-    console.log('edges updateOpacity()');
-  }
-
-  path.style('opacity', function (curPath) {
-    let src = curPath.source;
-    let targ = curPath.target;
-    if (src.isVisible && targ.isVisible) {
-      return (curPath.source.isHighlighted && curPath.target.isHighlighted) ? 1 : reducedOpacity;
-    } else { return 0; }
-  });
-  checkOpacity();
-}
-
 export function update (svg, forceLayout, edges) {
   if (debug) {
     console.log('edges.update()');
   }
 
-  forceLayout.links(edges);
+  svg.append('g').attr('id', 'edges').selectAll('path')
+    .data(forceLayout.links())
+    .enter()
+    .append('svg:path')
+      .attr('id', d => d.id)
+      .attr('class', thisPath => {
+        let result = 'link';
+        result = (thisPath.suspect) ? result + ' suspect' : result;  // Check the type and add a style according to type
 
-  let path = svg.selectAll('.link').data(forceLayout.links())
-    .enter().append('svg:path')
-    .attr('id', d => d.id)
-    .attr('class', thisPath => {
-      let result = 'link';
-      result = (thisPath.suspect) ? result + ' suspect' : result;  // Check the type and add a style according to type
-
-      return result;
+        return result;
+      })
+    .attr('marker-end', (d) => {
+      return d.suspect ? 'url(#marker-arrow-suspect)' : 'url(#marker-arrow)';
     })
-    .attr('marker-end', 'url(#end)');
+    .on('mouseover', edgeMouseOver)
+    .on('mouseout', edgeMouseOut);
 
-  path.append('svg:title')  // Added a string to edge hover
-    .text(d => {
-      let strTitle = d.id + ' ==> ' + d.type;
-      if (d.suspect) {
-        strTitle = strTitle + ' - Suspect';
-      }
-      return strTitle;
-    });
+    // Removal transitions go here
+  svg.selectAll('path').data(forceLayout.links()).exit().remove(); // Remove unneeded elements
 }
 
 export function tick (e) {
-  if (debug) {
+  if (debug === 2) {
     console.log('edges.tick()');
   }
 
@@ -102,4 +88,46 @@ export function tick (e) {
       return straightEdges(d);
     }
   });
+}
+
+/**
+ * Mouse over event for edge object that displays a tooltip
+ * @param overEdge
+ */
+function edgeMouseOver (overEdge) {
+  d3.select(this).classed('hoverOverEdge', true);
+  // Make the node circle larger and change opacity
+  // d3.select(this).select('circle').transition()
+  //   .duration(500)
+  //   .attr('r', 17)
+  //   .attr('opacity', 1);
+
+  let strTarget = overEdge.target.name;
+  let strSource = overEdge.source.name;
+  let strSuspect = overEdge.suspect ? 'Suspect' : '';
+  let strTitle = overEdge.suspect ? '<h5 class="critical">' + strSuspect + '</h5>' : '';
+  let strRelType = '<h5>' + overEdge.relationshipType + '</h5>';
+  let tipText = strTitle + strRelType + '<div class="content">' + strSource + '<br>---><br>' + strTarget + '</div>';
+
+  // Set the tip html and position
+  d3.select('#nodeInfoTip').html(tipText)
+    .style('left', (d3.event.pageX) + 'px')
+    .style('top', (d3.event.pageY + 30) + 'px')
+    .style('visibility', 'visible');
+}
+
+/**
+ * Mouse out event for edge object that hides a tooltip and changes edge back to original size
+ * @param overEdge
+ */
+function edgeMouseOut () {
+  // d3.select(this).select('circle').transition()
+  //   .duration(500)
+  //   .attr('r', 13)
+  //   .attr('opacity', 1);
+
+  d3.select(this).classed('hoverOverEdge', false);
+
+  d3.select('#nodeInfoTip').html('')
+    .style('visibility', 'hidden');
 }
