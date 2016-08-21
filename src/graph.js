@@ -4,6 +4,7 @@ import renderGraph from './lib/displayProjectsGraph';
 
 let projects = document.querySelector('#projects');
 let hierarchy = document.querySelector('#hierarchy');
+let d3Container = document.querySelector('#d3Container');
 let selectedProject;
 let selectedHierarchyItem = null;
 let graphData;
@@ -23,9 +24,25 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   document.getElementById('renderButton').addEventListener('click', event => {
-    toggle(hierarchy);
     console.log('Render button Click Event. Item selected --> ' + selectedHierarchyItem);
+    toggle(hierarchy);
+    toggle(d3Container);
     renderGraph(graphData, selectedProject, parseInt(selectedHierarchyItem));
+  });
+
+  // For the back to projects button
+  document.getElementById('backToProjectsButton').addEventListener('click', event => {
+    console.log('Back to projects button Click Event');
+    toggle(projects);
+    toggle(hierarchy);
+    selectedHierarchyItem = null;
+  });
+
+  // For the back to hierarchy button
+  document.getElementById('backToHierarchyButton').addEventListener('click', event => {
+    console.log('Back to hierarchy button Click Event');
+    toggle(d3Container);
+    toggle(hierarchy);
   });
 });
 
@@ -155,7 +172,7 @@ function getGraph (projectId) {
     };
     httpRequest.open('GET', '?project=' + projectId);
     httpRequest.send();
-    let graphContainer = document.getElementById('d3Container');
-    graphContainer.className = ''; // Remove the hidden tag
+    // let graphContainer = document.getElementById('d3Container');
+    // graphContainer.className = ''; // Remove the hidden tag
   });
 }
