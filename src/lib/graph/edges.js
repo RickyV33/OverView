@@ -34,7 +34,7 @@ function straightEdges (d) {
 export function floatEdgesDown (e) {
   var offset = 10 * e.alpha; // For the node offset
 
-  d3.selectAll('path').each((d) => {
+  d3.selectAll('.link').each((d) => {
     d.source.y -= offset;  // Offset sources up
     d.target.y += offset;  // Offset targets down
   }).attr('x1', (d) => { return d.source.x; })
@@ -55,25 +55,25 @@ export function update (svg, forceLayout, edges) {
     console.log('edges.update()');
   }
 
-  svg.select('#edges').selectAll('path')
-    .data(forceLayout.links())
-    .enter()
+  let paths = svg.select('#edges').selectAll('.link')
+    .data(forceLayout.links());
+
+  paths.enter()
     .append('svg:path')
       .attr('id', d => d.id)
       .attr('class', thisPath => {
         let result = 'link';
         result = (thisPath.suspect) ? result + ' suspect' : result;  // Check the type and add a style according to type
-
         return result;
       })
-    .attr('marker-end', (d) => {
-      return d.suspect ? 'url(#marker-arrow-suspect)' : 'url(#marker-arrow)';
-    })
-    .on('mouseover', edgeMouseOver)
-    .on('mouseout', edgeMouseOut);
+      .attr('marker-end', (d) => {
+        return d.suspect ? 'url(#marker-arrow-suspect)' : 'url(#marker-arrow)';
+      })
+      .on('mouseover', edgeMouseOver)
+      .on('mouseout', edgeMouseOut);
 
-    // Removal transitions go here
-  svg.selectAll('path').data(forceLayout.links()).exit().remove(); // Remove unneeded elements
+  // Removal transitions go here
+  paths.exit().remove(); // Remove unneeded elements
 }
 
 export function tick (e) {
