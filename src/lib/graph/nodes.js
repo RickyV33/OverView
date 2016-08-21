@@ -1,7 +1,7 @@
 /* global d3*/
 /* exported nodesEdgesMap */
 import { isRoot, size, getById, projectNode, debug, updateOpacity } from './config';
-import configureInfoTip, * as nodeInfoTip from './infoTip';
+import * as nodeInfoTip from './infoTip';
 
 let edges = null;
 
@@ -334,17 +334,23 @@ export function setEdges (edgesToSet) {
   edges = edgesToSet;
 }
 
+/**
+ * Update definition of the node. Includes what to append when new data is added and what to do on exit.
+ * @param svg
+ * @param forceLayout
+ * @param nodes
+ * @param physics
+ * @param itemNames
+ */
 export function update (svg, forceLayout, nodes, physics, itemNames) {
-  configureInfoTip();
-
   if (debug) {
     console.log('===> nodes.update()');
   }
 
   let node = svg.select('#nodes').selectAll('.node')
-    .data(forceLayout.nodes())
-    .enter()
-    .append('g')
+    .data(forceLayout.nodes());
+
+  let nodeEnter = node.enter().append('g')
     .attr('id', (d) => {
       return d.id;  // Add an id element to each node
     })
@@ -365,12 +371,12 @@ export function update (svg, forceLayout, nodes, physics, itemNames) {
     .on('mouseout', nodeMouseOut)
     .on('click', click);
 
-  node.append('circle') // Circle at node behind icon configuration
+  nodeEnter.append('circle') // Circle at node behind icon configuration
     .attr('x', '-14px')
     .attr('y', '-14px')
     .attr('r', 13);
 
-  node.append('image') // Image in the node circle configuration
+  nodeEnter.append('image') // Image in the node circle configuration
     .attr('xlink:href', (n) => {
       return n.image;
     })
@@ -378,7 +384,7 @@ export function update (svg, forceLayout, nodes, physics, itemNames) {
     .attr('y', '-9px');
 
   if (itemNames) {
-    node.append('text') // Add the name of the node as text
+    nodeEnter.append('text') // Add the name of the node as text
       .attr('class', 'nodeText')
       .attr('x', (d) => {
         return d.downstreamEdges.length > 0 ? 0 : 20; // Move text to right if the node has downstream items
@@ -393,7 +399,7 @@ export function update (svg, forceLayout, nodes, physics, itemNames) {
         return d.name.length > 18 ? d.name.substring(0, 15) + '...' : d.name;
       });
   } else {
-    node.append('text') // Add the name of the node as text
+    nodeEnter.append('text') // Add the name of the node as text
       .attr('x', 0)
       .attr('dy', 30)
       .attr('class', 'nodeText')
@@ -403,9 +409,11 @@ export function update (svg, forceLayout, nodes, physics, itemNames) {
       });
   }
 
+  node.exit().remove();
+
   // Activate the physics if the physics flag is set
   if (physics) {
-    node.call(forceLayout.drag);
+    nodeEnter.call(forceLayout.drag);
   }
 
   projectNode.fixed = true;  // Set the project Node to be fixed and not moving
