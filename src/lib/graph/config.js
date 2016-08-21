@@ -1,6 +1,7 @@
 /* global d3*/
 import * as nodes from './nodes';
 import * as edges from './edges';
+import configureInfoTip from './infoTip';
 
 export const PROJECT_AS_ROOT = -1;
 
@@ -9,7 +10,8 @@ let height = 800;         // D3 window height
 export let reducedOpacity = 0.2; // highlight opacity to reduce to
 
 let currentProjectId = PROJECT_AS_ROOT;
-let currentRootId;
+let currentRootId = -1;
+
 let nodesToRender = [];   // Gets passed into the D3 force nodes function
 let edgesToRender = [];   // Gets passed into the D3 force links function
 export let nodesEdgesMap = {};
@@ -39,6 +41,7 @@ function tick (e) {
 document.addEventListener('DOMContentLoaded', () => {
   svg = d3.select('#d3Container').append('svg');
   config();
+  configureInfoTip();
 });
 
 function config () {
@@ -123,43 +126,41 @@ export function size () {
  * @param {integer} rootId is the id of the element that is to be the root node coming off the project node
  */
 export default function update (graphData, selectedProjectId, rootId = parseInt(PROJECT_AS_ROOT)) {
-  nodesToRender = [];
-  edgesToRender = [];
-
   if (debug) {
-    console.log('Root ID: ' + rootId + '  CurrentRootId: ' + currentRootId);
-    console.log('Project ID: ' + selectedProjectId + '  CurrentProjectId: ' + currentProjectId);
+    console.log('Root ID: ' + rootId + ' <==>  CurrentRootId: ' + currentRootId);
+    console.log('Project ID: ' + selectedProjectId + ' <==>  CurrentProjectId: ' + currentProjectId);
   }
 
   if (currentProjectId !== selectedProjectId) {
+    nodesToRender = [];
+    edgesToRender = [];
+
     insertProjectNode(graphData, rootId);  // This function has to occur right before mapping occurs
     nodesEdgesMap = mapNodesToEdges(graphData);  // Pre-process data for faster data retrieval
     nodes.setEdges(nodesEdgesMap.edges);
-    currentProjectId = selectedProjectId;
+
+    filterJSON(nodesEdgesMap, rootId);
+  } else {
+    nodesToRender = [];
+    edgesToRender = [];
+
+    filterJSON(nodesEdgesMap, rootId);
   }
+
+  // Collapses all the nodes except the root node
+  // NOTE - If you collapse all, then you need to set the isVisible = false and isCollapsed = true
+  // default values in mapNodesToEdges()
+  // collapseAll(rootId);
+  // updateOpacity();
+
+  nodes.resetVisitedFlag(); // Sets all of the visited flags to false
+  currentProjectId = selectedProjectId;
+  currentRootId = rootId;
 
   if (debug) {
     console.log('root node:');
     console.log(getById(nodesEdgesMap.nodes, rootId));
-  }
 
-  if (rootId !== currentRootId) {
-    // clearGraph(); // Clear all of the graph data
-    filterJSON(nodesEdgesMap, rootId); // Filters the JSON for only the downStream nodes from the selected item
-    nodes.resetVisitedFlag(); // Sets all of the visited flags to false
-
-    // updateGraph(graphData, rootId);  // Render the graph
-
-    // Collapses all the nodes except the root node
-    // NOTE - If you collapse all, then you need to set the isVisible = false and isCollapsed = true
-    // default values in mapNodesToEdges()
-    // collapseAll(rootId);
-
-    // updateOpacity();
-    currentRootId = rootId;
-  }
-
-  if (debug) {
     console.log('===> graph.update()');
     console.log('nodesToRender');
     console.log(nodesToRender);
@@ -214,7 +215,6 @@ function filterJSON (nodesEdgesMap, rootId) {
 function filterJSONRecursive (thisNode) {
   if (debug) {
     console.log('\t===> filterJSONRecursive()');
-    console.log(thisNode);
   }
 
   if (!thisNode.visited || thisNode.visited === 'undefined') {
@@ -224,8 +224,6 @@ function filterJSONRecursive (thisNode) {
     if (thisNode.edges.length > 0) {
       thisNode.edges.forEach(function (edgeIndex) {
         let foundEdge = nodesEdgesMap.edges[edgeIndex];
-        console.log('foundEdge = ');
-        console.log(foundEdge);
         let targetNode = foundEdge.target;
         edgesToRender.push(foundEdge);
         filterJSONRecursive(targetNode);  // Traverse down the relations
