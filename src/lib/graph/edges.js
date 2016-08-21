@@ -1,7 +1,6 @@
 /* global d3*/
 import { debug } from './config';
-
-let curves = false;
+import { curves } from '../displayProjectsGraph';
 
 /**
  * Returns a curved line parameter for edge

@@ -2,13 +2,11 @@
 /* exported nodesEdgesMap */
 import { isRoot, size, getById, projectNode, debug, updateOpacity } from './config';
 import * as nodeInfoTip from './infoTip';
+import { floatDown } from '../displayProjectsGraph';
 
 let edges = null;
-
 let timer;                // For click event monitoring
 let clickedOnce = false;  // For monitoring the click event on node
-
-let floatDown = true;
 
 /**
  * Highlight the selected node "d" then highlight the downstreamEdges target nodes
@@ -159,7 +157,7 @@ function floatNodesRight (e) {
   let offset = 10 * e.alpha; // For the node offset
 
   // This section pushes sources up and targets down to form a weak tree-like structure.
-  d3.selectAll('path').each((d) => {
+  d3.selectAll('.links').each((d) => {
     d.source.x -= offset;  // Offset sources left
     d.target.x += offset;  // Offset target right
   }).attr('x1', (d) => { return d.source.x; })
@@ -174,7 +172,7 @@ function floatNodesRight (e) {
 function floatNodesDown (e) {
   var offset = 10 * e.alpha; // For the node offset
 
-  d3.selectAll('path').each((d) => {
+  d3.selectAll('.links').each((d) => {
     if (d.source && d.target) {
       d.source.y -= offset;  // Offset sources up
       d.target.y += offset;  // Offset targets down

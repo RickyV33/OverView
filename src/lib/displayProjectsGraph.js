@@ -7,10 +7,10 @@ export const projectRootId = -1; // Default value for project node
 // ////// DEMO VARS//////
 
 // let allCollapsed = false;
-export let curves = false;
+export let curves = true;
 export let physics = true;
 export let itemNames = true;
-export let floatDown = true;
+export let floatDown = false;
 
 // /////////////////////
 
