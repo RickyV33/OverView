@@ -55,7 +55,7 @@ export function update (svg, forceLayout, edges) {
     console.log('edges.update()');
   }
 
-  svg.append('g').attr('id', 'edges').selectAll('path')
+  svg.select('#edges').selectAll('path')
     .data(forceLayout.links())
     .enter()
     .append('svg:path')

@@ -49,12 +49,11 @@ function config () {
       .on('zoom', function () {
         svg.select('g').attr('transform', 'translate(' + d3.event.translate + ')' + ' scale(' + d3.event.scale + ')');
       }))
-    .on('dblclick.zoom', null)  // To remove the double click zoom function
-    .append('g');
+    .on('dblclick.zoom', null);  // To remove the double click zoom function
 
-  // let mainGroup = svg.append('g');
-  // mainGroup.append('g').attr('id', 'edges');
-  // mainGroup.append('g').attr('id', 'nodes');
+  let mainGroup = svg.append('g');
+  mainGroup.append('g').attr('id', 'edges');
+  mainGroup.append('g').attr('id', 'nodes');
 
   // ============ build the arrows ================
   let arrowData = [

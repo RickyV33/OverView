@@ -341,7 +341,7 @@ export function update (svg, forceLayout, nodes, physics, itemNames) {
     console.log('===> nodes.update()');
   }
 
-  let node = svg.selectAll('.node')
+  let node = svg.select('#nodes').selectAll('.node')
     .data(forceLayout.nodes())
     .enter()
     .append('g')
