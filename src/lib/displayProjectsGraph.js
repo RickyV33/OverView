@@ -7,13 +7,13 @@ export const projectRootId = -1; // Default value for project node
 // ////// DEMO VARS//////
 
 // let allCollapsed = false;
-export let curves = true;
+export let curves = false;
 export let physics = true;
 
 export let itemNames = 1;  // 0 - right, 1 - below, 2 - mix
 export let float = 0;      // 0 - right, 1 - down, 2 - no float
 
-let example = 0;
+let example = 5;
 
 switch (example) {
   case 0:

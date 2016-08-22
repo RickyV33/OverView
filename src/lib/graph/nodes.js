@@ -153,41 +153,6 @@ function unCollapse (id) {
 }
 
 /**
- * Float the nodes to the right of their upstream node. This is done by pushing the sources left and targets right.
- * e.alpha prevents the graph from "sliding" away.
- */
-function floatNodesRight (e) {
-  let offset = 10 * e.alpha; // For the node offset
-
-  // This section pushes sources up and targets down to form a weak tree-like structure.
-  d3.selectAll('.links').each((d) => {
-    d.source.x -= offset;  // Offset sources left
-    d.target.x += offset;  // Offset target right
-  }).attr('x1', (d) => { return d.source.x; })
-    .attr('y1', (d) => { return d.source.y; })
-    .attr('x2', (d) => { return d.target.x; })
-    .attr('y2', (d) => { return d.target.y; });
-}
-
-/**
- * Float the nodes to the bottom of their upstream node. This is done by pushing all sources up and all targets down.
- * e.alpha prevents the graph from "sliding" away.
- */
-function floatNodesDown (e) {
-  var offset = 10 * e.alpha; // For the node offset
-
-  d3.selectAll('.links').each((d) => {
-    if (d.source && d.target) {
-      d.source.y -= offset;  // Offset sources up
-      d.target.y += offset;  // Offset targets down
-    }
-  }).attr('x1', (d) => { if (d.source) { return d.source.x; } })
-    .attr('y1', (d) => { if (d.source) { return d.source.y; } })
-    .attr('x2', (d) => { if (d.target) { return d.target.x; } })
-    .attr('y2', (d) => { if (d.target) { return d.target.y; } });
-}
-
-/**
  * Mouse over event for node object that displays a tooltip and changes node circle size to a larger radius
  * @param overNode
  */
@@ -464,20 +429,4 @@ export function tick (e) {
   node.attr('transform', (d) => {
     return 'translate(' + d.x + ',' + d.y + ')';
   });
-
-  // Toggle the float direction
-  switch (float) {
-    case 0:
-      floatNodesRight(e);
-      break;
-    case 1:
-      floatNodesDown(e);
-      break;
-    case 2:
-      break;
-  }
-
-  // Set the node position
-  node.attr('cx', (d) => { return 5 * d.x; })
-    .attr('cy', (d) => { return d.y; });
 }

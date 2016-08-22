@@ -3,7 +3,7 @@
 import * as nodes from './nodes';
 import * as edges from './edges';
 import configureInfoTip from './infoTip';
-import { physics, itemNames } from '../displayProjectsGraph';
+import { physics, itemNames, float } from '../displayProjectsGraph';
 
 export const PROJECT_AS_ROOT = -1;
 
@@ -21,7 +21,7 @@ export let projectNode = {};
 
 let svg = null;
 let force = null;         // The force layout for d3
-export let debug = true;         // To display the function console logs
+export let debug = false;         // To display the function console logs
 
 /**
  * For every shift of the graph, this function gets called.
@@ -37,7 +37,17 @@ function tick (e) {
   nodes.tick(e);
   edges.tick(e);
 
-  edges.floatEdgesDown(e);
+  // Toggle the float direction
+  switch (float) {
+    case 0:
+      edges.floatEdgesRight(e);
+      break;
+    case 1:
+      edges.floatEdgesDown(e);
+      break;
+    case 2:
+      break;
+  }
 }
 
 document.addEventListener('DOMContentLoaded', () => {

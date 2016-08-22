@@ -2,6 +2,7 @@
 import { debug } from './config';
 import { curves } from '../displayProjectsGraph';
 import * as nodeInfoTip from './infoTip';
+import float from '../displayProjectsGraph';
 
 /**
  * Returns a curved line parameter for edges
@@ -44,6 +45,28 @@ export function floatEdgesDown (e) {
   d3.selectAll('.link').each((d) => {
     d.source.y -= offset;  // Offset sources up
     d.target.y += offset;  // Offset targets down
+  }).attr('x1', (d) => { return d.source.x; })
+    .attr('y1', (d) => { return d.source.y; })
+    .attr('x2', (d) => { return d.target.x; })
+    .attr('y2', (d) => { return d.target.y; });
+}
+
+/**
+ * Float the edges to the right of their upstream node creating an side-ways tree-like structure
+ * Example:
+ *    o
+ *   / \
+ *  o   o
+ *
+ *  This is accomplished by pushing the source nodes left (lowering d.source.y) and pushing the target nodes right
+ *  (increasing d.target.y).
+ */
+export function floatEdgesRight (e) {
+  var offset = 10 * e.alpha; // For the node offset
+
+  d3.selectAll('.link').each((d) => {
+    d.source.x -= offset;  // Offset sources up
+    d.target.x += offset;  // Offset targets down
   }).attr('x1', (d) => { return d.source.x; })
     .attr('y1', (d) => { return d.source.y; })
     .attr('x2', (d) => { return d.target.x; })
@@ -98,12 +121,20 @@ export function tick (e) {
   }
 
   d3.selectAll('.link').attr('d', d => {
-    if (curves) {
-      return curvedEdges(d);
-    } else {
-      return straightEdges(d);
-    }
+    return curves ? curvedEdges(d) : straightEdges(d);
   });
+
+  // Toggle the float direction
+  switch (float) {
+    case 0:
+      floatEdgesRight(e);
+      break;
+    case 1:
+      floatEdgesDown(e);
+      break;
+    case 2:
+      break;
+  }
 }
 
 /**
