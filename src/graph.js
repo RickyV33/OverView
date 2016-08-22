@@ -125,6 +125,7 @@ function getHierarchy (projectId) {
 function renderHierarchy (hierarchyPayload) {
   let itemHierarchyList = document.getElementById('itemHierarchyList');
   if (hierarchyPayload) {
+    itemHierarchyList.innerHTML = '';
     hierarchyPayload.forEach(item => {
       itemHierarchyList.appendChild(getHierarchyItemWithChildren(item));
     });
