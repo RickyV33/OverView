@@ -396,22 +396,32 @@ export function checkOpacity () {
 }
 
 /**
- * Updates the opacity of all the nodes and edges based on their current flags.
+ * Updates the opacity of all the nodes and edges based on their current flags.  * If the current node is hightlighted,
+ * then show it, otherwise reduce the opacity. Check every edge's source and target nodes. If they are both visible,
+ * then check if they are highlighted. If they are not highlighted, then reduce the opacity.
  */
 export function updateOpacity () {
   if (debug) {
     console.log('edges updateOpacity()');
   }
 
-  d3.selectAll('.link').style('opacity', function (curPath) {
-    console.log('current path');
-    console.log(curPath);
-    let src = curPath.source;
-    let targ = curPath.target;
+  // Updates the opacity of the nodes
+  d3.selectAll('.node').style('opacity', d => {
+    if (d.isVisible) {
+      return d.isHighlighted ? 1: reducedOpacity;
+    } else {
+      return 0;
+    }
+  });
+
+  // Updates the opacity of each edge
+  d3.selectAll('.link').style('opacity', p => {
+    let src = p.source;
+    let targ = p.target;
     if (src.isVisible && targ.isVisible) {
-      return (curPath.source.isHighlighted && curPath.target.isHighlighted) ? 1 : reducedOpacity;
+      return (src.isHighlighted && targ.isHighlighted) ? 1 : reducedOpacity;
     } else { return 0; }
   });
 
-  checkOpacity();
+  checkOpacity(); // Check every nodes opacity
 }
