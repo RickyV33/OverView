@@ -137,6 +137,11 @@ export default function update (graphData, selectedProjectId, rootId = parseInt(
   }
 
   if (currentProjectId !== selectedProjectId) {
+    // Clears out the html tags within the SVG
+    svg.select('#nodes').selectAll('.node').remove();
+    svg.select('#edges').selectAll('.link').remove();
+
+    // Clears out the data for the graph
     nodesToRender = [];
     edgesToRender = [];
 
@@ -146,13 +151,14 @@ export default function update (graphData, selectedProjectId, rootId = parseInt(
 
     filterJSON(nodesEdgesMap, rootId);
   } else {
+    // Clears out the html tags within the SVG
     svg.select('#nodes').selectAll('.node').remove();
     svg.select('#edges').selectAll('.link').remove();
 
+    // Clears out the data for the graph
     nodesToRender = [];
     edgesToRender = [];
 
-    console.log(svg.select('#nodes').selectAll('.node'));
     filterJSON(nodesEdgesMap, rootId);
   }
 
@@ -181,6 +187,7 @@ export default function update (graphData, selectedProjectId, rootId = parseInt(
     console.log(nodesEdgesMap.edges);
   }
 
+  // Set the force data
   force.links(edgesToRender);
   force.nodes(nodesToRender);
 
