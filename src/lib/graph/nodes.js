@@ -144,7 +144,7 @@ function unCollapse (id) {
     // Hide each downStream edge and recurse to downStream node
     thisNode.edges.forEach((edgeIndex) => {
       edges[edgeIndex].target.isVisible = true;
-      edges[edgeIndex].target.isCollapsed = false;
+      // edges[edgeIndex].target.isCollapsed = false;
     });
     thisNode.isCollapsed = false;
   }
