@@ -2,7 +2,7 @@
 /* exported nodesEdgesMap */
 import { isRoot, size, getById, projectNode, debug, updateOpacity } from './config';
 import * as nodeInfoTip from './infoTip';
-import { floatDown } from '../displayProjectsGraph';
+import { float } from '../displayProjectsGraph';
 
 let edges = null;
 let timer;                // For click event monitoring
@@ -78,7 +78,7 @@ function downStreamHighlightCheck (d, count) {
       if ((curNode.downstreamEdges && curNode.isHighlighted) || curNode.visited) {
         count = (count === -1) ? 1 : count + 1;
       }
-      // curID.visited = true;
+      curID.visited = true;
     });
 
     if (debug) {
@@ -207,20 +207,21 @@ function nodeMouseOver (overNode) {
     nodeText = nodeText + '<div class="content">' + strDesc + '</div>';
   }
 
-  // Set the tip html and position
-  nodeInfoTip.update(nodeText);
+  nodeInfoTip.update(nodeText); // Set the tip html and position
 }
 
 /**
- * Mouse out event for node object that hides a tooltip and changes node circle back to original size
- * @param overNode
+ * Mouse out event for node object that hides a tooltip and changes node circle back to original size.
+ * It also removes the hover over class.
  */
-function nodeMouseOut (overNode) {
+function nodeMouseOut () {
   d3.select(this).select('circle').transition()
     .duration(500)
     .attr('r', 13)
     .attr('opacity', 0.9);
 
+  // Remove the hover over class
+  d3.select(this).classed('hoverOver', false);
   nodeInfoTip.hide();
 }
 
@@ -237,6 +238,10 @@ function click (d) {
   if (clickedOnce) {  // This only occurs if someone clicks twice before the timeout below
     nodeDoubleClick(d);  // Call the double click function
   } else {              // We've seen a single click
+    // Changes the clicked node to active color
+    d3.selectAll('.activeNode').classed('activeNode', false);
+    d3.select(this).classed('activeNode', true);
+
     if (d3.event.shiftKey) {  // If we see a click with a shift...
       nodeClick(d);  // Call nodeClick() to check (un)highlighting
     } else {
@@ -252,14 +257,14 @@ function click (d) {
  * Handles the logic for highlighting and un-highlighting nodes on single-click
  * @param {Object} selectedNode is the node that was just clicked
  */
-function nodeClick (selectedNode) {
+function nodeClick (d) {
   if (debug) {
     console.log('===============> nodeClick');
   }
 
   let highlightedCount = 0; // this will count how many downStream nodes are highlighted.
-  if (selectedNode.downstreamEdges.length > 0) {
-    selectedNode.downstreamEdges.forEach((edgeIndex) => {
+  if (d.downstreamEdges.length > 0) {
+    d.downstreamEdges.forEach((edgeIndex) => {
       let targetNode = edges[edgeIndex].target;
       if (targetNode.isHighlighted) {
         highlightedCount++;
@@ -268,16 +273,16 @@ function nodeClick (selectedNode) {
   }
 
   // highlightedCount = downStreamHighlightCheck(d, highlightedCount);
-  if (selectedNode.isHighlighted) {
+  if (d.isHighlighted) {
     // If the downstream items are not all highlighted, then we highlight all of them
     // Otherwise unHighlight all of them
-    if (selectedNode.downstreamEdges.length > 0 && (highlightedCount !== selectedNode.downstreamEdges.length)) {
-      highlightNodes(selectedNode);
+    if (d.downstreamEdges.length > 0 && (highlightedCount !== d.downstreamEdges.length)) {
+      highlightNodes(d);
     } else {
-      unHighlightNodes(selectedNode);
+      unHighlightNodes(d);
     }
   } else {
-    highlightNodes(selectedNode);
+    highlightNodes(d);
   }
 
   updateOpacity();
@@ -308,7 +313,7 @@ export function resetVisitedFlag () {
  */
 function nodeDoubleClick (clickedNode) {
   if (debug) {
-    console.log('===============> Double Click Fired on ' + clickedNode.id);
+    console.log('======> Double Click Fired on ' + clickedNode.id);
     // console.log(clickedNode);
   }
 
@@ -383,7 +388,7 @@ export function update (svg, forceLayout, nodes, physics, itemNames) {
     .attr('x', '-9px')
     .attr('y', '-9px');
 
-  if (itemNames) {
+  if (itemNames === 2) {
     nodeEnter.append('text') // Add the name of the node as text
       .attr('class', 'nodeText')
       .attr('x', (d) => {
@@ -398,7 +403,7 @@ export function update (svg, forceLayout, nodes, physics, itemNames) {
       .text((d) => { // Limit the length of the name text
         return d.name.length > 18 ? d.name.substring(0, 15) + '...' : d.name;
       });
-  } else {
+  } else if (itemNames === 1) {
     nodeEnter.append('text') // Add the name of the node as text
       .attr('x', 0)
       .attr('dy', 30)
@@ -407,9 +412,18 @@ export function update (svg, forceLayout, nodes, physics, itemNames) {
       .text((d) => { // Limit the length of the name text
         return d.name.length > 18 ? d.name.substring(0, 15) + '...' : d.name;
       });
+  } else if (itemNames === 0) {
+    nodeEnter.append('text') // Add the name of the node as text
+      .attr('x', 20)
+      .attr('dy', 0)
+      .attr('class', 'nodeText')
+      .attr('text-anchor', 'right')
+      .text((d) => { // Limit the length of the name text
+        return d.name.length > 18 ? d.name.substring(0, 15) + '...' : d.name;
+      });
   }
 
-  node.exit().remove();
+  node.exit().remove();  // Handles the removal of the nodes upon data change in d3 graph
 
   // Activate the physics if the physics flag is set
   if (physics) {
@@ -450,7 +464,17 @@ export function tick (e) {
     return 'translate(' + d.x + ',' + d.y + ')';
   });
 
-  floatDown ? floatNodesDown(e) : floatNodesRight(e);  // Toggle the float down and the float right
+  // Toggle the float direction
+  switch (float) {
+    case 0:
+      floatNodesRight(e);
+      break;
+    case 1:
+      floatNodesDown(e);
+      break;
+    case 2:
+      break;
+  }
 
   // Set the node position
   node.attr('cx', (d) => { return 5 * d.x; })
