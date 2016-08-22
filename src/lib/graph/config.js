@@ -20,7 +20,6 @@ export let nodesEdgesMap = {};
 export let projectNode = {};
 
 let svg = null;
-let pathGroup = null;
 let force = null;         // The force layout for d3
 export let debug = true;         // To display the function console logs
 
@@ -80,8 +79,6 @@ function config () {
     .append('svg:path')
     .attr('d', function (d) { return d.path; })
     .attr('class', function (d) { return d.class; });
-
-  pathGroup = svg.append('svg:g');
 
   force = d3.layout.force()
     .size([width, height])
@@ -419,7 +416,7 @@ export function updateOpacity () {
   // Updates the opacity of the nodes
   d3.selectAll('.node').style('opacity', d => {
     if (d.isVisible) {
-      return d.isHighlighted ? 1: reducedOpacity;
+      return d.isHighlighted ? 1 : reducedOpacity;
     } else {
       return 0;
     }
