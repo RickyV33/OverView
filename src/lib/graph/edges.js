@@ -3,7 +3,7 @@ import { debug } from './config';
 import { curves } from '../displayProjectsGraph';
 
 /**
- * Returns a curved line parameter for edge
+ * Returns a curved line parameter for edges
  * @param d
  * @returns {string}
  */
@@ -28,11 +28,17 @@ function straightEdges (d) {
 }
 
 /**
- * Float the edges to the bottom of their upstream node
+ * Float the edges to the bottom of their upstream node creating an upside down tree-like structure
+ * Example:
+ *    o
+ *   / \
+ *  o   o
+ *
+ *  This is accomplished by pushing the source nodes up (lowering d.source.y) and pushing the target nodes down
+ *  (increasing d.target.y).
  */
 export function floatEdgesDown (e) {
-  var offset = 10 * e.alpha; // For the node offset
-
+  var offset = 7 * e.alpha; // For the node offset
   d3.selectAll('.link').each((d) => {
     d.source.y -= offset;  // Offset sources up
     d.target.y += offset;  // Offset targets down
@@ -43,8 +49,13 @@ export function floatEdgesDown (e) {
 }
 
 /**
- * Update the force links in the graph by building them.
- * It also contains the exit event definition
+ * update adds the force links to the graph by appending forceLayout's links to the data in the link class (.link)
+ * under the edge id (#edge).
+ *
+ * On enter (during the appending to data) each path and arrow is checked to see whether it is assigned t0 class 'link'
+ * or to class 'suspect'.
+ *
+ * It also contains the exit event definition, which is a just a removal of the data that has exited.
  * @param svg
  * @param forceLayout
  * @param edges
@@ -54,6 +65,7 @@ export function update (svg, forceLayout, edges) {
     console.log('edges.update()');
   }
 
+  //
   let paths = svg.select('#edges').selectAll('.link')
     .data(forceLayout.links());
 
@@ -75,6 +87,10 @@ export function update (svg, forceLayout, edges) {
   paths.exit().remove(); // Remove unneeded elements
 }
 
+/**
+ * tick on edges checks whether we are using curved or straight edges and applies them
+ * @param e
+ */
 export function tick (e) {
   if (debug === 2) {
     console.log('edges.tick()');
@@ -90,7 +106,8 @@ export function tick (e) {
 }
 
 /**
- * Mouse over event for edge object that displays a tooltip
+ * Mouse over event for an edge object that displays a tooltip containing the source and target item names, and whether
+ * an edge is suspect.
  * @param overEdge
  */
 function edgeMouseOver (overEdge) {
@@ -116,7 +133,7 @@ function edgeMouseOver (overEdge) {
 }
 
 /**
- * Mouse out event for edge object that hides a tooltip and changes edge back to original size
+ * Mouse out event for edge object that hides the tooltip and changes edge back to original size
  * @param overEdge
  */
 function edgeMouseOut () {
