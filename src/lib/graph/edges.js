@@ -1,6 +1,7 @@
 /* global d3*/
 import { debug } from './config';
 import { curves } from '../displayProjectsGraph';
+import * as nodeInfoTip from './infoTip';
 
 /**
  * Returns a curved line parameter for edge
@@ -94,12 +95,11 @@ export function tick (e) {
  * @param overEdge
  */
 function edgeMouseOver (overEdge) {
+  if (debug) {
+    console.log('edgeMouseOver()');
+  }
+
   d3.select(this).classed('hoverOverEdge', true);
-  // Make the node circle larger and change opacity
-  // d3.select(this).select('circle').transition()
-  //   .duration(500)
-  //   .attr('r', 17)
-  //   .attr('opacity', 1);
 
   let strTarget = overEdge.target.name;
   let strSource = overEdge.source.name;
@@ -113,20 +113,19 @@ function edgeMouseOver (overEdge) {
     .style('left', (d3.event.pageX) + 'px')
     .style('top', (d3.event.pageY + 30) + 'px')
     .style('visibility', 'visible');
+
+  nodeInfoTip.update(tipText); // Set the tip html and position
 }
 
 /**
  * Mouse out event for edge object that hides a tooltip and changes edge back to original size
- * @param overEdge
+ * It also resets the html in the node info tip div
  */
 function edgeMouseOut () {
-  // d3.select(this).select('circle').transition()
-  //   .duration(500)
-  //   .attr('r', 13)
-  //   .attr('opacity', 1);
+  if (debug) {
+    console.log('edgeMouseOut()');
+  }
 
-  d3.select(this).classed('hoverOverEdge', false);
-
-  d3.select('#nodeInfoTip').html('')
-    .style('visibility', 'hidden');
+  d3.select(this).classed('hoverOverEdge', false); // Unset the hover over css class
+  nodeInfoTip.hide();
 }
