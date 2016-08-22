@@ -197,6 +197,7 @@ export default function update (graphData, selectedProjectId, rootId = parseInt(
 
   force.on('tick', tick);
   force.start();
+  updateOpacity();
 }
 
 /**
@@ -312,7 +313,7 @@ function mapNodesToEdges (graphData) {
     let node = copyObject(item);
 
     node.isCollapsed = false;    // Collapse feature flag
-    node.isVisible = true;       // Collapse feature flag
+    node.isVisible = true;       // visibility feature flag
     node.isHighlighted = false;  // Highlight feature flag
     node.visited = false;        // For traversing through the graph
     node.isSuspect = false;      // For helping to mark the node as suspect
@@ -434,4 +435,26 @@ export function updateOpacity () {
   });
 
   checkOpacity(); // Check every nodes opacity
+  downstreamBadgeToggle(); // Check the downstream count badge
+}
+
+/**
+ * Go through every node with downstream elements and check to see if it is visible.
+ * If one of its downstream items is not visible, then show the node count badge, otherwise hide it.
+ */
+function downstreamBadgeToggle () {
+  if (debug) {
+    console.log('downstreamBadgeToggle()');
+  }
+
+  d3.selectAll('.hasDownstream > .downstreamCount').classed('hidden', item => {
+    let hasHiddenDownstream = false;
+    item.edges.forEach(function (d) {
+      let foundEdge = nodesEdgesMap.edges[d];
+      let targetNode = foundEdge.target;
+      if (!targetNode.isVisible) { hasHiddenDownstream = true; }
+    });
+
+    return !hasHiddenDownstream;
+  });
 }

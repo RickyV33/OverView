@@ -144,6 +144,7 @@ function unCollapse (id) {
     // Hide each downStream edge and recurse to downStream node
     thisNode.edges.forEach((edgeIndex) => {
       edges[edgeIndex].target.isVisible = true;
+      edges[edgeIndex].target.isCollapsed = false;
     });
     thisNode.isCollapsed = false;
   }
@@ -278,6 +279,7 @@ function nodeClick (selectedNode) {
   } else {
     highlightNodes(selectedNode);
   }
+
   updateOpacity();
   // Check Opacity only makes changes if ALL the nodes are unhighlighted.
   resetVisitedFlag();
@@ -350,7 +352,7 @@ export function update (svg, forceLayout, nodes, physics, itemNames) {
 
   let nodeEnter = node.enter().append('g')
     .attr('id', (d) => {
-      return d.id;  // Add an id element to each node
+      return 'node-' + d.id;  // Add an id element to each node
     })
     .attr('class', (thisNode) => {
       // Add projectRoot class if the node is the project node
