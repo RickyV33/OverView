@@ -98,7 +98,7 @@ function config () {
 }
 
 export function rootId (rootId) {
-  if (rootId === undefined) {
+  if (rootId === undefined || rootId === NaN) {
     return currentRootId;
   } else {
     currentRootId = rootId;
@@ -136,15 +136,19 @@ export default function update (graphData, selectedProjectId, rootId = parseInt(
     nodesToRender = [];
     edgesToRender = [];
 
-    insertProjectNode(graphData, rootId);  // This function has to occur right before mapping occurs
+    // insertProjectNode(graphData, rootId);  // This function has to occur right before mapping occurs
     nodesEdgesMap = mapNodesToEdges(graphData);  // Pre-process data for faster data retrieval
     nodes.setEdges(nodesEdgesMap.edges);
 
     filterJSON(nodesEdgesMap, rootId);
   } else {
+    svg.select('#nodes').selectAll('.node').remove();
+    svg.select('#edges').selectAll('.link').remove();
+
     nodesToRender = [];
     edgesToRender = [];
 
+    console.log(svg.select('#nodes').selectAll('.node'));
     filterJSON(nodesEdgesMap, rootId);
   }
 
@@ -382,7 +386,7 @@ export function checkOpacity () {
     d3.selectAll('.node').style('opacity', (d) => {
       return d.isVisible ? 1 : 0;
     });// Turn Everyone on
-    d3.selectAll('path').style('opacity', (d) => {
+    d3.selectAll('.link').style('opacity', (d) => {
       if (d.source && d.target) {
         return (d.source.isVisible && d.target.isVisible) ? 1 : 0;
       }
@@ -398,12 +402,15 @@ export function updateOpacity () {
     console.log('edges updateOpacity()');
   }
 
-  d3.selectAll('path').style('opacity', function (curPath) {
+  d3.selectAll('.link').style('opacity', function (curPath) {
+    console.log('current path');
+    console.log(curPath);
     let src = curPath.source;
     let targ = curPath.target;
     if (src.isVisible && targ.isVisible) {
       return (curPath.source.isHighlighted && curPath.target.isHighlighted) ? 1 : reducedOpacity;
     } else { return 0; }
   });
+
   checkOpacity();
 }
