@@ -1,8 +1,7 @@
 /* global d3*/
 import { debug } from './config';
-import { curves } from '../displayProjectsGraph';
+import { curves, float } from '../displayProjectsGraph';
 import * as nodeInfoTip from './infoTip';
-import float from '../displayProjectsGraph';
 
 /**
  * Returns a curved line parameter for edges

@@ -2,7 +2,6 @@
 /* exported nodesEdgesMap */
 import { isRoot, size, getById, projectNode, debug, updateOpacity } from './config';
 import * as nodeInfoTip from './infoTip';
-import { float } from '../displayProjectsGraph';
 
 let edges = null;
 let timer;                // For click event monitoring
@@ -79,7 +78,7 @@ function downStreamHighlightCheck (d, count) {
       if ((curNode.downstreamEdges && curNode.isHighlighted) || curNode.visited) {
         count = (count === -1) ? 1 : count + 1;
       }
-      curID.visited = true;
+      curNode.visited = true;
     });
 
     if (debug) {
@@ -168,7 +167,7 @@ function nodeMouseOver (overNode) {
   let nodeText = '<h5>' + imageVal + idVal + overNode.name + '</h5>';
 
   if (overNode.description) {
-    let stringDescription= overNode.description.length > 100 ? overNode.description.substring(0, 100) + '...' : overNode.description;
+    let stringDescription = overNode.description.length > 100 ? overNode.description.substring(0, 100) + '...' : overNode.description;
     nodeText = nodeText + '<div class="content">' + stringDescription + '</div>';
   }
 
