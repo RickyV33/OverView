@@ -23,7 +23,7 @@ let relationsChecked = false;   // Flag to see if relations check was run
 
 let currentProjectId;
 let currentRootId;
-let debug = false;         // To display the function console logs
+let debug = true;         // To display the function console logs
 
 // ////// DEMO VARS//////
 
@@ -354,7 +354,7 @@ function updateGraph (graphData, rootId = projectRootId) {
     .enter()
     .append('g')
     .attr('id', function (d) {
-      return d.id;  // Add an id element to each node
+      return 'node-' + d.id;  // Add an id element to each node
     })
     .attr('class', function (thisNode) {
       // Add projectRoot class if the node is the project node
@@ -868,6 +868,7 @@ function unCollapse (id) {
     // Hide each downStream edge and recurse to downStream node
     thisNode.edges.forEach(function (relItem) {
       relItem.target.isVisible = true;
+      relItem.target.isCollapsed = false;
     });
     thisNode.node.isCollapsed = false;
   }
@@ -945,15 +946,24 @@ function checkOpacity () {
 }
 
 /**
- * Go through every node with downstream elements and check to see if it is collapsed.
- * If it is collapsed, then hide the node count badge, otherwise show it.
+ * Go through every node with downstream elements and check to see if it is visible.
+ * If one of its downstream items is not visible, then show the node count badge, otherwise hide it.
  */
 function downstreamBadgeToggle () {
   if (debug) {
     console.log('downstreamBadgeToggle()');
   }
 
-  d3.selectAll('.hasDownstream').select('.downstreamCount').classed('hidden', d => {
-    return !d.isCollapsed;
+  // d3.selectAll('.link').selectAll('.hasDownstream').select('.downstreamCount').classed('hidden', d => {
+  //   return !d.isCollapsed;
+  // });
+  d3.selectAll('.hasDownstream > .downstreamCount').classed('hidden', item => {
+    let hasHiddenDownstream = false;
+    item.downStream.forEach(d => {
+      let foundItem = nodeToEdgeMap[d];
+      if (!foundItem.node.isVisible) { hasHiddenDownstream = true; }
+    });
+
+    return !hasHiddenDownstream;
   });
 }
