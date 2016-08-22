@@ -9,7 +9,7 @@ let timer;                // For click event monitoring
 let clickedOnce = false;  // For monitoring the click event on node
 
 /**
- * Highlight the selected node "d" then highlight the downstreamEdges target nodes
+ * Highlight the selected node "d" then highlight the downstreamEdges' target nodes
  * @param {object} d
  */
 function highlightNodes (d) {
@@ -25,7 +25,7 @@ function highlightNodes (d) {
 
 /**
  * Un-highlight the clicked node (d) and the array of downStream nodes for it. This will NOT
- * un-highlight a node if all of it's children are highlighted (cycle checking)
+ * un-highlight a node if all of it's children are highlighted
  * @param {object} d is the node that was just clicked
  */
 // TODO : Keep nodes with two highlighted upstream nodes highlighted on un-highlight with a count
@@ -34,10 +34,11 @@ function unHighlightNodes (d) {
     console.log('====> unHighlightNodes()');
   }
 
-  // unhighlight the clicked node
+  // unhighlight the selected node
   d.isHighlighted = false;
+  // set the selected node to visited
   d.visited = true;
-  let count = -1; // used to check if the downstream nodes should be highlighted.
+  let count = -1; // used to check if the downstream nodes should be un-highlighted.
   if (d.downstreamEdges.length > 0) {
     d.downstreamEdges.forEach((edgeIndex) => {
       let curNode = edges[edgeIndex].target;
@@ -129,12 +130,12 @@ function collapse (id) {
 }
 
 /**
- * Uncollapses the node with the given id.
+ * Uncollapses a node and all it's downstream items at the given id.
  * @param id
  */
 function unCollapse (id) {
   if (debug) {
-    // console.log('-- unCollapse() --');
+    console.log('-- unCollapse() --');
   }
 
   let nodes = d3.selectAll('.node').data();
@@ -152,7 +153,8 @@ function unCollapse (id) {
 }
 
 /**
- * Float the nodes to the right of their upstream node
+ * Float the nodes to the right of their upstream node. This is done by pushing the sources left and targets right.
+ * e.alpha prevents the graph from "sliding" away.
  */
 function floatNodesRight (e) {
   let offset = 10 * e.alpha; // For the node offset
@@ -168,7 +170,8 @@ function floatNodesRight (e) {
 }
 
 /**
- * Float the nodes to the bottom of their upstream node
+ * Float the nodes to the bottom of their upstream node. This is done by pushing all sources up and all targets down.
+ * e.alpha prevents the graph from "sliding" away.
  */
 function floatNodesDown (e) {
   var offset = 10 * e.alpha; // For the node offset
@@ -182,9 +185,6 @@ function floatNodesDown (e) {
     .attr('y1', (d) => { if (d.source) { return d.source.y; } })
     .attr('x2', (d) => { if (d.target) { return d.target.x; } })
     .attr('y2', (d) => { if (d.target) { return d.target.y; } });
-
-  d3.selectAll('.node').attr('cx', (d) => { return d.x; })
-    .attr('cy', (d) => { return d.y; });
 }
 
 /**
@@ -198,13 +198,13 @@ function nodeMouseOver (overNode) {
     .attr('r', 17)
     .attr('opacity', 1);
 
-  let idVal = overNode.id >= 0 ? overNode.id + ' - ' : '';
+  let idVal = (overNode.id >= 0) ? overNode.id + ' - ' : '';
   let imageVal = overNode.image ? '<img src="' + overNode.image + '">' : '';
   let nodeText = '<h5>' + imageVal + idVal + overNode.name + '</h5>';
 
   if (overNode.description) {
-    let strDesc = overNode.description.length > 100 ? overNode.description.substring(0, 100) + '...' : overNode.description;
-    nodeText = nodeText + '<div class="content">' + strDesc + '</div>';
+    let stringDescription= overNode.description.length > 100 ? overNode.description.substring(0, 100) + '...' : overNode.description;
+    nodeText = nodeText + '<div class="content">' + stringDescription + '</div>';
   }
 
   nodeInfoTip.update(nodeText); // Set the tip html and position
@@ -351,10 +351,11 @@ export function update (svg, forceLayout, nodes, physics, itemNames) {
   if (debug) {
     console.log('===> nodes.update()');
   }
-
+  // select all the node class items (.node) under the node id (#node) and set the data to the nodes in forceLayout.nodes
   let node = svg.select('#nodes').selectAll('.node')
     .data(forceLayout.nodes());
 
+  // when new nodes appear we need to build their attributes
   let nodeEnter = node.enter().append('g')
     .attr('id', (d) => {
       return 'node-' + d.id;  // Add an id element to each node
