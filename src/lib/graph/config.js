@@ -1,4 +1,5 @@
 /* global d3*/
+/* exported insertProjectNode */
 import * as nodes from './nodes';
 import * as edges from './edges';
 import configureInfoTip from './infoTip';
@@ -98,7 +99,7 @@ function config () {
 }
 
 export function rootId (rootId) {
-  if (rootId === undefined || rootId === NaN) {
+  if (rootId === undefined || isNaN(rootId)) {
     return currentRootId;
   } else {
     currentRootId = rootId;
@@ -341,7 +342,7 @@ function mapNodesToEdges (graphData) {
  * @param name
  * @param rootId
  */
-function insertProjectNode (graphData, rootId) {
+export function insertProjectNode (graphData, rootId) {
   if (debug) {
     console.log('===> insertProjectNode()');
     console.log('\trootID=' + rootId);
