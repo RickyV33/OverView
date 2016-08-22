@@ -1,17 +1,16 @@
-/* global d3 */
-
+/* exported projectRootId, curves, physics itemNames, floatDown */
 import updateGraph from './graph/config';
 
 /* exported renderGraph */
-const projectRootId = -1; // Default value for project node
+export const projectRootId = -1; // Default value for project node
 
 // ////// DEMO VARS//////
 
 // let allCollapsed = false;
-let curves = false;
-let physics = true;
-let itemNames = true;
-let floatDown = true;
+export let curves = true;
+export let physics = true;
+export let itemNames = true;
+export let floatDown = false;
 
 // /////////////////////
 
