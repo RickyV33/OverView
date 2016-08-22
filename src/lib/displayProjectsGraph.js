@@ -914,6 +914,7 @@ function updateOpacity () {
     } else { return 0; }
   });
   checkOpacity();
+  downstreamBadgeToggle(); // Check the badge visibility
 }
 
 // function collapseAll (rootId) {
@@ -941,4 +942,18 @@ function checkOpacity () {
       return (nodeToEdgeMap[d.source.id].node.isVisible && nodeToEdgeMap[d.target.id].node.isVisible) ? 1 : 0;
     }); // Turn on all the edges.
   }
+}
+
+/**
+ * Go through every node with downstream elements and check to see if it is collapsed.
+ * If it is collapsed, then hide the node count badge, otherwise show it.
+ */
+function downstreamBadgeToggle () {
+  if (debug) {
+    console.log('downstreamBadgeToggle()');
+  }
+
+  d3.selectAll('.hasDownstream').select('.downstreamCount').classed('hidden', d => {
+    return !d.isCollapsed;
+  });
 }
