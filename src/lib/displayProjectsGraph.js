@@ -12,7 +12,6 @@ export let physics = true;
 
 export let itemNameOrientation = 1;  // 0 - right, 1 - below, 2 - mix
 export let float = 0;      // 0 - right, 1 - down, 2 - no float
-
 let example = 5;
 
 switch (example) {

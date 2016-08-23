@@ -68,7 +68,10 @@ export function update (svg, forceLayout, nodes, physics, itemNameOrientation) {
     .attr('x', '-9px')
     .attr('y', '-9px');
 
+  // This section details the orientation of the item names
+
   if (itemNameOrientation === 2) {
+    // a value of '2' places item names to the right of nodes that are sinks and below nodes that are not
     nodeEnter.append('text') // Add the name of the node as text
       .attr('class', 'nodeText')
       .attr('x', (d) => {
@@ -84,6 +87,7 @@ export function update (svg, forceLayout, nodes, physics, itemNameOrientation) {
         return d.name.length > 18 ? d.name.substring(0, 15) + '...' : d.name;
       });
   } else if (itemNameOrientation === 1) {
+    // a value of '1' places item names below the node
     nodeEnter.append('text') // Add the name of the node as text
       .attr('x', 0)
       .attr('dy', 30)
@@ -93,6 +97,7 @@ export function update (svg, forceLayout, nodes, physics, itemNameOrientation) {
         return d.name.length > 18 ? d.name.substring(0, 15) + '...' : d.name;
       });
   } else if (itemNameOrientation === 0) {
+    // a value of '0' places item names to the right of the node
     nodeEnter.append('text') // Add the name of the node as text
       .attr('x', 20)
       .attr('dy', 0)
@@ -102,8 +107,7 @@ export function update (svg, forceLayout, nodes, physics, itemNameOrientation) {
         return d.name.length > 18 ? d.name.substring(0, 15) + '...' : d.name;
       });
   }
-
-  node.exit().remove();  // Handles the removal of the nodes upon data change in d3 graph
+  node.exit().remove();  // Handles the removal of any nodes upon data changes in the d3 graph
 
   // Activate the physics if the physics flag is set
   if (physics) {
@@ -133,7 +137,7 @@ export function update (svg, forceLayout, nodes, physics, itemNameOrientation) {
 }
 
 /**
- * 
+ * This is the physics for the graph and will move (translate) the nodes when you drag them around
  * @param e
  */
 export function tick (e) {
@@ -143,7 +147,7 @@ export function tick (e) {
 
   let node = d3.selectAll('.node');
 
-  // Move the edge depending on node location
+  // Move the nodes in the graph depending on node location during drag
   node.attr('transform', (d) => {
     return 'translate(' + d.x + ',' + d.y + ')';
   });
