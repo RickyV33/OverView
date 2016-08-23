@@ -3,7 +3,7 @@
 import * as nodes from './nodes';
 import * as edges from './edges';
 import configureInfoTip from './infoTip';
-import { physics, itemNames, float } from '../displayProjectsGraph';
+import { physics, itemNameOrientation, float } from '../displayProjectsGraph';
 
 export const PROJECT_AS_ROOT = -1;
 
@@ -203,7 +203,7 @@ export default function update (graphData, selectedProjectId, rootId = parseInt(
 
   // Call the node and edge update sections to build them
   edges.update(svg, force, edgesToRender);
-  nodes.update(svg, force, nodesToRender, physics, itemNames);
+  nodes.update(svg, force, nodesToRender, physics, itemNameOrientation);
 
   force.on('tick', tick);
   force.start();
