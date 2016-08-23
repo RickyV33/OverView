@@ -1,6 +1,6 @@
 /* global d3*/
 /* exported nodesEdgesMap */
-import { isRoot, size, getById, projectNode, debug, updateOpacity, nodesEdgesMap, nodesToRender } from './config';
+import { isRoot, size, getById, projectNode, debug, updateOpacity, nodesEdgesMap, resetVisitedFlag } from './config';
 import * as nodeInfoTip from './infoTip';
 
 let edges = null;
@@ -252,18 +252,6 @@ function nodeClick (d) {
   updateOpacity();
   // Check Opacity only makes changes if ALL the nodes are unhighlighted.
   resetVisitedFlag();
-}
-
-/**
- * Cycle through all of the nodes and edges and set the visited flag to false
- */
-export function resetVisitedFlag () {
-  if (debug) {
-    console.log('resetVisitedFlag()');
-  }
-  nodesToRender.forEach((node) => {
-    node.visited = false;
-  });
 }
 
 /**

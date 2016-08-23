@@ -176,7 +176,7 @@ export default function update (graphData, selectedProjectId, rootId = parseInt(
   // collapseAll(rootId);
   // updateOpacity();
 
-  nodes.resetVisitedFlag(); // Sets all of the visited flags to false
+  resetVisitedFlag(); // Sets all of the visited flags to false
   console.log('RESET HAPPENED');
   // console.log(nodesToRender);
   currentProjectId = selectedProjectId;
@@ -466,5 +466,17 @@ function downstreamBadgeToggle () {
     });
 
     return !hasHiddenDownstream;
+  });
+}
+
+/**
+ * Cycle through all of the nodes and edges and set the visited flag to false
+ */
+export function resetVisitedFlag () {
+  if (debug) {
+    console.log('resetVisitedFlag()');
+  }
+  nodesToRender.forEach((node) => {
+    node.visited = false;
   });
 }
