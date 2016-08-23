@@ -261,7 +261,7 @@ export function resetVisitedFlag () {
   if (debug) {
     console.log('resetVisitedFlag()');
   }
-  nodesToRender.forEach ( (node) => {
+  nodesToRender.forEach((node) => {
     node.visited = false;
   });
 }
@@ -275,14 +275,14 @@ function nodeDoubleClick (clickedNode) {
   if (debug) {
     console.log('======> Double Click Fired on ' + clickedNode.id);
     console.log('NODE CLICKED:  ');
-    console.log(getById(nodesEdgesMap.nodes ,clickedNode.id));
+    console.log(getById(nodesEdgesMap.nodes, clickedNode.id));
     // console.log(clickedNode);
   }
 
   clickedOnce = false;  // For resetting the clickedOnce flag
   clearTimeout(timer);  // Reset the timer for click event
-  console.log(getById(nodesEdgesMap.nodes ,clickedNode.id).downstreamEdges.length);
-  console.log(getById(nodesEdgesMap.nodes ,clickedNode.id).isCollapsed);
+  console.log(getById(nodesEdgesMap.nodes, clickedNode.id).downstreamEdges.length);
+  console.log(getById(nodesEdgesMap.nodes, clickedNode.id).isCollapsed);
   if (clickedNode.isCollapsed) {
     if (clickedNode.downstreamEdges.length > 0) {
       unCollapse(clickedNode.id);
