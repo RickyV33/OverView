@@ -55,7 +55,6 @@ export function update (svg, forceLayout, nodes, physics, itemNameOrientation) {
 
   // This section will be appending SVG elements to nodes
   // NOTE: RENDER ORDER MATTERS
-  
   nodeEnter.append('circle') // Circle at node behind icon configuration
     .attr('x', '-14px')
     .attr('y', '-14px')

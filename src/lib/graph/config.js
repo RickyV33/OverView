@@ -24,9 +24,8 @@ let force = null;         // The force layout for d3
 export let debug = true;         // To display the function console logs
 
 /**
- * For every shift of the graph, this function gets called.
- * It updates the location of the nodes and edges.
- *
+ * This handles the physics for the graph and executes every 'tick'
+ * Tick updates the location of nodes and edges. It also forces them to be aligned right, down, or to remain unaligned
  * @param {Object} e
  */
 function tick (e) {
@@ -34,7 +33,9 @@ function tick (e) {
     console.log('graph.tick()');
   }
 
+  // Calls the node tick function to move (translate) nodes during a tick
   nodes.tick(e);
+  // Calls the edge tick function to move (translate) edges during a tick
   edges.tick(e);
 
   // Toggle the float direction
@@ -46,7 +47,7 @@ function tick (e) {
       edges.floatEdgesDown(e);
       break;
     case 2:
-      break;
+      break;  // this creates a web-type pattern
   }
 }
 
@@ -395,26 +396,20 @@ export function collapseAll (rootId) {
 }
 
 /**
- * Check if all the nodes are un-highlighted. If they are, highlight all the nodes on the graph.
+ * Cycle through all of the nodes and edges and set the visited flag to false
  */
-export function checkOpacity () {
-  let highlight = false; // flag to see if anyone is highlighted.
-  d3.selectAll('.node').data().forEach((d) => {
-    if (d.isVisible && d.isHighlighted) {
-      highlight = true; // If ANY node is highlighted set this flag.
-    }
-  });
-  if (highlight === false) {  // Only executes if ALL nodes are NOT highlighted.
-    d3.selectAll('.node').style('opacity', (d) => {
-      return d.isVisible ? 1 : 0;
-    });// Turn Everyone on
-    d3.selectAll('.link').style('opacity', (d) => {
-      if (d.source && d.target) {
-        return (d.source.isVisible && d.target.isVisible) ? 1 : 0;
-      }
-    }); // Turn on all the edges.
+export function resetVisitedFlag () {
+  if (debug) {
+    console.log('resetVisitedFlag()');
   }
+  nodesToRender.forEach((node) => {
+    node.visited = false;
+  });
 }
+
+//
+// ============ These functions handle the opacity of nodes and edges based on visibility and highlighting ============
+//
 
 /**
  * Updates the opacity of all the nodes and edges based on their current flags.  * If the current node is hightlighted,
@@ -449,6 +444,32 @@ export function updateOpacity () {
 }
 
 /**
+ * Check if all the nodes are un-highlighted. If they are, highlight all the nodes on the graph.
+ */
+export function checkOpacity () {
+  let highlight = false; // flag to see if anyone is highlighted.
+  d3.selectAll('.node').data().forEach((d) => {
+    if (d.isVisible && d.isHighlighted) {
+      highlight = true; // If ANY node is highlighted set this flag.
+    }
+  });
+  if (highlight === false) {  // Only executes if ALL nodes are NOT highlighted.
+    d3.selectAll('.node').style('opacity', (d) => {
+      return d.isVisible ? 1 : 0;
+    });// Turn Everyone on
+    d3.selectAll('.link').style('opacity', (d) => {
+      if (d.source && d.target) {
+        return (d.source.isVisible && d.target.isVisible) ? 1 : 0;
+      }
+    }); // Turn on all the edges.
+  }
+}
+
+//
+// ============ Toggling of Downstream Count Badges on Nodes ============
+//
+
+/**
  * Go through every node with downstream elements and check to see if it is visible.
  * If one of its downstream items is not visible, then show the node count badge, otherwise hide it.
  */
@@ -469,14 +490,3 @@ function downstreamBadgeToggle () {
   });
 }
 
-/**
- * Cycle through all of the nodes and edges and set the visited flag to false
- */
-export function resetVisitedFlag () {
-  if (debug) {
-    console.log('resetVisitedFlag()');
-  }
-  nodesToRender.forEach((node) => {
-    node.visited = false;
-  });
-}
