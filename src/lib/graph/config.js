@@ -14,14 +14,14 @@ export let reducedOpacity = 0.2; // highlight opacity to reduce to
 let currentProjectId = PROJECT_AS_ROOT;
 let currentRootId = -1;
 
-let nodesToRender = [];   // Gets passed into the D3 force nodes function
+export let nodesToRender = [];   // Gets passed into the D3 force nodes function
 let edgesToRender = [];   // Gets passed into the D3 force links function
 export let nodesEdgesMap = {};
 export let projectNode = {};
 
 let svg = null;
 let force = null;         // The force layout for d3
-export let debug = false;         // To display the function console logs
+export let debug = true;         // To display the function console logs
 
 /**
  * For every shift of the graph, this function gets called.
@@ -168,7 +168,8 @@ export default function update (graphData, selectedProjectId, rootId = parseInt(
 
     filterJSON(nodesEdgesMap, rootId);
   }
-
+  console.log('DONE FILTERING');
+  // console.log(nodesToRender);
   // Collapses all the nodes except the root node
   // NOTE - If you collapse all, then you need to set the isVisible = false and isCollapsed = true
   // default values in mapNodesToEdges()
@@ -176,6 +177,8 @@ export default function update (graphData, selectedProjectId, rootId = parseInt(
   // updateOpacity();
 
   nodes.resetVisitedFlag(); // Sets all of the visited flags to false
+  console.log('RESET HAPPENED');
+  // console.log(nodesToRender);
   currentProjectId = selectedProjectId;
   currentRootId = rootId;
 

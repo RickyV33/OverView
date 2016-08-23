@@ -1,6 +1,6 @@
 /* global d3*/
 /* exported nodesEdgesMap */
-import { isRoot, size, getById, projectNode, debug, updateOpacity } from './config';
+import { isRoot, size, getById, projectNode, debug, updateOpacity, nodesEdgesMap, nodesToRender } from './config';
 import * as nodeInfoTip from './infoTip';
 
 let edges = null;
@@ -114,10 +114,10 @@ function collapse (id) {
 
           targetNode.isVisible = false;
 
-          if (!targetNode.visited) {
-            targetNode.isCollapsed = true;
-            targetNode.visited = true; // Toggle the visited flag
-          }
+          // if (!targetNode.visited) {
+          //   targetNode.isCollapsed = true;
+          //   targetNode.visited = true; // Toggle the visited flag
+          // }
 
           collapse(edge.targetId);  // Collapse downstream nodes
         });
@@ -261,13 +261,9 @@ export function resetVisitedFlag () {
   if (debug) {
     console.log('resetVisitedFlag()');
   }
-
-  let node = d3.selectAll('.node');
-
-  if (node !== null && node.data()) {
-    node.data().forEach((item) => { item.visited = false; });
-    edges.forEach((item) => { item.visited = false; });
-  }
+  nodesToRender.forEach ( (node) => {
+    node.visited = false;
+  });
 }
 
 /**
@@ -278,11 +274,15 @@ export function resetVisitedFlag () {
 function nodeDoubleClick (clickedNode) {
   if (debug) {
     console.log('======> Double Click Fired on ' + clickedNode.id);
+    console.log('NODE CLICKED:  ');
+    console.log(getById(nodesEdgesMap.nodes ,clickedNode.id));
     // console.log(clickedNode);
   }
 
   clickedOnce = false;  // For resetting the clickedOnce flag
   clearTimeout(timer);  // Reset the timer for click event
+  console.log(getById(nodesEdgesMap.nodes ,clickedNode.id).downstreamEdges.length);
+  console.log(getById(nodesEdgesMap.nodes ,clickedNode.id).isCollapsed);
   if (clickedNode.isCollapsed) {
     if (clickedNode.downstreamEdges.length > 0) {
       unCollapse(clickedNode.id);
