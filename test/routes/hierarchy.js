@@ -104,16 +104,15 @@ let hierarchyTestCases = [
 describe('hierarchy', () => {
   describe('GET /hierarchy', () => {
     hierarchyTestCases.forEach(item => {
-      it(item.testcase, (done) => {
+      it(item.testcase, () => {
         initializeRoute(item.body);
-        chai.request(app)
+        return chai.request(app)
           .get('/hierarchy?project=33')
           .then(res => {
             expect(res.body).to.deep.equal(item.body.itemHierarchy);
-            done();
           })
           .catch(err => {
-            done(err);
+            throw (err);
           });
       });
     });
