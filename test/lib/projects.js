@@ -194,6 +194,22 @@ describe('projects.js module', () => {
         expect(item.type).to.equal(99);
       });
     });
+
+    it('should return a promise with an item whose description is sanitized of html', () => {
+      data = [{'id': 10, 'fields': {'name': 'item name'}, 'type': 99,
+        'image': 'item image',
+        'description': 'A sample &lt;a href=\\\'#something\\\'&gt;description&lt;/a&gt; of something that really describes &lt;strong&gt;nothing&lt;/strong&gt;'
+      }];
+      projectsStub = proxyquire('../../lib/projects', {'./pagination': resolvedPromise});
+      projectsStub.getProjectItems(projectId, url).then(item => {
+        expect(item.id).to.equal(10);
+        expect(item.name).to.equal('item name');
+        expect(item.type).to.equal(99);
+        expect(item.image).to.equal('item image');
+        expect(item.description).to.equal('A sample description of something that really describes nothing');
+      });
+    });
+
     it('should return a rejected promise when no items exist.', () => {
       projectsStub = proxyquire('../../lib/projects', {'./pagination': rejectedPromise});
       return expect(projectsStub.getProjectItems(projectId, url)).to.eventually.be.rejected();

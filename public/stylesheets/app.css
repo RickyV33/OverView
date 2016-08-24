@@ -17,7 +17,7 @@ header {
     min-height: 72px;
 }
 
-svg {
+#d3Container {
     width: 100%;
     flex: 1;
 }
