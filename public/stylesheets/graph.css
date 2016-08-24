@@ -111,7 +111,7 @@ image {
     z-index: 10;
     visibility: hidden;
     padding: 0px;
-    width: 300px;
+    max-width: 300px;
     background-color: #f9f9f9;
 
     /*Drop shadow*/
@@ -155,10 +155,28 @@ image {
     margin: 0px;
     height: 100%;
 }
+
+.nodeInfoTip > div.content.text-center {
+    text-align: center;
+}
+
 .nodeInfoTip img {
     position: relative;
     top: 0.2rem;
     margin-right: 0.2rem;
+}
+
+.tooltip-relationship-text {
+    font-weight: bold;
+
+}
+
+.suspect-badge-text {
+    color: #F94306;
+    font-weight: bolder;
+    stroke: #FFF;
+    font-size: 15pt;
+    stroke-width: 4px;
 }
 
 .node-suspect > .suspect-flag > .suspect-badge-text {
