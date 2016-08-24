@@ -27,7 +27,7 @@ export function addProjectAnchorClickHandler () {
         let hierarchyPayload = payloads[0];
         graph.graphData = payloads[1];
         hierarchy.renderHierarchy(hierarchyPayload);
-        hierarchy.addItemHierachyAnchorClickHandler();
+        hierarchy.addItemHierachyClickHandler();
         graph.toggle(document.querySelector('#projects'));
         graph.toggle(document.querySelector('#hierarchy'));
         graph.toggle(document.querySelector('#backButton'));
