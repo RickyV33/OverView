@@ -40,6 +40,7 @@ describe('Graph class module', () => {
     let itemData = [{'id': 10, 'name': 'item name', 'type': 99}];
     let relationshipData = [{'id': 10, 'source': 1, 'target': 2, 'type': 99}];
     let imageData = [{'99': 'item image'}];
+    let edgeNameData = [{'99': 'edge name'}];
 
     beforeEach(() => {
       projectId = 1;
@@ -68,6 +69,7 @@ describe('Graph class module', () => {
       stubs.getProjectItems = () => resolvePromise(itemData);
       stubs.getProjectRelationships = () => resolvePromise(relationshipData);
       stubs.getProjectItemTypeImages = () => resolvePromise(imageData);
+      stubs.getRelationshipTypeNames = () => resolvePromise(edgeNameData);
       newGraph = new Graph(projectId, url);
       return newGraph.buildGraph().then(() => {
         expect(newGraph.name).to.equal('mocked project name');
@@ -87,6 +89,7 @@ describe('Graph class module', () => {
       stubs.getProjectItems = () => rejectedErrorPromise();
       stubs.getProjectRelationships = () => rejectedErrorPromise();
       stubs.getProjectItemTypeImages = () => rejectedErrorPromise();
+      stubs.getRelationshipTypeNames = () => rejectedErrorPromise();
       newGraph = new Graph(projectId, url);
       expect(newGraph.name).to.be.empty();
       expect(newGraph.nodes).to.be.empty();
@@ -98,6 +101,7 @@ describe('Graph class module', () => {
       stubs.getProjectItems = () => resolvePromise(itemData);
       stubs.getProjectRelationships = () => resolvePromise(relationshipData);
       stubs.getProjectItemTypeImages = () => resolvePromise(imageData);
+      stubs.getRelationshipTypeNames = () => rejectedErrorPromise();
       newGraph = new Graph(projectId, url).buildGraph();
       expect(newGraph.name).to.be.empty();
       expect(newGraph.nodes).to.be.empty();
@@ -108,7 +112,8 @@ describe('Graph class module', () => {
       stubs.getProjectName = () => resolvePromise(nameData);
       stubs.getProjectItems = () => rejectedTimeoutPromise();
       stubs.getProjectRelationships = () => resolvePromise(relationshipData);
-      stubs.getProjectItemTypeImages = () => resolvePromise(imageData);
+      stubs.getProjectRelationshipTypeNames = () => resolvePromise(imageData);
+      stubs.getRelationshipTypeNames = () => resolvePromise(edgeNameData);
       newGraph = new Graph(projectId, url).buildGraph();
       expect(newGraph.name).to.be.empty();
       expect(newGraph.nodes).to.be.empty();
@@ -120,6 +125,7 @@ describe('Graph class module', () => {
       stubs.getProjectItems = () => resolvePromise(itemData);
       stubs.getProjectRelationships = () => rejectedTimeoutPromise();
       stubs.getProjectItemTypeImages = () => resolvePromise(imageData);
+      stubs.getRelationshipTypeNames = () => resolvePromise(edgeNameData);
       newGraph = new Graph(projectId, url).buildGraph();
       expect(newGraph.name).to.be.empty();
       expect(newGraph.nodes).to.be.empty();
@@ -132,6 +138,7 @@ describe('Graph class module', () => {
         stubs.getProjectItems = () => rejectedTimeoutPromise();
         stubs.getProjectRelationships = () => resolvePromise(relationshipData);
         stubs.getProjectItemTypeImages = () => resolvePromise(imageData);
+        stubs.getRelationshipTypeNames = () => resolvePromise(edgeNameData);
         newGraph = new Graph(projectId, url).buildGraph();
         expect(newGraph.name).to.be.empty();
         expect(newGraph.nodes).to.be.empty();
@@ -144,6 +151,7 @@ describe('Graph class module', () => {
       stubs.getProjectItems = () => rejectedTimeoutPromise();
       stubs.getProjectRelationships = () => rejectedTimeoutPromise();
       stubs.getProjectItemTypeImages = () => resolvePromise(imageData);
+      stubs.getRelationshipTypeNames = () => resolvePromise(edgeNameData);
       newGraph = new Graph(projectId, url).buildGraph();
       expect(newGraph.name).to.be.empty();
       expect(newGraph.nodes).to.be.empty();
@@ -156,6 +164,7 @@ describe('Graph class module', () => {
       stubs.getProjectItems = () => resolvePromise(itemData);
       stubs.getProjectRelationships = () => rejectedTimeoutPromise();
       stubs.getProjectItemTypeImages = () => resolvePromise(imageData);
+      stubs.getRelationshipTypeNames = () => resolvePromise(edgeNameData);
       newGraph = new Graph(projectId, url).buildGraph();
       expect(newGraph.name).to.be.empty();
       expect(newGraph.nodes).to.be.empty();
@@ -167,6 +176,7 @@ describe('Graph class module', () => {
       stubs.getProjectItems = () => rejectedTimeoutPromise();
       stubs.getProjectRelationships = () => rejectedTimeoutPromise();
       stubs.getProjectItemTypeImages = () => rejectedTimeoutPromise();
+      stubs.getRelationshipTypeNames = () => rejectedTimeoutPromise();
       newGraph = new Graph(projectId, url).buildGraph();
       expect(newGraph.name).to.be.empty();
       expect(newGraph.nodes).to.be.empty();
@@ -178,6 +188,7 @@ describe('Graph class module', () => {
       stubs.getProjectItems = () => rejectedErrorPromise();
       stubs.getProjectRelationships = () => rejectedErrorPromise();
       stubs.getProjectItemTypeImages = () => rejectedErrorPromise();
+      stubs.getRelationshipTypeNames = () => rejectedErrorPromise();
       newGraph = new Graph(projectId, url).buildGraph();
       expect(newGraph.name).to.be.empty();
       expect(newGraph.nodes).to.be.empty();
@@ -188,8 +199,8 @@ describe('Graph class module', () => {
   describe('toJson function', () => {
     let badNodes = [{'id': '10', 'documentKey': 1, 'name': 'item name', 'type': '99'}];
     let badEdges = [{'id': '10', 'source': '1', 'target': '2', 'type': '99'}];
-    let nodes = [{'id': 10, 'documentKey': 'docKey', 'name': 'item name', 'type': 99, 'image': 'url', 'description': 'description'}];
-    let edges = [{'id': 10, 'source': 1, 'target': 2, 'type': 99, 'suspect': true}];
+    let nodes = [{'id': 10, 'documentKey': 'docKey', 'name': 'item name', 'type': 99, 'image': 'url', description: 'desc'}];
+    let edges = [{'id': 10, 'source': 1, 'target': 2, 'type': 99, 'suspect': true, 'name': 'edge name'}];
 
     it('should print an error message if the data Graph contains is invalid', () => {
       let graph = new Graph();
@@ -199,7 +210,7 @@ describe('Graph class module', () => {
     });
 
     it('should return a valid relationship graph json object if Graph contains valid data', () => {
-      let graph = new Graph();
+      let graph = new Graph(1, 'url');
       graph.nodes = nodes;
       graph.edges = edges;
       expect(graph.toJson()).to.not.be.empty();
@@ -209,8 +220,8 @@ describe('Graph class module', () => {
   describe('fromJson function', () => {
     let badNodes = [{'id': '10', 'documentKey': 1, 'name': 'item name', 'type': '99'}];
     let badEdges = [{'id': '10', 'source': '1', 'target': '2', 'type': '99'}];
-    let nodes = [{'id': 10, 'documentKey': 'docKey', 'name': 'item name', 'type': 99, 'image': 'url', 'description': 'description'}];
-    let edges = [{'id': 10, 'source': 1, 'target': 2, 'type': 99, 'suspect': false}];
+    let nodes = [{'id': 10, 'documentKey': 'docKey', 'name': 'item name', 'type': 99, 'image': 'url', 'description': 'desc'}];
+    let edges = [{'id': 10, 'source': 1, 'target': 2, 'type': 99, 'suspect': false, 'name': 'edge name'}];
 
     it('should print an error message if the data Graph contains is invalid', () => {
       let relGraphObj = {'items': badNodes, 'relationships': badEdges};
@@ -218,7 +229,7 @@ describe('Graph class module', () => {
     });
 
     it('should return a valid relationship graph json object if graph contains valid data', () => {
-      let graph = new Graph();
+      let graph = new Graph(1, 'url');
       graph.nodes = nodes;
       graph.edges = edges;
       let relGraphBlob = {name: 'test', 'items': nodes, 'relationships': edges};
