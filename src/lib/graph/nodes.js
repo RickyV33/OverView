@@ -416,9 +416,9 @@ function nodeMouseOver (overNode) {
     .attr('r', 17)
     .attr('opacity', 1);
 
-  let idVal = (overNode.id >= 0) ? overNode.id + ' - ' : '';
+  let idVal = overNode.documentKey ? overNode.documentKey : '';
   let imageVal = overNode.image ? '<img src="' + overNode.image + '">' : '';
-  let nodeText = '<h5>' + imageVal + idVal + overNode.name + '</h5>';
+  let nodeText = '<h5>' + imageVal + idVal + '</h5><h5>' + overNode.name + '</h5>';
 
   if (overNode.description) {
     let stringDescription = overNode.description.length > 100 ? overNode.description.substring(0, 100) + '...' : overNode.description;

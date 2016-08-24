@@ -148,8 +148,8 @@ function edgeMouseOver (overEdge) {
 
   d3.select(this).classed('hoverOverEdge', true);
 
-  let strTarget = overEdge.target.name;
-  let strSource = overEdge.source.name;
+  let strTarget = overEdge.target.documentKey;
+  let strSource = overEdge.source.documentKey;
   let strSuspect = overEdge.suspect ? 'Suspect' : '';
   let strTitle = overEdge.suspect ? '<h5 class="critical">' + strSuspect + '</h5>' : '';
   let strRelType = '<h5>' + overEdge.relationshipType + '</h5>';
