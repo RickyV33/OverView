@@ -84,7 +84,7 @@ function createHierarchyItemWithChildren (item) {
   if (item.isSet === false) {
     let itemAnchor = document.createElement('a');
     itemAnchor.setAttribute('href', '#rootId=' + item.id);
-    itemAnchor.appendChild(document.createTextNode(item.name));
+    itemAnchor.appendChild(document.createTextNode(item.name + ' (' + item.docKey + ')'));
     itemAnchor.setAttribute('data-id', item.id);
     listItem.appendChild(itemAnchor);
   } else {
