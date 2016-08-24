@@ -2,18 +2,14 @@
 
 import * as graph from '../graph';
 import * as project from './project';
-import renderGraph from './displayProjectsGraph';
+import { renderGraph, applyGraphSettings } from './displayProjectsGraph';
 
 let selectedHierarchyItem = null;
 let d3GraphOptions = {
   curves: true,
   physics: true,
-  itemNamesRight: true,
-  itemNamesBelow: false,
-  itemNamesMix: false,
-  floatRight: true,
-  floatDown: false,
-  noFloat: false
+  float: 0,
+  itemNamePlacement: 0
 };
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -24,6 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
    * Toggles the hierarchy div and displays the D3 graph representation of the data based on the passed in parameters
    */
   document.getElementById('renderButton').addEventListener('click', () => {
+    applyGraphSettings(d3GraphOptions);
     let rootId = isNaN(parseInt(selectedHierarchyItem)) ? null : parseInt(selectedHierarchyItem);
     graph.toggle(document.querySelector('#hierarchy'));
     graph.toggle(document.querySelector('#d3Container'));
@@ -47,11 +44,15 @@ function initializeD3Options () {
       option.checked = true;
     }
   });
-  graph.querySelectorAll('input[name="itemNames"]').forEach(option => {
-    option.checked = d3GraphOptions[option.id];
-  });
   graph.querySelectorAll('input[name="float"]').forEach(option => {
-    option.checked = d3GraphOptions[option.id];
+    if (parseInt(option.value) === d3GraphOptions.float) {
+      option.checked = true;
+    }
+  });
+  graph.querySelectorAll('input[name="itemNamePlacement"]').forEach(option => {
+    if (parseInt(option.value) === d3GraphOptions.itemNamePlacement) {
+      option.checked = true;
+    }
   });
 }
 
@@ -61,7 +62,11 @@ function initializeD3Options () {
 function addD3GraphOptionOnChangeHandler () {
   graph.querySelectorAll('#d3GraphOptions input[type=radio]').forEach(option => {
     option.addEventListener('change', event => {
-      d3GraphOptions[event.target.getAttribute('name')] = (event.target.getAttribute('value') === 'true');
+      if (event.target.getAttribute('name') === 'curves' || event.target.getAttribute('name') === 'physics') {
+        d3GraphOptions[event.target.getAttribute('name')] = (event.target.getAttribute('value') === 'true');
+      } else {
+        d3GraphOptions[event.target.getAttribute('name')] = parseInt(event.target.getAttribute('value'));
+      }
     });
   });
 }
