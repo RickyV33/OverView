@@ -1,6 +1,7 @@
 /* eslint-env browser */
 
 import * as project from './lib/project';
+import * as hierarchy from './lib/hierarchy';
 
 export let graphData;
 
@@ -8,6 +9,7 @@ export let graphData;
 // but functions properly
 document.addEventListener('DOMContentLoaded', () => {
   project.addProjectAnchorClickHandler();
+
   document.getElementById('logOut').addEventListener('click', () => {
     document.location.href = '/logout';
   });
@@ -16,10 +18,10 @@ document.addEventListener('DOMContentLoaded', () => {
     if (document.querySelector('#hierarchy').classList.contains('hidden')) {
       toggle(document.querySelector('#d3Container'));
       toggle(document.querySelector('#hierarchy'));
+      hierarchy.setSelectedHierarchyItem(null);
     } else {
       toggle(document.querySelector('#projects'));
       toggle(document.querySelector('#hierarchy'));
-      toggle(document.querySelector('#backButton'));
     }
   });
 });
