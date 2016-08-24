@@ -116,3 +116,12 @@ export function addItemHierachyClickHandler () {
     });
   });
 }
+
+/**
+ * Sets the value of the selectedHierarchyItem variable to the value that is supplied
+ *
+ * @param value can be null or some root id (integer)
+ */
+export function setSelectedHierarchyItem (value) {
+  selectedHierarchyItem = value;
+}

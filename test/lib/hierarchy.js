@@ -110,7 +110,8 @@ describe('Hierarchy Module', () => {
       'with no children', () => {
       let results;
       data = require('./singleItemHierarchy.json');
-      roots = [{id: 2140, type: 24, name: 'Input a Username', parent: 33, isSet: false, children: []}];
+      roots = [{id: 2140, type: 24, docKey: 'JCP1-REQ-2', name: 'Input a Username', parent: 33, isSet: false,
+        children: []}];
       mergedChildren = [];
       hierarchy = rewire('../../lib/hierarchy');
       hierarchy.__set__('mergeChildren', () => mergeChildrenStub());
@@ -124,27 +125,34 @@ describe('Hierarchy Module', () => {
       'blob argument contains a single root item with one child and one nested child', () => {
       let results;
       data = require('./singleItemwithNestedChild.json');
-      roots = [{id: 2104, type: 24, name: 'Input a Username', parent: 33, isSet: true, children: [
-        {id: 2119, type: 99, name: 'User Login Home Page', parent: 2104, isSet: false, children: []},
-        {id: 2142, type: 99, name: 'Collect and Display Project Item Hierarchy from Jama',
+      roots = [{id: 2104, type: 24, docKey: 'document key', name: 'Input a Username', parent: 33, isSet: true,
+        children: [
+        {id: 2119, type: 99, docKey: 'document key', name: 'User Login Home Page', parent: 2104, isSet: false,
+          children: []},
+        {id: 2142, type: 99, docKey: 'document key', name: 'Collect and Display Project Item Hierarchy from Jama',
           parent: 2104, isSet: false, children: []},
-        {id: 2317, type: 99, name: 'Collect and Display User Projects from Jama',
+        {id: 2317, type: 99, docKey: 'document key', name: 'Collect and Display User Projects from Jama',
           parent: 2104, isSet: true, children: [
-          {id: 2143, type: 99, name: 'Gather User\'s List of Projects', parent: 2317, isSet: false, children: []}
+          {id: 2143, type: 99, docKey: 'document key', name: 'Gather User\'s List of Projects', parent: 2317,
+            isSet: false, children: []}
           ]}
-      ]}];
-      mergedChildren = [{id: 2104, type: 24, name: 'Input a Username', parent: 33, isSet: true, children: [
-        {id: 2119, type: 99, name: 'User Login Home Page', parent: 2104, isSet: true, children: []},
-        {id: 2142, type: 99, name: 'Collect and Display Project Item Hierarchy from Jama',
+        ]}];
+      mergedChildren = [{id: 2104, type: 24, docKey: 'document key', name: 'Input a Username', parent: 33,
+        isSet: true, children: [
+        {id: 2119, type: 99, docKey: 'document key', name: 'User Login Home Page', parent: 2104, isSet: true,
+          children: []},
+        {id: 2142, type: 99, docKey: 'document key', name: 'Collect and Display Project Item Hierarchy from Jama',
           parent: 2104, isSet: false, children: []},
-        {id: 2317, type: 99, name: 'Collect and Display User Projects from Jama',
+        {id: 2317, type: 99, docKey: 'document key', name: 'Collect and Display User Projects from Jama',
           parent: 2104, isSet: true, children: []}
-      ]},
-        {id: 2119, type: 99, name: 'User Login Home Page', parent: 2104, isSet: true, children: []},
-        {id: 2142, type: 99, name: 'Collect and Display Project Item Hierarchy from Jama',
+        ]},
+        {id: 2119, type: 99, docKey: 'document key', name: 'User Login Home Page', parent: 2104, isSet: true,
+          children: []},
+        {id: 2142, type: 99, docKey: 'document key', name: 'Collect and Display Project Item Hierarchy from Jama',
           parent: 2104, isSet: false, children: []},
-        {id: 2143, type: 99, name: 'Gather User\'s List of Projects', parent: 2317, isSet: false, children: []},
-        {id: 2317, type: 99, name: 'Collect and Display User Projects from Jama',
+        {id: 2143, type: 99, docKey: 'document key', name: 'Gather User\'s List of Projects', parent: 2317,
+          isSet: false, children: []},
+        {id: 2317, type: 99, docKey: 'document key', name: 'Collect and Display User Projects from Jama',
           parent: 2104, isSet: false, children: []}];
       hierarchy = rewire('../../lib/hierarchy');
       hierarchy.__set__('mergeChildren', () => {
@@ -187,6 +195,7 @@ describe('Hierarchy Module', () => {
         {
           id: 2115,
           type: 31,
+          docKey: 'document key',
           name: 'Parent: requirements',
           parent: 33,
           isSet: true,
@@ -195,6 +204,7 @@ describe('Hierarchy Module', () => {
         {
           id: 2117,
           type: 35,
+          docKey: 'document key',
           name: 'Parent: epics',
           parent: 33,
           isSet: true,
@@ -212,6 +222,7 @@ describe('Hierarchy Module', () => {
       data = [{
         id: 2115,
         type: 31,
+        docKey: 'document key',
         name: 'Parent: requirements',
         parent: 33,
         isSet: true,
@@ -220,6 +231,7 @@ describe('Hierarchy Module', () => {
       {
         id: 2116,
         type: 34,
+        docKey: 'document key',
         name: 'child of requirements',
         parent: 2115,
         isSet: false,
@@ -228,6 +240,7 @@ describe('Hierarchy Module', () => {
       {
         id: 2117,
         type: 35,
+        docKey: 'document key',
         name: 'Parent: epics',
         parent: 33,
         isSet: true,
@@ -236,6 +249,7 @@ describe('Hierarchy Module', () => {
       {
         id: 2118,
         type: 39,
+        docKey: 'document key',
         name: 'child of epics',
         parent: 2117,
         isSet: false,
@@ -245,12 +259,14 @@ describe('Hierarchy Module', () => {
       mergedChildren = [
         {id: 2115,
           type: 31,
+          docKey: 'document key',
           name: 'Parent: requirements',
           parent: 33,
           isSet: true,
           children: [
             {id: 2116,
               type: 34,
+              docKey: 'document key',
               name: 'child of requirements',
               parent: 2115,
               isSet: false,
@@ -260,6 +276,7 @@ describe('Hierarchy Module', () => {
         {
           id: 2116,
           type: 34,
+          docKey: 'document key',
           name: 'child of requirements',
           parent: 2115,
           isSet: false,
@@ -268,12 +285,14 @@ describe('Hierarchy Module', () => {
         {
           id: 2117,
           type: 35,
+          docKey: 'document key',
           name: 'Parent: epics',
           parent: 33,
           isSet: true,
           children: [
             {id: 2118,
               type: 39,
+              docKey: 'document key',
               name: 'child of epics',
               parent: 2117,
               isSet: false,
@@ -283,6 +302,7 @@ describe('Hierarchy Module', () => {
         {
           id: 2118,
           type: 39,
+          docKey: 'document key',
           name: 'child of epics',
           parent: 2117,
           isSet: false,
@@ -311,6 +331,7 @@ describe('Hierarchy Module', () => {
         {
           id: 2115,
           type: 31,
+          docKey: 'document key',
           name: 'Parent: requirements',
           parent: 33,
           isSet: true,
@@ -319,6 +340,7 @@ describe('Hierarchy Module', () => {
         {
           id: 2117,
           type: 35,
+          docKey: 'document key',
           name: 'Parent: epics',
           parent: 33,
           isSet: true,
@@ -335,6 +357,7 @@ describe('Hierarchy Module', () => {
         {
           id: 2115,
           type: 31,
+          docKey: 'document key',
           name: 'Parent: requirements',
           parent: 33,
           isSet: true,
@@ -343,6 +366,7 @@ describe('Hierarchy Module', () => {
         {
           id: 2117,
           type: 35,
+          docKey: 'document key',
           name: 'Parent: epics',
           parent: 33,
           isSet: true,
@@ -352,6 +376,7 @@ describe('Hierarchy Module', () => {
       data = [{
         id: 2115,
         type: 31,
+        docKey: 'document key',
         name: 'Parent: requirements',
         parent: 33,
         isSet: true,
@@ -360,6 +385,7 @@ describe('Hierarchy Module', () => {
       {
         id: 2116,
         type: 34,
+        docKey: 'document key',
         name: 'child of requirements',
         parent: 2115,
         isSet: false,
@@ -368,6 +394,7 @@ describe('Hierarchy Module', () => {
       {
         id: 2117,
         type: 35,
+        docKey: 'document key',
         name: 'Parent: epics',
         parent: 33,
         isSet: true,
@@ -376,6 +403,7 @@ describe('Hierarchy Module', () => {
       {
         id: 2118,
         type: 39,
+        docKey: 'document key',
         name: 'child of epics',
         parent: 2117,
         isSet: false,
@@ -385,12 +413,14 @@ describe('Hierarchy Module', () => {
       mergedChildren = [
         {id: 2115,
           type: 31,
+          docKey: 'document key',
           name: 'Parent: requirements',
           parent: 33,
           isSet: true,
           children: [
             {id: 2116,
               type: 34,
+              docKey: 'document key',
               name: 'child of requirements',
               parent: 2115,
               isSet: false,
@@ -400,12 +430,14 @@ describe('Hierarchy Module', () => {
         {
           id: 2117,
           type: 35,
+          docKey: 'document key',
           name: 'Parent: epics',
           parent: 33,
           isSet: true,
           children: [
             {id: 2118,
               type: 39,
+              docKey: 'document key',
               name: 'child of epics',
               parent: 2117,
               isSet: false,

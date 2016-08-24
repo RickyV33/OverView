@@ -1,6 +1,7 @@
 /* eslint-env browser */
 
 import * as project from './lib/project';
+import * as hierarchy from './lib/hierarchy';
 
 export let graphData;
 
@@ -11,6 +12,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
   document.getElementById('logOut').addEventListener('click', () => {
     document.location.href = '/logout';
+  });
+  document.getElementById('backButton').addEventListener('click', () => {
+    // If the current div is the d3Container
+    if (document.querySelector('#hierarchy').classList.contains('hidden')) {
+      toggle(document.querySelector('#d3Container'));
+      toggle(document.querySelector('#hierarchy'));
+      hierarchy.setSelectedHierarchyItem(null);
+    } else {
+      toggle(document.querySelector('#projects'));
+      toggle(document.querySelector('#hierarchy'));
+      toggle(document.querySelector('#backButton'));
+    }
   });
 });
 
