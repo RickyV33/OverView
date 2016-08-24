@@ -1,7 +1,69 @@
-body {
-    padding-top: 0;
+.hidden {
+    display: none !important;
 }
 
-.hidden {
-    display: none;
+body,
+html {
+    height: 100%;
+}
+
+body {
+    padding-top: 25px;
+    overflow: hidden;
+}
+
+header {
+    position: relative;
+    min-height: 72px;
+}
+
+#d3Container {
+    width: 100%;
+    flex: 1;
+}
+
+ul {
+    list-style: none;
+}
+
+ul > li {
+    margin: 0.5rem 0;
+}
+
+#backContainer {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    float: left;
+}
+
+#logOutContainer {
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    float: right;
+}
+
+#hierarchy,
+#projects {
+    flex: 1;
+}
+
+#hierarchy {
+    display: flex;
+    flex-direction: column;
+}
+
+#hierarchy > ul {
+    flex: 1;
+    overflow-y: scroll;
+    margin-bottom: 1.5rem;
 }

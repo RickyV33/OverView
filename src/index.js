@@ -4,6 +4,8 @@ let auth = require('../lib/auth');
 
 const INVALID_CREDENTIALS_ERROR_MESSAGE = 'Invalid Credentials';
 
+// Capture login form elements (username, password) and teamName from the process environment variable.
+// and store them into the credentials object
 document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('logIn').addEventListener('submit', (event) => {
     let username = document.getElementById('username').value;
@@ -11,8 +13,10 @@ document.addEventListener('DOMContentLoaded', () => {
     let teamName = process.env.TEAM_NAME;
     let credentials = {body: {username: username, password: password, teamName: teamName}};
 
+    // Pass the credentials object to the validate function in the auth module. Clear form fields and initialize
+    // error variable if validate returns false, otherwise do nothing
     if (auth.validate(credentials)) {
-      // run submit function
+      // do nothing
     } else {
       event.preventDefault();
       alert(INVALID_CREDENTIALS_ERROR_MESSAGE);
