@@ -91,35 +91,56 @@ describe('Hierarchy Module', () => {
   });
   describe('parseItemHierarchy function', () => {
     describe('parseItemHierarchy function', () => {
-      it('should return an empty array when the json blob argument is empty', () => {
-        let results;
+      it('should throw a ValidationError when the json blob argument is empty', () => {
         data = [];
         hierarchy = rewire('../../lib/hierarchy');
         hierarchy.__set__('mergeChildren', () => mergeChildrenStub());
         hierarchy.__set__('pushChildrenToRoots', () => pushChildrenStub());
-        results = hierarchy.parseItemHierarchy(data);
-        expect(results).to.deep.equal(data);
-        expect(hierarchy.__get__('rootItems')).to.deep.equal(data);
-        expect(hierarchy.__get__('children')).to.deep.equal(data);
+        try {
+          hierarchy.parseItemHierarchy(data);
+        } catch (error) {
+          expect(error).to.have.property('message', 'Invalid item hierarchy');
+          expect(error).to.have.property('errors');
+          expect(error.errors).to.have.length(1);
+          expect(error.errors[0]).to.have.property('keyword', 'type');
+          expect(error.errors[0]).to.have.property('message', 'should be object');
+          expect(error.errors[0]).to.have.property('schemaPath', '#/type');
+
+          expect(hierarchy.__get__('rootItems')).to.deep.equal(data);
+          expect(hierarchy.__get__('children')).to.deep.equal(data);
+
+          return;
+        }
+        expect.fail();
       });
     });
-    it('should return a single item with no children when the json blob argument contains a single root item' +
+    it('should throw a ValidationError when the json blob argument contains a single root item' +
       'with no children', () => {
-      let results;
       data = require('./singleItemHierarchy.json');
       roots = [{'id': 2140, 'type': 24, 'name': 'Input a Username', 'parent': 33, 'children': []}];
       mergedChildren = [];
       hierarchy = rewire('../../lib/hierarchy');
       hierarchy.__set__('mergeChildren', () => mergeChildrenStub());
       hierarchy.__set__('pushChildrenToRoots', () => pushChildrenStub());
-      results = hierarchy.parseItemHierarchy(data);
-      expect(results).to.deep.equal(roots);
-      expect(hierarchy.__get__('rootItems')).to.deep.equal(roots);
-      expect(hierarchy.__get__('children')).to.deep.equal(mergedChildren);
+      try {
+        hierarchy.parseItemHierarchy(data);
+      } catch (error) {
+        expect(error).to.have.property('message', 'Invalid item hierarchy');
+        expect(error).to.have.property('errors');
+        expect(error.errors).to.have.length(1);
+        expect(error.errors[0]).to.have.property('keyword', 'type');
+        expect(error.errors[0]).to.have.property('message', 'should be object');
+        expect(error.errors[0]).to.have.property('schemaPath', '#/type');
+
+        expect(hierarchy.__get__('rootItems')).to.deep.equal(roots);
+        expect(hierarchy.__get__('children')).to.deep.equal(mergedChildren);
+
+        return;
+      }
+      expect.fail();
     });
     it('should return a root item with one direct child and one nested child when the json ' +
       'blob argument contains a single root item with one child and one nested child', () => {
-      let results;
       data = require('./singleItemwithNestedChild.json');
       roots = [{'id': 2104, 'type': 24, 'name': 'Input a Username', 'parent': 33, 'children': [
         {'id': 2119, 'type': 99, 'name': 'User Login Home Page', 'parent': 2104, 'children': []},
@@ -150,22 +171,43 @@ describe('Hierarchy Module', () => {
       hierarchy.__set__('pushChildrenToRoots', () => {
         hierarchy.__set__('rootItems', roots);
       });
-      results = hierarchy.parseItemHierarchy(data);
-      expect(results).to.deep.equal(roots);
-      expect(hierarchy.__get__('rootItems')).to.deep.equal(roots);
-      expect(hierarchy.__get__('children')).to.deep.equal(mergedChildren);
+
+      try {
+        hierarchy.parseItemHierarchy(data);
+      } catch (error) {
+        expect(error).to.have.property('message', 'Invalid item hierarchy');
+        expect(error).to.have.property('errors');
+        expect(error.errors).to.have.length(1);
+        expect(error.errors[0]).to.have.property('keyword', 'type');
+        expect(error.errors[0]).to.have.property('message', 'should be object');
+        expect(error.errors[0]).to.have.property('schemaPath', '#/type');
+
+        expect(hierarchy.__get__('rootItems')).to.deep.equal(roots);
+        expect(hierarchy.__get__('children')).to.deep.equal(mergedChildren);
+
+        return;
+      }
+      expect.fail();
     });
-    it('should console error message due to an invalid id type for one of the items in the JSON ' +
+    it('should throw a ValidationError due to an invalid id type for one of the items in the JSON ' +
       'argument blob argument', () => {
-      let invalidData = require('./invalidItemHierarchy.json');
       data = require('./invalidItemHierarchy.json');
       hierarchy = rewire('../../lib/hierarchy');
       try {
         hierarchy.parseItemHierarchy(data);
-      } catch (err) {
-        console.dir(err);
-        expect(err).to.equal(invalidData[0]);
+      } catch (error) {
+        console.dir(error);
+
+        expect(error).to.have.property('message', 'Invalid item hierarchy');
+        expect(error).to.have.property('errors');
+        expect(error.errors).to.have.length(1);
+        expect(error.errors[0]).to.have.property('keyword', 'type');
+        expect(error.errors[0]).to.have.property('message', 'should be object');
+        expect(error.errors[0]).to.have.property('schemaPath', '#/type');
+
+        return;
       }
+      expect.fail();
     });
   });
   describe('mergeChildren function', () => {
