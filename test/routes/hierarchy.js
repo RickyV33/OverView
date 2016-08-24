@@ -18,6 +18,16 @@ let app;
 let hierarchyStub;
 let libStub;
 
+let sqliteStub = () => class SqliteStub {
+  constructor () { this.foo = 'bar'; }
+};
+
+let sessionMock = {
+  username: 'invalid',
+  password: 'invalid',
+  teamName: 'invalid'
+};
+
 /**
  * Setup the proxies used to start the server and access the hierarchy route to stub out lib/hierarchy modules with:
  * {getAllItems} stub to return a resolved promise with the mockHierarchy.json
@@ -45,7 +55,12 @@ function initializeRoute (object) {
     '../lib/hierarchy': libStub
   });
   app = proxyquire('./mockApp', {
-    '../../routes/hierarchy': hierarchyStub
+    'express-session': () => (req, res, next) => {
+      req.session = sessionMock;
+      next();
+    },
+    '../../routes/hierarchy': hierarchyStub,
+    'connect-sqlite3': sqliteStub
   });
 }
 
@@ -104,15 +119,16 @@ let hierarchyTestCases = [
 describe('hierarchy', () => {
   describe('GET /hierarchy', () => {
     hierarchyTestCases.forEach(item => {
-      it(item.testcase, () => {
+      it(item.testcase, (done) => {
         initializeRoute(item.body);
-        return chai.request(app)
+        chai.request(app)
           .get('/hierarchy?project=33')
           .then(res => {
             expect(res.body).to.deep.equal(item.body.itemHierarchy);
+            done();
           })
           .catch(err => {
-            throw (err);
+            done(err);
           });
       });
     });
