@@ -91,7 +91,6 @@ image {
 }
 
 .hoverOverEdge {
-    stroke: #FFA070 !important;
     stroke-dasharray: 5;
     stroke-width: 3px;
 }
@@ -148,7 +147,7 @@ image {
 .nodeInfoTip > h5.critical {
     margin: 0px;
     padding: 5px 10px;
-    color: red;
+    color: #F94306;
 }
 
 .nodeInfoTip > div.content {
@@ -160,4 +159,13 @@ image {
     position: relative;
     top: 0.2rem;
     margin-right: 0.2rem;
+}
+
+.node-suspect > .suspect-flag > .suspect-badge-text {
+    fill: #F94306;
+    paint-order: stroke;
+    font-weight: bolder;
+    stroke: #FFF;
+    font-size: 15pt;
+    stroke-width: 4px;
 }
