@@ -8,8 +8,7 @@ router.get('/', (req, res, next) => {
       res.json(hierarchy.parseItemHierarchy(allItems));
     })
     .catch(err => {
-      console.dir(err);
-      throw (err);
+      next(err);
     });
 });
 
