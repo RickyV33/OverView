@@ -11,7 +11,7 @@ let chaiAsPromised = require('chai-as-promised');
 chai.use(dirtyChai);
 chai.use(chaiAsPromised);
 
-//  variables to be used for testing within all rejected request stubs
+// variables to be used for testing within all rejected request stubs
 let startAt = 0;
 
 // variables to be used for testing within all resolved request stubs
@@ -22,7 +22,7 @@ let page = 0;
  *
  * @param {integer} n size of the desired array
  * @param {integer} counter determines the maximum value for data pushed into the array.
- * @return {Object} array the array is either empty, or it contains the elements from 0 to counter-1
+ * @return {Object} array the array is either empty, or it contains the elements from 0 to counter - 1
  */
 function arrayOfSizeN (n, counter) {
   let array = [];
@@ -35,7 +35,7 @@ function arrayOfSizeN (n, counter) {
 
 /**
  * Create an array of paged objects and store them into an array of size n. A page consists of an object in the
- * following format: {meta: {startIndex, resultCount}, data: []}}. Return this array of n elements
+ * following format: {meta: {startIndex, resultCount}, data: []}}.
  *
  * @param {integer} n size of the desired array
  * @return {Object} array of n page objects
@@ -69,7 +69,7 @@ function arrayOfPageData (resolvedObjects) {
 
 /**
  * Request stub to be used when a request needs to be mocked as being rejected. It returns a callback with an error
- * message on the next tick, mocking a failed request to jama's REST api.
+ * message on the next tick, mocking a failed request to Jama's REST api.
  *
  * @return {Object} callback that returns with an error message to indicate a failed request
  */
@@ -83,7 +83,7 @@ let rejectedRequestStub = (error = 'this is an error', status = {statusCode: 200
 
 /**
  * Create an object with the format {body: {meta: {pageInfo: startIndex, resultCount: resultingCount}},
- * data: dataSupplied}}. Returns this object.
+ * data: dataSupplied}}.
  *
  * @param {integer} startingIndex the starting index for the page object
  * @param {integer} resultingCount the resulting count of retrieved items for the page object
@@ -96,7 +96,7 @@ function createResolvedObject (startingIndex, resultingCount, dataSupplied) {
 
 /**
  * Request stub to be used when a request needs to be mocked as being fulfilled with pages of data. It returns an
- * array of page objects on the next tick, mocking a successful request to jama's REST api.
+ * array of page objects on the next tick, mocking a successful request to Jama's REST api.
  *
  * Variables used:
  * {startAt} starting index value for each page object
@@ -106,17 +106,18 @@ function createResolvedObject (startingIndex, resultingCount, dataSupplied) {
  * {processedResults} the number of items that have been added to a page object that will then be returned
  * {pageSize} the size of the page being constructed will depend on how many items remain to be added to a page
  * object. If the remaining items are less than the maxResults per page variable, then it is set to remaining,
- * maxResults otherwise
+ * otherwise it is set to maxResults
  * {counter} keeps track of the values used for each page object's data
- * {maxItemsPerPage} the max number of items per page is set to be the maxResults argument if its < 20, 20 otherwise
+ * {maxItemsPerPage} if the maximum number of items per page is less than 20, then it is set to the maxResults
+ * argument, otherwise it is set to 20
  *
  * Mock an array of paged objects (that will then be passed back one at a time to mock
  * multiple requests) by first calculating the total number of pages needed by totalResults/maxResults. Then, create
  * that many page objects with a starting index of how many items have been processed, and pageSize number of items
- * added to its body array. Continue adding pages until remaining is equal to zero. Return the array of page objects
+ * added to its body array. Continue adding pages until remaining is equal to zero.
  *
  *
- * @param {integer} totalResults number of requested
+ * @param {integer} totalResults number of requested results
  * @param {integer} maxResults is the maximum number of results requested per page, will default to 20 if argument
  * is greater than 20
  * @return {Object} resolvedObjects an array of pages
