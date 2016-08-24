@@ -29,21 +29,6 @@ document.addEventListener('DOMContentLoaded', () => {
     toggle(d3Container);
     renderGraph(graphData, selectedProject, parseInt(selectedHierarchyItem));
   });
-
-  // For the back to projects button
-  document.getElementById('backToProjectsButton').addEventListener('click', event => {
-    console.log('Back to projects button Click Event');
-    toggle(projects);
-    toggle(hierarchy);
-    selectedHierarchyItem = null;
-  });
-
-  // For the back to hierarchy button
-  document.getElementById('backToHierarchyButton').addEventListener('click', event => {
-    console.log('Back to hierarchy button Click Event');
-    toggle(d3Container);
-    toggle(hierarchy);
-  });
 });
 
 function buildProjectAnchors () {
