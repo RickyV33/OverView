@@ -20,30 +20,36 @@ describe('Graph class module', () => {
     console.error = oldError;
   });
   describe('constructor', () => {
-    let projectId = 1;
     let url = 'url';
-    let stubs = {};
-    let data = [];
-    let Graph = proxyquire('../../lib/graph', {'./projects': stubs});
+    let projectId = 3;
+    let graph = new Graph(projectId, url);
+    expect(graph.url).to.equal(url);
+    expect(graph.projectId).to.equal(projectId);
+    expect(graph.name).to.be.empty();
+    expect(graph.nodes).to.be.empty();
+    expect(graph.edges).to.be.empty();
+  });
+
+  describe('buildGraph function', () => {
+    let projectId;
+    let url;
+    let stubs;
+    let Graph;
     let newGraph;
-    let resolvedNamePromise = () => {
-      return new Promise((resolve, reject) => {
-        data = 'mocked project name';
-        resolve(data);
-      });
-    };
-    let resolvedItemsPromise = () => {
-      return new Promise((resolve, reject) => {
-        data = [{'id': 10, 'name': 'item name', 'type': 99}];
-        resolve(data);
-      });
-    };
-    let resolvedRelationshipsPromise = () => {
-      return new Promise((resolve, reject) => {
-        data = [{'id': 10, 'source': 1, 'target': 2, 'type': 99}];
-        resolve(data);
-      });
-    };
+    let nameData = 'mocked project name';
+    let itemData = [{'id': 10, 'name': 'item name', 'type': 99}];
+    let relationshipData = [{'id': 10, 'source': 1, 'target': 2, 'type': 99}];
+    let imageData = [{'99': 'item image'}];
+
+    beforeEach(() => {
+      projectId = 1;
+      url = 'url';
+      stubs = {};
+      Graph = proxyquire('../../lib/graph', {'./projects': stubs});
+      newGraph = undefined;
+    });
+
+    let resolvePromise = data => Promise.resolve(data);
     let rejectedTimeoutPromise = () => {
       return new Promise((resolve, reject) => {
         let error = { 'connect': true, 'code': 'ETIMEDOUT' };
@@ -58,26 +64,29 @@ describe('Graph class module', () => {
     };
 
     it('should return a graph with nonempty data members when project ID and url are valid.', () => {
-      stubs.getProjectName = () => resolvedNamePromise();
-      stubs.getProjectItems = () => resolvedItemsPromise();
-      stubs.getProjectRelationships = () => resolvedRelationshipsPromise();
+      stubs.getProjectName = () => resolvePromise(nameData);
+      stubs.getProjectItems = () => resolvePromise(itemData);
+      stubs.getProjectRelationships = () => resolvePromise(relationshipData);
+      stubs.getProjectItemTypeImages = () => resolvePromise(imageData);
       newGraph = new Graph(projectId, url);
-      setTimeout(() => {
+      return newGraph.buildGraph().then(() => {
         expect(newGraph.name).to.equal('mocked project name');
         expect(newGraph.nodes[0].id).to.equal(10);
         expect(newGraph.nodes[0].name).to.equal('item name');
         expect(newGraph.nodes[0].type).to.equal(99);
+        expect(newGraph.nodes[0].image).to.equal('item image');
         expect(newGraph.edges[0].id).to.equal(10);
         expect(newGraph.edges[0].source).to.equal(1);
         expect(newGraph.edges[0].target).to.equal(2);
         expect(newGraph.edges[0].type).to.equal(99);
-      }, 5000);
+      });
     });
 
     it('should return a graph that contains nothing when either project ID or url are invalid.', () => {
       stubs.getProjectName = () => rejectedErrorPromise();
       stubs.getProjectItems = () => rejectedErrorPromise();
       stubs.getProjectRelationships = () => rejectedErrorPromise();
+      stubs.getProjectItemTypeImages = () => rejectedErrorPromise();
       newGraph = new Graph(projectId, url);
       expect(newGraph.name).to.be.empty();
       expect(newGraph.nodes).to.be.empty();
@@ -86,29 +95,32 @@ describe('Graph class module', () => {
 
     it('should return a graph that contains nothing when a timeout has occurred for getProjectName', () => {
       stubs.getProjectName = () => rejectedTimeoutPromise();
-      stubs.getProjectItems = () => resolvedItemsPromise();
-      stubs.getProjectRelationships = () => resolvedRelationshipsPromise();
-      newGraph = new Graph(projectId, url);
+      stubs.getProjectItems = () => resolvePromise(itemData);
+      stubs.getProjectRelationships = () => resolvePromise(relationshipData);
+      stubs.getProjectItemTypeImages = () => resolvePromise(imageData);
+      newGraph = new Graph(projectId, url).buildGraph();
       expect(newGraph.name).to.be.empty();
       expect(newGraph.nodes).to.be.empty();
       expect(newGraph.edges).to.be.empty();
     });
 
     it('should return a graph that contains nothing when a timeout has occurred for getProjectItems', () => {
-      stubs.getProjectName = () => resolvedNamePromise();
+      stubs.getProjectName = () => resolvePromise(nameData);
       stubs.getProjectItems = () => rejectedTimeoutPromise();
-      stubs.getProjectRelationships = () => resolvedRelationshipsPromise();
-      newGraph = new Graph(projectId, url);
+      stubs.getProjectRelationships = () => resolvePromise(relationshipData);
+      stubs.getProjectItemTypeImages = () => resolvePromise(imageData);
+      newGraph = new Graph(projectId, url).buildGraph();
       expect(newGraph.name).to.be.empty();
       expect(newGraph.nodes).to.be.empty();
       expect(newGraph.edges).to.be.empty();
     });
 
     it('should return a graph that contains nothing when a timeout has occurred for getProjectRelationships', () => {
-      stubs.getProjectName = () => resolvedNamePromise();
-      stubs.getProjectItems = () => resolvedItemsPromise();
+      stubs.getProjectName = () => resolvePromise(nameData);
+      stubs.getProjectItems = () => resolvePromise(itemData);
       stubs.getProjectRelationships = () => rejectedTimeoutPromise();
-      newGraph = new Graph(projectId, url);
+      stubs.getProjectItemTypeImages = () => resolvePromise(imageData);
+      newGraph = new Graph(projectId, url).buildGraph();
       expect(newGraph.name).to.be.empty();
       expect(newGraph.nodes).to.be.empty();
       expect(newGraph.edges).to.be.empty();
@@ -118,8 +130,9 @@ describe('Graph class module', () => {
       () => {
         stubs.getProjectName = () => rejectedTimeoutPromise();
         stubs.getProjectItems = () => rejectedTimeoutPromise();
-        stubs.getProjectRelationships = () => resolvedRelationshipsPromise();
-        newGraph = new Graph(projectId, url);
+        stubs.getProjectRelationships = () => resolvePromise(relationshipData);
+        stubs.getProjectItemTypeImages = () => resolvePromise(imageData);
+        newGraph = new Graph(projectId, url).buildGraph();
         expect(newGraph.name).to.be.empty();
         expect(newGraph.nodes).to.be.empty();
         expect(newGraph.edges).to.be.empty();
@@ -127,10 +140,11 @@ describe('Graph class module', () => {
 
     it('should return a graph that contains nothing when a timeout has occurred for getProjectItems and' +
       'getProjectRelationships', () => {
-      stubs.getProjectName = () => resolvedNamePromise();
+      stubs.getProjectName = () => resolvePromise(nameData);
       stubs.getProjectItems = () => rejectedTimeoutPromise();
       stubs.getProjectRelationships = () => rejectedTimeoutPromise();
-      newGraph = new Graph(projectId, url);
+      stubs.getProjectItemTypeImages = () => resolvePromise(imageData);
+      newGraph = new Graph(projectId, url).buildGraph();
       expect(newGraph.name).to.be.empty();
       expect(newGraph.nodes).to.be.empty();
       expect(newGraph.edges).to.be.empty();
@@ -139,9 +153,10 @@ describe('Graph class module', () => {
     it('should return a graph that contains nothing when a timeout has occurred for getProjectName and' +
       'getProjectRelationships', () => {
       stubs.getProjectName = () => rejectedTimeoutPromise();
-      stubs.getProjectItems = () => resolvedItemsPromise();
+      stubs.getProjectItems = () => resolvePromise(itemData);
       stubs.getProjectRelationships = () => rejectedTimeoutPromise();
-      newGraph = new Graph(projectId, url);
+      stubs.getProjectItemTypeImages = () => resolvePromise(imageData);
+      newGraph = new Graph(projectId, url).buildGraph();
       expect(newGraph.name).to.be.empty();
       expect(newGraph.nodes).to.be.empty();
       expect(newGraph.edges).to.be.empty();
@@ -151,7 +166,8 @@ describe('Graph class module', () => {
       stubs.getProjectName = () => rejectedTimeoutPromise();
       stubs.getProjectItems = () => rejectedTimeoutPromise();
       stubs.getProjectRelationships = () => rejectedTimeoutPromise();
-      newGraph = new Graph(projectId, url);
+      stubs.getProjectItemTypeImages = () => rejectedTimeoutPromise();
+      newGraph = new Graph(projectId, url).buildGraph();
       expect(newGraph.name).to.be.empty();
       expect(newGraph.nodes).to.be.empty();
       expect(newGraph.edges).to.be.empty();
@@ -161,7 +177,8 @@ describe('Graph class module', () => {
       stubs.getProjectName = () => rejectedErrorPromise();
       stubs.getProjectItems = () => rejectedErrorPromise();
       stubs.getProjectRelationships = () => rejectedErrorPromise();
-      newGraph = new Graph(projectId, url);
+      stubs.getProjectItemTypeImages = () => rejectedErrorPromise();
+      newGraph = new Graph(projectId, url).buildGraph();
       expect(newGraph.name).to.be.empty();
       expect(newGraph.nodes).to.be.empty();
       expect(newGraph.edges).to.be.empty();
@@ -169,9 +186,9 @@ describe('Graph class module', () => {
   });
 
   describe('toJson function', () => {
-    let badNodes = [{'id': '10', 'name': 'item name', 'type': '99'}];
+    let badNodes = [{'id': '10', 'documentKey': 1, 'name': 'item name', 'type': '99'}];
     let badEdges = [{'id': '10', 'source': '1', 'target': '2', 'type': '99'}];
-    let nodes = [{'id': 10, 'name': 'item name', 'type': 99, 'image': 'url'}];
+    let nodes = [{'id': 10, 'documentKey': 'docKey', 'name': 'item name', 'type': 99, 'image': 'url', 'description': 'description'}];
     let edges = [{'id': 10, 'source': 1, 'target': 2, 'type': 99, 'suspect': true}];
 
     it('should print an error message if the data Graph contains is invalid', () => {
@@ -190,9 +207,9 @@ describe('Graph class module', () => {
   });
 
   describe('fromJson function', () => {
-    let badNodes = [{'id': '10', 'name': 'item name', 'type': '99'}];
+    let badNodes = [{'id': '10', 'documentKey': 1, 'name': 'item name', 'type': '99'}];
     let badEdges = [{'id': '10', 'source': '1', 'target': '2', 'type': '99'}];
-    let nodes = [{'id': 10, 'name': 'item name', 'type': 99, 'image': 'url'}];
+    let nodes = [{'id': 10, 'documentKey': 'docKey', 'name': 'item name', 'type': 99, 'image': 'url', 'description': 'description'}];
     let edges = [{'id': 10, 'source': 1, 'target': 2, 'type': 99, 'suspect': false}];
 
     it('should print an error message if the data Graph contains is invalid', () => {
