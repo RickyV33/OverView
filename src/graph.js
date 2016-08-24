@@ -22,6 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
       toggle(document.querySelector('#projects'));
       toggle(document.querySelector('#hierarchy'));
+      toggle(document.querySelector('#backButton'));
     }
   });
 });
