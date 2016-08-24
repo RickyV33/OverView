@@ -217,7 +217,7 @@ describe('index route', () => {
     it('should render the index view with an empty list of projects when authenticates promise is resolved', (done) => {
       resolvedPromiseProxySetup();
       validateReturnFlag = true;
-      chai.request(app)
+      return chai.request(app)
         .post('/')
         .send(userLoginMockData)
         .then(res => {
@@ -226,7 +226,7 @@ describe('index route', () => {
           done();
         })
         .catch((err) => {
-          throw (err);
+          done(err);
         });
     });
     it('should fail when index route source is not found', (done) => {
