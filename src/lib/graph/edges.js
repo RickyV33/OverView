@@ -153,7 +153,7 @@ function edgeMouseOver (overEdge) {
   let strSuspect = overEdge.suspect ? 'Suspect' : '';
   let strTitle = overEdge.suspect ? '<h5 class="critical">' + strSuspect + '</h5>' : '';
   let strRelType = '<h5>' + overEdge.relationshipType + '</h5>';
-  let tipText = strTitle + strRelType + '<div class="content">' + strSource + '<br>---><br>' + strTarget + '</div>';
+  let tipText = strTitle + strRelType + '<div class="content">' + strSource + '<br>&#x2192;<br>' + strTarget + '</div>';
 
   // Set the tip html and position
   d3.select('#nodeInfoTip').html(tipText)
