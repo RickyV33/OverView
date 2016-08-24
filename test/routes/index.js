@@ -11,6 +11,7 @@ let ejs = require('ejs');
 let read = require('fs').readFileSync;
 let join = require('path').join;
 let proxyquire = require('proxyquire');
+let express = require('express');
 
 chai.use(dirtyChai);
 chai.use(chaiHttp);
@@ -108,7 +109,7 @@ let parseProjectsStub = () => {
  *
  */
 function indexNotFoundProxySetup () {
-  index = require('./mockIndexRoute');
+  index = express.Router();
   app = proxyquire('../../app', {
     './routes/index': index
   });
@@ -221,7 +222,7 @@ describe('index route', () => {
         .send(userLoginMockData)
         .then(res => {
           expect(res).to.have.status(200);
-          expect(res).to.redirect.to('/projects');
+          expect(res).to.redirect.to('/graph');
           done();
         })
         .catch((err) => {
