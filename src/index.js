@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let credentials = {body: {username: username, password: password, teamName: teamName}};
 
     // Pass the credentials object to the validate function in the auth module. Clear form fields and initialize
-    // error variable if validate returns false, do nothing otherwise
+    // error variable if validate returns false, otherwise do nothing
     if (auth.validate(credentials)) {
       // do nothing
     } else {
