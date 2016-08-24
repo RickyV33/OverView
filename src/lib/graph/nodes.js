@@ -313,16 +313,13 @@ export function update (svg, forceLayout, nodes, physics, itemNames) {
       return 'node-' + d.id;  // Add an id element to each node
     })
     .attr('class', (thisNode) => {
-      // Add projectRoot class if the node is the project node
       let strClass = 'node';
 
-      if (isRoot(thisNode)) {
-        strClass = strClass + ' projectRoot';
-      }
+      // Add necessary css classes
+      strClass = strClass + (isRoot(thisNode) ? ' projectRoot' : '');
+      strClass = strClass + (thisNode.downstreamEdges.length > 0 ? ' hasDownstream' : '');
+      strClass = strClass + (thisNode.isSuspect ? ' node-suspect' : '');
 
-      if (thisNode.downstreamEdges.length > 0) {
-        strClass = strClass + ' hasDownstream';
-      }
       return strClass;
     })
     .on('mouseover', nodeMouseOver)
@@ -382,6 +379,24 @@ export function update (svg, forceLayout, nodes, physics, itemNames) {
   if (physics) {
     nodeEnter.call(forceLayout.drag);
   }
+
+  // Add a suspect badge to each node that is suspect
+  let suspectBadge = svg.selectAll('.node-suspect')
+    .append('g')
+      .attr('class', 'suspect-flag');
+
+  suspectBadge.append('circle')
+    .attr('class', 'suspect-badge-circle')
+    .attr('cx', '-12px')
+    .attr('cy', '-11px')
+    .attr('r', 6);
+
+  suspectBadge.append('text')
+    .attr('class', 'suspect-badge-text')
+    .attr('text-anchor', 'middle')
+    .attr('x', '-12px')
+    .attr('dy', '-6px')
+    .text('!');
 
   projectNode.fixed = true;  // Set the project Node to be fixed and not moving
   projectNode.x = size().height / 2;

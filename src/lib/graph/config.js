@@ -168,17 +168,14 @@ export default function update (graphData, selectedProjectId, rootId = parseInt(
 
     filterJSON(nodesEdgesMap, rootId);
   }
-  console.log('DONE FILTERING');
-  // console.log(nodesToRender);
+
   // Collapses all the nodes except the root node
   // NOTE - If you collapse all, then you need to set the isVisible = false and isCollapsed = true
   // default values in mapNodesToEdges()
   // collapseAll(rootId);
-  // updateOpacity();
 
+  setNodeSuspectFlag(); // Check to see which node is suspect. Used for setting the suspect flag.
   resetVisitedFlag(); // Sets all of the visited flags to false
-  console.log('RESET HAPPENED');
-  // console.log(nodesToRender);
   currentProjectId = selectedProjectId;
   currentRootId = rootId;
 
@@ -479,4 +476,16 @@ export function resetVisitedFlag () {
   nodesToRender.forEach((node) => {
     node.visited = false;
   });
+}
+
+/**
+ * Got through all the edges to render and check if the edge has a suspect flag set. If it is set, then set the
+ * isSuspect flag on the target node. This function is necessary for all of the suspect badges to appear.
+ */
+function setNodeSuspectFlag () {
+  edgesToRender.forEach(rel => {
+    if (rel.suspect) {
+      rel.target.isSuspect = true;
+    }
+  })
 }

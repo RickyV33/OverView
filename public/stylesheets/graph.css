@@ -161,3 +161,16 @@ image {
     top: 0.2rem;
     margin-right: 0.2rem;
 }
+
+.node-suspect > .suspect-flag > .suspect-badge-circle {
+    fill: #F94306;
+    paint-order: stroke;
+    stroke: #FFF;
+    pointer-events: none;
+}
+
+.node-suspect > .suspect-flag > .suspect-badge-text {
+    fill: #fff;
+    paint-order: stroke;
+    font-weight: bolder;
+}
