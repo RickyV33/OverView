@@ -11,7 +11,19 @@ let chaiAsPromised = require('chai-as-promised');
 chai.use(dirtyChai);
 chai.use(chaiAsPromised);
 
-//  function to create an array of size N
+// variables to be used for testing within all rejected request stubs
+let startAt = 0;
+
+// variables to be used for testing within all resolved request stubs
+let page = 0;
+
+/**
+ * Create an array of n elements of type integer from 0 to counter - 1. Return this array of n elements
+ *
+ * @param {integer} n size of the desired array
+ * @param {integer} counter determines the maximum value for data pushed into the array.
+ * @return {Object} array the array is either empty, or it contains the elements from 0 to counter - 1
+ */
 function arrayOfSizeN (n, counter) {
   let array = [];
   for (let i = 0; i < n; i += 1) {
@@ -21,7 +33,13 @@ function arrayOfSizeN (n, counter) {
   return array;
 }
 
-//  function to create a page {meta: {startIndex, resultCount}, userLoginMockData: []}} of size N
+/**
+ * Create an array of paged objects and store them into an array of size n. A page consists of an object in the
+ * following format: {meta: {startIndex, resultCount}, data: []}}.
+ *
+ * @param {integer} n size of the desired array
+ * @return {Object} array of n page objects
+ */
 function pageArrayOfSizeN (n) {
   let array = [];
   for (let i = 0; i < n; i += 1) {
@@ -30,7 +48,13 @@ function pageArrayOfSizeN (n) {
   return array;
 }
 
-  //  function to create an array with all returned userLoginMockData items from all pages
+/**
+ * Iterate through each object in resolvedObjects, and push every item in each object's body array into
+ * the array variable. After every item has been pushed into the array, return this array.
+ *
+ * @param {Object} resolvedObjects array of page objects with arrays of data
+ * @return {Object} array of all data items within resolvedObjects
+ */
 function arrayOfPageData (resolvedObjects) {
   let array = [];
   let numOfPages = resolvedObjects.length;
@@ -43,12 +67,12 @@ function arrayOfPageData (resolvedObjects) {
   return array;
 }
 
-//  variables to be used for testing within all rejected request stubs
-let startAt = 0;
-
-// variables to be used for testing within all resolved request stubs
-let page = 0;
-
+/**
+ * Request stub to be used when a request needs to be mocked as being rejected. It returns a callback with an error
+ * message on the next tick, mocking a failed request to Jama's REST api.
+ *
+ * @return {Object} callback that returns with an error message to indicate a failed request
+ */
 let rejectedRequestStub = (error = 'this is an error', status = {statusCode: 200}) => {
   return (options, callback) => {
     process.nextTick(() => {
@@ -57,10 +81,47 @@ let rejectedRequestStub = (error = 'this is an error', status = {statusCode: 200
   };
 };
 
+/**
+ * Create an object with the format {body: {meta: {pageInfo: startIndex, resultCount: resultingCount}},
+ * data: dataSupplied}}.
+ *
+ * @param {integer} startingIndex the starting index for the page object
+ * @param {integer} resultingCount the resulting count of retrieved items for the page object
+ * @param {integer} dataSupplied the data for the page object
+ * @return {Object} a page object
+ */
 function createResolvedObject (startingIndex, resultingCount, dataSupplied) {
   return {body: {meta: {pageInfo: {startIndex: startingIndex, resultCount: resultingCount}}, data: dataSupplied}};
 }
 
+/**
+ * Request stub to be used when a request needs to be mocked as being fulfilled with pages of data. It returns an
+ * array of page objects on the next tick, mocking a successful request to Jama's REST api.
+ *
+ * Variables used:
+ * {startAt} starting index value for each page object
+ * {resolvedObjects} to be returned
+ * {remaining} initially set to totalResults argument, will be decremented by the number of items added to each new
+ * page object that is pushed into resolvedObjects
+ * {processedResults} the number of items that have been added to a page object that will then be returned
+ * {pageSize} the size of the page being constructed will depend on how many items remain to be added to a page
+ * object. If the remaining items are less than the maxResults per page variable, then it is set to remaining,
+ * otherwise it is set to maxResults
+ * {counter} keeps track of the values used for each page object's data
+ * {maxItemsPerPage} if the maximum number of items per page is less than 20, then it is set to the maxResults
+ * argument, otherwise it is set to 20
+ *
+ * Mock an array of paged objects (that will then be passed back one at a time to mock
+ * multiple requests) by first calculating the total number of pages needed by totalResults/maxResults. Then, create
+ * that many page objects with a starting index of how many items have been processed, and pageSize number of items
+ * added to its body array. Continue adding pages until remaining is equal to zero.
+ *
+ *
+ * @param {integer} totalResults number of requested results
+ * @param {integer} maxResults is the maximum number of results requested per page, will default to 20 if argument
+ * is greater than 20
+ * @return {Object} resolvedObjects an array of pages
+ */
 function resolvedRequest (totalResults, maxResults) {
   let startAt = 0;
   let resolvedObjects = [];
@@ -69,8 +130,8 @@ function resolvedRequest (totalResults, maxResults) {
   let pageSize = 0;
   let counter = 0;
   let maxItemsPerPage = maxResults < 20 ? maxResults : 20;
-
   let pageCount = Math.ceil(totalResults / maxItemsPerPage) + 1;
+
   resolvedObjects = pageArrayOfSizeN(pageCount);
 
   for (let i = 0; i < pageCount - 1; i += 1) {
@@ -174,9 +235,9 @@ describe('Pagination Module', () => {
       return expect(pagination('http://dummy:dummy@sevensource.jamacloud.com/rest/latest/projects', startAt, Number.MAX_SAFE_INTEGER))
         .to.eventually.be.fulfilled().and.to.have.lengthOf(arrayOfPageData(pages).length).and.to.deep.equal(arrayOfPageData(pages));
     });
-    //  Test #8: valid URL, startAt, maxResultsAllowed is <= 20, and there are less than maxResultsAllowed results (testing single page results)
-    //  returned promise from pagination should be valid and equal to pages' userLoginMockData
+    //  Test #8: valid URL, startAt, maxResultsAllowed is <= 20, and there are less than maxResultsAllowed results
     // (testing single page result)
+    //  returned promise from pagination should be valid and equal to pages' data
     it('should return a single page of results when URL is valid, startAt is valid, maxResultsAllowed <= 20, and ' +
       'there are < 20 results to retrieve ', () => {
       // total results: 10, maximum results per page: 20
