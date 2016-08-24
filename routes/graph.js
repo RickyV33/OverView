@@ -5,9 +5,9 @@ let Graph = require('./../lib/graph');
 
 router.get('/', function (req, res, next) {
   if (req.query.project) {
-    if (req.session.username && req.session.password && req.session.teamName) {
+    if (req.session.username && req.session.password && process.env.TEAM_NAME) {
       let graph = new Graph(parseInt(req.query.project), 'http://' + req.session.username + ':' +
-        req.session.password + '@' + req.session.teamName + '.jamacloud.com/rest/latest/');
+        req.session.password + '@' + process.env.TEAM_NAME + '.jamacloud.com/rest/latest/');
       graph.buildGraph().then(() => {
         res.status(200).json(graph.toJson());
       }).catch(() => {

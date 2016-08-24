@@ -5,30 +5,31 @@ let router = express.Router();
 
 /* GET home page. */
 router.get('/', (req, res, next) => {
-  res.render('index', {title: 'JamaTrace', teamName: req.session.teamName});
+  res.render('index', {title: 'JamaTrace'});
 });
 
 router.post('/', (req, res, next) => {
-  req.body.teamName = req.session.teamName;
+  let teamName = process.env.TEAM_NAME;
+  req.body.teamName = teamName;
   if (auth.validate(req)) {
-    auth.authenticate(req.body.username, req.body.password, req.body.teamName).then(sessionProjects => {
+    auth.authenticate(req.body.username, req.body.password, teamName).then(sessionProjects => {
       req.session.username = req.body.username;
       req.session.password = req.body.password;
       req.session.projects = projects.parseProjectList(sessionProjects);
       req.session.save(err => {
         if (err) {
           // TODO Session save Error message
-          res.render('index', { title: 'JamaTrace', teamName: req.body.teamName, error: true });
+          res.render('index', { title: 'JamaTrace', error: true });
         }
         res.redirect('/graph');
       });
     }, () => {
       res.status(401);
-      res.render('index', { title: 'JamaTrace', teamName: req.body.teamName, error: true });
+      res.render('index', { title: 'JamaTrace', error: true });
     });
   } else {
     res.status(401);
-    res.render('index', { title: 'JamaTrace', teamName: req.body.teamName, error: true });
+    res.render('index', { title: 'JamaTrace', error: true });
   }
 });
 

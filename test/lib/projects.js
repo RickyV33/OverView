@@ -232,4 +232,32 @@ describe('projects.js module', () => {
       return expect(projectsStub.getProjectRelationships(projectId, url)).to.eventually.be.rejected();
     });
   });
+
+  describe('getRelationshipTypeNames function', () => {
+    it('should return a resolved promise with type names if there exists at least one item relationship.', () => {
+      data = [{'33': 'name'}];
+      projectsStub = proxyquire('../../lib/projects', {'./pagination': resolvedPromise});
+      projectsStub.getRelationshipTypeNames(url).then(type => {
+        expect(type['33']).to.equal('name');
+      });
+    });
+    it('should return a rejected promise when the url is invalid.', () => {
+      projectsStub = proxyquire('../../lib/projects', {'./pagination': rejectedPromise});
+      return expect(projectsStub.getRelationshipTypeNames(url)).to.eventually.be.rejected();
+    });
+  });
+
+  describe('getProjectItemTypeImages function', () => {
+    it('should return a resolved promise with type names if there exists at least one item relationship.', () => {
+      data = [{'33': 'url'}];
+      projectsStub = proxyquire('../../lib/projects', {'./pagination': resolvedPromise});
+      projectsStub.getProjectItemTypeImages(url).then(type => {
+        expect(type['33']).to.equal('url');
+      });
+    });
+    it('should return a rejected promise when the url is invalid.', () => {
+      projectsStub = proxyquire('../../lib/projects', {'./pagination': rejectedPromise});
+      return expect(projectsStub.getProjectItemTypeImages(url)).to.eventually.be.rejected();
+    });
+  });
 });
