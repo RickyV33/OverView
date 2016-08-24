@@ -6,62 +6,46 @@ let chai = require('chai');
 let expect = chai.expect;
 let dirtyChai = require('dirty-chai');
 let chaiAsPromised = require('chai-as-promised');
+let app = require('../../app'); // express();
+// let router = express.Router();
 let chaiHttp = require('chai-http');
-let proxyquire = require('proxyquire');
-let mockHierarchy = require('./mockHierarchy.json');
+// let proxyquire = require('proxyquire');
+
+let mockHierarchy = require('../lib/mockHierarchy.json');
 
 chai.use(dirtyChai);
 chai.use(chaiHttp);
 chai.use(chaiAsPromised);
 
-let app;
-let hierarchyStub;
-let libStub;
+let testModule;
+/*
+let username = 'invalid';
+let password = 'invalid';
+let teamName = 'invalid';
+let projectId = 1000;
+*/
 
-let sqliteStub = () => class SqliteStub {
-  constructor () { this.foo = 'bar'; }
-};
-
-let sessionMock = {
-  username: 'invalid',
-  password: 'invalid',
-  teamName: 'invalid'
-};
-
-/**
- * Setup the proxies used to start the server and access the hierarchy route to stub out lib/hierarchy modules with:
- * {getAllItems} stub to return a resolved promise with the mockHierarchy.json
- * {parseItemHierarchy} stub to return the object's itemHierarchy array
- *
- * mockApp.js will be used instead of the actual app to start the server
- *
- * @param {Object} object that contains pre-formatted item hierarchy object with a title and items. This will be one
- * of every one of the hierarchyTestCases body below.
- */
 function initializeRoute (object) {
-  libStub = {
-    getAllItems: (username, password, teamName, projectId) => {
+  // testModule = rewire('../../routes/hierarchy');
+ // testModule.__set__('hierachy'), () => {
+  testModule = () => {
+    testModule.getAllItems(() => {
       return new Promise((resolve, reject) => {
         process.nextTick(() => {
           resolve(mockHierarchy);
         });
       });
-    },
-    parseItemHierarchy: (allItemsArray) => {
+    });
+    testModule.parseItemHierarchy(() => {
       return object.itemHierarchy;
-    }
+    });
+  /* router.get('/hierarchy', function (req, res) {
+    testModule.getAllItems(username, password, teamName, projectId).then(allItems => {
+      let results = testModule.parseItemHierarchy(allItems);
+      res.json(results);
+    });
+  });*/
   };
-  hierarchyStub = proxyquire('../../routes/hierarchy', {
-    '../lib/hierarchy': libStub
-  });
-  app = proxyquire('./mockApp', {
-    'express-session': () => (req, res, next) => {
-      req.session = sessionMock;
-      next();
-    },
-    '../../routes/hierarchy': hierarchyStub,
-    'connect-sqlite3': sqliteStub
-  });
 }
 
 let hierarchyTestCases = [
@@ -118,17 +102,23 @@ let hierarchyTestCases = [
 
 describe('hierarchy', () => {
   describe('GET /hierarchy', () => {
+  //  let link;
     hierarchyTestCases.forEach(item => {
-      it(item.testcase, (done) => {
+      it(item.testcase, () => {
         initializeRoute(item.body);
+  //      link = proxyquire('../../routes/hierarchy', {
+  //        './hierarchy': testModule
+  //      });
         chai.request(app)
-          .get('/hierarchy?project=33')
-          .then(res => {
-            expect(res.body).to.deep.equal(item.body.itemHierarchy);
-            done();
-          })
-          .catch(err => {
-            done(err);
+        //   app.use(router);
+     //   request(app)
+          .get('./hierarchy')
+          .end((err, res) => {
+            if (err) {
+              throw (err);
+            } else {
+              expect(res).to.deep.equal(item.body);
+            }
           });
       });
     });
