@@ -106,7 +106,7 @@ export function renderHierarchy (hierarchyPayload) {
   let itemHierarchyList = document.getElementById('itemHierarchyList');
   destroyHierarchy(); // Refresh the list every time renderHierarchy is called
   if (hierarchyPayload) {
-    hierarchyPayload.forEach(item => {
+    hierarchyPayload.items.forEach(item => {
       itemHierarchyList.appendChild(createHierarchyItemWithChildren(item));
     });
   } else {
@@ -133,11 +133,15 @@ function destroyHierarchy () {
  */
 function createHierarchyItemWithChildren (item) {
   let listItem = document.createElement('li');
-  let itemAnchor = document.createElement('a');
-  itemAnchor.setAttribute('href', '#rootId=' + item.id);
-  itemAnchor.appendChild(document.createTextNode(item.name));
-  itemAnchor.setAttribute('data-id', item.id);
-  listItem.appendChild(itemAnchor);
+  if (item.isSet === false) {
+    let itemAnchor = document.createElement('a');
+    itemAnchor.setAttribute('href', '#rootId=' + item.id);
+    itemAnchor.appendChild(document.createTextNode(item.name + ' (' + item.docKey + ')'));
+    itemAnchor.setAttribute('data-id', item.id);
+    listItem.appendChild(itemAnchor);
+  } else {
+    listItem.appendChild(document.createTextNode(item.name));
+  }
   if (item.children) {
     let unorderedList = document.createElement('ul');
     item.children.forEach(function (subItem) {
@@ -150,12 +154,17 @@ function createHierarchyItemWithChildren (item) {
 
 /**
  * Listens for mouse clicks on the Item hierarchy list and sets the selectedHierarchyItem
- * variable to that item's ID
+ * variable to that item's ID, and adds the selected class to the selected item
  */
-export function addItemHierachyAnchorClickHandler () {
+export function addItemHierachyClickHandler () {
   graph.querySelectorAll('#itemHierarchyList a').forEach(hierarchyAnchor => {
     hierarchyAnchor.addEventListener('click', event => {
+      let selectedItem = document.querySelector('#itemHierarchyList li.selected');
+      if (selectedItem) {
+        selectedItem.classList.remove('selected');
+      }
       selectedHierarchyItem = event.target.getAttribute('data-id');
+      event.target.classList.add('selected');
     });
   });
 }

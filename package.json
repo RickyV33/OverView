@@ -45,7 +45,6 @@
     "rewire": "^2.5.2",
     "semistandard": "^8.0.0",
     "snazzy": "^4.0.0",
-    "supertest": "^2.0.0",
     "watchify": "^3.7.0"
   }
 }

@@ -24,9 +24,11 @@ router.post('/', (req, res, next) => {
         res.redirect('/graph');
       });
     }, () => {
+      res.status(401);
       res.render('index', { title: 'JamaTrace', error: true });
     });
   } else {
+    res.status(401);
     res.render('index', { title: 'JamaTrace', error: true });
   }
 });
