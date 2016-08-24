@@ -141,7 +141,7 @@ image {
 
 .nodeInfoTip > h5 {
     margin: 0px;
-    padding: 5px 10px;
+    padding: 5px 15px;
 }
 
 .nodeInfoTip > h5.critical {
@@ -163,12 +163,11 @@ image {
 .nodeInfoTip img {
     position: relative;
     top: 0.2rem;
-    margin-right: 0.2rem;
+    margin: 0 0.2rem;
 }
 
 .tooltip-relationship-text {
     font-weight: bold;
-
 }
 
 .suspect-badge-text {
@@ -177,6 +176,8 @@ image {
     stroke: #FFF;
     font-size: 15pt;
     stroke-width: 4px;
+    position: relative;
+    top: 0.1rem;
 }
 
 .node-suspect > .suspect-flag > .suspect-badge-text {
