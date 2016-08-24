@@ -169,9 +169,9 @@ describe('Graph class module', () => {
   });
 
   describe('toJson function', () => {
-    let badNodes = [{'id': '10', 'name': 'item name', 'type': '99'}];
+    let badNodes = [{'id': '10', 'documentKey': 1, 'name': 'item name', 'type': '99'}];
     let badEdges = [{'id': '10', 'source': '1', 'target': '2', 'type': '99'}];
-    let nodes = [{'id': 10, 'name': 'item name', 'type': 99, 'image': 'url', 'description': 'description'}];
+    let nodes = [{'id': 10, 'documentKey': 'docKey', 'name': 'item name', 'type': 99, 'image': 'url', 'description': 'description'}];
     let edges = [{'id': 10, 'source': 1, 'target': 2, 'type': 99, 'suspect': true}];
 
     it('should print an error message if the data Graph contains is invalid', () => {
@@ -190,9 +190,9 @@ describe('Graph class module', () => {
   });
 
   describe('fromJson function', () => {
-    let badNodes = [{'id': '10', 'name': 'item name', 'type': '99'}];
+    let badNodes = [{'id': '10', 'documentKey': 1, 'name': 'item name', 'type': '99'}];
     let badEdges = [{'id': '10', 'source': '1', 'target': '2', 'type': '99'}];
-    let nodes = [{'id': 10, 'name': 'item name', 'type': 99, 'image': 'url', 'description': 'description'}];
+    let nodes = [{'id': 10, 'documentKey': 'docKey', 'name': 'item name', 'type': 99, 'image': 'url', 'description': 'description'}];
     let edges = [{'id': 10, 'source': 1, 'target': 2, 'type': 99, 'suspect': false}];
 
     it('should print an error message if the data Graph contains is invalid', () => {
