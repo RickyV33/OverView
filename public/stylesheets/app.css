@@ -62,7 +62,7 @@ ul > li {
     flex-direction: column;
     flex-wrap: nowrap;
     margin-bottom: 1.5rem;
-    width: 25rem;
+    width: 35rem;
     font-size: 10pt;
 }
 
@@ -83,11 +83,11 @@ input[type=radio] {
 #optionLabel {
     font-family: "Gill Sans", "Lucida Grande", Helvetica, Arial, sans-serif;
     text-transform: uppercase;
-    margin-right: -0.8rem;
+    margin-right: -3rem;
 }
 
 .optionName {
     display: inline-flex;
     flex-direction: row;
-    margin-right: 1.5rem;
+    margin-right: 2rem;
 }
