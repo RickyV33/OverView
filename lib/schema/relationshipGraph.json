@@ -15,6 +15,9 @@
           "id": {
             "type": "integer"
           },
+          "documentKey": {
+            "type": "string"
+          },
           "name": {
             "type": "string"
           },
