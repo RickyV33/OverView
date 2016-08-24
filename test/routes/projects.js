@@ -38,7 +38,11 @@ describe('projects', function () {
       data = {title: 'Projects', projects: [{id: 1, name: 'Project 1'}, {id: 2, name: 'Project 2'}]};
       path = join(__dirname, '../../views/partials/projects.ejs');
       renderedView = ejs.compile(read(path, 'utf8'), {filename: path})(data);
-      app = require('./mockApp');
+      app = require('../../app');
+      app.use((req, res, next) => {
+        req.session.projects = [{id: 1, name: 'Project 1'}, {id: 2, name: 'Project 2'}];
+        next();
+      });
       chai.request(app)
         .get('/projects')
         .end((err, res) => {
