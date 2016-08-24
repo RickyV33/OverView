@@ -192,7 +192,7 @@ describe('index route', () => {
         .send(userLoginMockData)
         .end((err, res) => {
           expect(res).to.have.status(401);
-          expect(err).to.not.be(null);
+          expect(err).to.not.equal(null);
           expect(res).to.have.property('text');
           expect(res.text).to.equal(renderedHtml);
         });
