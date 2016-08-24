@@ -384,13 +384,7 @@ export function update (svg, forceLayout, nodes, physics, itemNames) {
   let suspectBadge = svg.selectAll('.node-suspect')
     .append('g')
       .attr('class', 'suspect-flag');
-
-  suspectBadge.append('circle')
-    .attr('class', 'suspect-badge-circle')
-    .attr('cx', '-12px')
-    .attr('cy', '-11px')
-    .attr('r', 6);
-
+  
   suspectBadge.append('text')
     .attr('class', 'suspect-badge-text')
     .attr('text-anchor', 'middle')
