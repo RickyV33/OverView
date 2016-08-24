@@ -1,16 +1,16 @@
 path.link {
     fill: none;
-    stroke: #cfcfcf;
+    stroke: #BEBEBE;
     stroke-width: 2px;
 }
 
 path.link-dash {
-    stroke: #73a8cf;
+    stroke: #26B2D9;
     stroke-dasharray: 5;
 }
 
 path.suspect {
-    stroke: #73a8cf !important;
+    stroke: #F94306 !important;
 }
 
 path.link-dot {
@@ -20,36 +20,41 @@ path.link-dot {
 }
 
 .arrow {
-    fill: #afafaf;
-    stroke: #afafaf;
+    fill: #BEBEBE;
+    stroke: #BEBEBE;
+    stroke-width: 2px !important;
+}
+
+.arrow-suspect {
+    fill: #F94306 ;
+    stroke: #F94306 ;
     stroke-width: 2px !important;
 }
 
 .node {
-    fill-opacity: 0.80;
+    fill-opacity: 1.0;
 }
 
 .node circle {
     stroke-width: 2px;
-    fill-opacity: 0.80;
-    fill: #76D3F5;
-    stroke: #fff;
+    fill: #93D9EC;
+    stroke: #93D9EC;
 }
 
 .hasDownstream > circle {
-    stroke: #1e4c90 !important;
+    fill: #4696B9;
+    stroke: #293B49 !important;
     stroke-width: 2px;
 }
 
 .hasDownstream > .downstreamCount > circle {
-    stroke: #fff !important;
+    stroke: #000 !important;
     fill: #F2622B;
-    fill-opacity: 0.90;
     stroke-width: 1px;
 }
 
 .downstreamCountText {
-    fill: #fff;
+    fill: #FFF;
     font-weight: bolder;
     font-size: 10px;
 }
@@ -57,17 +62,16 @@ path.link-dot {
 rect {
     height: 19px;
     width: 120px;
-    fill: #fff;
+    fill: #FFF;
     stroke: #efefef;
     stroke-width: 2px;
-    fill-opacity: 0.80;
     pointer-events: none;
 }
 
 .nodeText {
     fill: #000;
     paint-order: stroke;
-    stroke: #fff;
+    stroke: #FFF;
     stroke-width: 3px;
     stroke-linecap: butt;
     stroke-linejoin: miter;
@@ -80,12 +84,88 @@ image {
     height: 18px;
     width: 18px;
 }
-.activeNode {
-    fill: 'steelblue';
+
+.hoverOver > circle {
+    fill: #FFA070;
+    stroke: #FFA070;
+}
+
+.hoverOverEdge {
+    stroke-dasharray: 5;
+    stroke-width: 3px;
+}
+
+.activeNode > circle {
+    fill: #FFB900;
+    stroke: #C38B00 !important;
 }
 
 .projectRoot circle {
-    fill: #F2622B;
-    stroke: #F2622B;
+    fill: #C94418;
+    stroke: #C94418 !important;
     stroke-width: 2px;
+}
+
+.nodeInfoTip {
+    position: absolute;
+    z-index: 10;
+    visibility: hidden;
+    padding: 0px;
+    width: 300px;
+    background-color: #f9f9f9;
+
+    /*Drop shadow*/
+    -webkit-box-shadow: 0px 0px 64px -36px rgba(0,0,0,0.5);
+    -moz-box-shadow: 0px 0px 64px -36px rgba(0,0,0,0.5);
+    box-shadow: 0px 0px 64px -36px rgba(0,0,0,0.5);
+
+    /* Rounded Corners */
+    border-radius: 0px 10px 10px 10px;
+    -moz-border-radius: 0px 10px 10px 10px;
+    -webkit-border-radius: 0px 10px 10px 10px;
+    border: 1px solid #BEBEBE;
+}
+
+/* Small triangle extender for the node tooltip */
+.nodeInfoTip:before {
+    font-size: 10px;
+    display: inline;
+    width: 100%;
+    text-align: center;
+    line-height: 1;
+    color: #f9f9f9;
+    box-sizing: border-box;
+    position: absolute;
+    content: "\25B2";
+}
+
+.nodeInfoTip > h5 {
+    margin: 0px;
+    padding: 5px 10px;
+}
+
+.nodeInfoTip > h5.critical {
+    margin: 0px;
+    padding: 5px 10px;
+    color: #F94306;
+}
+
+.nodeInfoTip > div.content {
+    padding: 10px 15px;
+    margin: 0px;
+    height: 100%;
+}
+.nodeInfoTip img {
+    position: relative;
+    top: 0.2rem;
+    margin-right: 0.2rem;
+}
+
+.node-suspect > .suspect-flag > .suspect-badge-text {
+    fill: #F94306;
+    paint-order: stroke;
+    font-weight: bolder;
+    stroke: #FFF;
+    font-size: 15pt;
+    stroke-width: 4px;
 }

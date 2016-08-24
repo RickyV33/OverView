@@ -72,7 +72,7 @@ describe('index', () => {
               }
               // Render the view using ejs
               let path = join(__dirname, '../../views/index.ejs');
-              let data = {title: 'JamaTrace', teamName: 'sevensource', error: false};
+              let data = {title: 'JamaTrace', error: false};
               let rendHtml = ejs.compile(read(path, 'utf8'), {filename: path})(data);
 
               // Response rendered html
@@ -87,8 +87,6 @@ describe('index', () => {
   });
 
   describe.skip('post request', () => {
-    'use strict';
-
     credentialFixtureCases.forEach(fixture => {
       if (fixture.username && fixture.password && fixture.teamName) {
         it('should return true when all form fields are valid', () => {
