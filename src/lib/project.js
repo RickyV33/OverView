@@ -30,6 +30,7 @@ export function addProjectAnchorClickHandler () {
         hierarchy.addItemHierachyAnchorClickHandler();
         graph.toggle(document.querySelector('#projects'));
         graph.toggle(document.querySelector('#hierarchy'));
+        graph.toggle(document.querySelector('#backButton'));
         document.body.style.cursor = 'default';
       });
     });
