@@ -52,16 +52,18 @@ ul > li {
     float: right;
 }
 
-#hierarchy,
-#projects {
+#projects,
+#hierarchy {
     flex: 1;
 }
 
+#projects,
 #hierarchy {
     display: flex;
     flex-direction: column;
 }
 
+#projects > ul,
 #hierarchy > ul {
     flex: 1;
     overflow-y: scroll;
