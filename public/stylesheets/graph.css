@@ -111,7 +111,7 @@ image {
     z-index: 10;
     visibility: hidden;
     padding: 0px;
-    width: 300px;
+    max-width: 300px;
     background-color: #f9f9f9;
 
     /*Drop shadow*/
@@ -141,13 +141,15 @@ image {
 
 .nodeInfoTip > h5 {
     margin: 0px;
-    padding: 5px 10px;
+    padding: 5px 15px;
 }
 
 .nodeInfoTip > h5.critical {
     margin: 0px;
-    padding: 5px 10px;
+    padding-top: 10px;
     color: #F94306;
+    text-transform: uppercase;
+    text-align: center;
 }
 
 .nodeInfoTip > div.content {
@@ -155,10 +157,29 @@ image {
     margin: 0px;
     height: 100%;
 }
+
+.nodeInfoTip > div.content.text-center {
+    text-align: center;
+}
+
 .nodeInfoTip img {
     position: relative;
     top: 0.2rem;
-    margin-right: 0.2rem;
+    margin: 0 0.2rem;
+}
+
+.tooltip-relationship-text {
+    font-weight: bold;
+}
+
+.nodeInfoTip-suspect-badge {
+    color: #F94306;
+    font-weight: bolder;
+    stroke: #FFF;
+    font-size: 15pt;
+    stroke-width: 4px;
+    position: relative;
+    top: 0.1rem;
 }
 
 .node-suspect > .suspect-flag > .suspect-badge-text {
