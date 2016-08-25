@@ -103,10 +103,10 @@ function createHierarchyItemWithChildren (item) {
  * Listens for mouse clicks on the Item hierarchy list and sets the selectedHierarchyItem
  * variable to that item's ID, and adds the selected class to the selected item
  */
-export function addItemHierachyClickHandler () {
+export function addItemHierarchyClickHandler () {
   graph.querySelectorAll('#itemHierarchyList a').forEach(hierarchyAnchor => {
     hierarchyAnchor.addEventListener('click', event => {
-      let selectedItem = document.querySelector('#itemHierarchyList li.selected');
+      let selectedItem = document.querySelector('#itemHierarchyList a.selected');
       if (selectedItem) {
         selectedItem.classList.remove('selected');
       }

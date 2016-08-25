@@ -21,7 +21,7 @@ export let projectNode = {};
 
 let svg = null;
 let force = null;         // The force layout for d3
-export let debug = true;         // To display the function console logs
+export let debug = false;         // To display the function console logs
 
 /**
  * This handles the physics for the graph and executes every 'tick'
