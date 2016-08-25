@@ -140,6 +140,7 @@ function createHierarchyItemWithChildren (item) {
     itemAnchor.setAttribute('data-id', item.id);
     listItem.appendChild(itemAnchor);
   } else {
+    listItem.classList.add('item-hierarchy-set');
     listItem.appendChild(document.createTextNode(item.name));
   }
   if (item.children) {
