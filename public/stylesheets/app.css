@@ -77,7 +77,8 @@ ul > li {
     color: #FFF;
     background-color: #4696B9;
     text-shadow: 0 1px 0 #293B49;
-    padding: 0.2rem;
+    padding: 0.2rem 0.4rem;
+    border-radius: 0.2rem;
 }
 
 .selected-item:hover {
