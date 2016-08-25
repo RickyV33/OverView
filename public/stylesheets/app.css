@@ -92,7 +92,7 @@ input[type=radio] {
 }
 
 #optionLabel {
-    font-family: "Gill Sans", "Lucida Grande", Helvetica, Arial, sans-serif;
+    font-family: "Gill Sans", Helvetica, Arial, sans-serif;
     text-transform: uppercase;
     margin-right: -3rem;
 }
@@ -101,4 +101,9 @@ input[type=radio] {
     display: inline-flex;
     flex-direction: row;
     margin-right: 2rem;
+}
+
+.item-hierarchy-set {
+    font-family: "Gill Sans", Helvetica, Arial, sans-serif;
+    text-transform: uppercase;
 }
