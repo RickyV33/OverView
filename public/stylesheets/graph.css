@@ -170,7 +170,7 @@ image {
     font-weight: bold;
 }
 
-.suspect-badge-text {
+.nodeInfoTip-suspect-badge {
     color: #F94306;
     font-weight: bolder;
     stroke: #FFF;

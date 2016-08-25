@@ -422,7 +422,7 @@ function nodeMouseOver (overNode) {
     .attr('opacity', 1);
 
   let idVal = overNode.documentKey ? overNode.documentKey : '';
-  let strIsSuspect = overNode.isSuspect ? '<span class="suspect-badge-text">!</span>' : '';
+  let strIsSuspect = overNode.isSuspect ? '<span class="nodeInfoTip-suspect-badge">!</span>' : '';
   let imageVal = overNode.image ? '<img src="' + overNode.image + '">' : '';
   let nodeText = '<h5>' + strIsSuspect + imageVal + idVal + '</h5><h5>' + overNode.name + '</h5>';
 
