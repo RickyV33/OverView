@@ -21,7 +21,7 @@ $ npm install
 
 If it doesn't already exist in your environment, create a new `.env` file in the project root directory, copying the
 `.env.example` and modifying it as is necessary for the environment. *The `SESSION_SECRET` variable must be changed to
-any unique String.*
+any unique String, and the `TEAM_NAME` variable must be set to your team name.*
 
 To run the application
 ```
