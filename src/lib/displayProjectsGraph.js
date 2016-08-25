@@ -1,8 +1,8 @@
 /* exported projectRootId, curves, physics itemNameOrientation, floatDown */
 import updateGraph from './graph/config';
-import * as graph from '../graph'
+import * as graph from '../graph';
 import * as project from './project';
-import * as hierarchy from './hierarchy'
+import * as hierarchy from './hierarchy';
 
 /* exported renderGraph */
 export let curves = true;
@@ -14,7 +14,6 @@ document.addEventListener('DOMContentLoaded', () => {
   initializeD3Options();
   addD3GraphOptionOnChangeHandler();
 });
-
 
 /**
  * Base function to render the graph. It is invoked by the view through an AJAX call after the data has been retrieved.
