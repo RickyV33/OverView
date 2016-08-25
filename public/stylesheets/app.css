@@ -75,6 +75,7 @@ ul > li {
     margin-bottom: 1.5rem;
     width: 35rem;
     font-size: 10pt;
+    flex-shrink: 0;
 }
 
 #physicsOption > *,
