@@ -146,8 +146,10 @@ image {
 
 .nodeInfoTip > h5.critical {
     margin: 0px;
-    padding: 5px 10px;
+    padding-top: 10px;
     color: #F94306;
+    text-transform: uppercase;
+    text-align: center;
 }
 
 .nodeInfoTip > div.content {
