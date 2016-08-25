@@ -107,12 +107,12 @@ function createHierarchyItemWithChildren (item) {
 export function addItemHierarchyClickHandler () {
   graph.querySelectorAll('#itemHierarchyList a').forEach(hierarchyAnchor => {
     hierarchyAnchor.addEventListener('click', event => {
-      let selectedItem = document.querySelector('#itemHierarchyList a.selected');
+      let selectedItem = document.querySelector('#itemHierarchyList a.selected-item');
       if (selectedItem) {
-        selectedItem.classList.remove('selected');
+        selectedItem.classList.remove('selected-item');
       }
       selectedHierarchyItem = event.target.getAttribute('data-id');
-      event.target.classList.add('selected');
+      event.target.classList.add('selected-item');
     });
   });
 }

@@ -68,6 +68,22 @@ ul > li {
     margin-bottom: 1.5rem;
 }
 
+.item-hierarchy-set {
+    font-family: "Gill Sans", Helvetica, Arial, sans-serif;
+    text-transform: uppercase;
+}
+
+.selected-item {
+    color: #FFF;
+    background-color: #4696B9;
+    text-shadow: 0 1px 0 #293B49;
+    padding: 0.2rem;
+}
+
+.selected-item:hover {
+    text-decoration: none;
+}
+
 #d3GraphOptions {
     display: flex;
     flex-direction: column;
@@ -102,9 +118,4 @@ input[type=radio] {
     display: inline-flex;
     flex-direction: row;
     margin-right: 2rem;
-}
-
-.item-hierarchy-set {
-    font-family: "Gill Sans", Helvetica, Arial, sans-serif;
-    text-transform: uppercase;
 }
