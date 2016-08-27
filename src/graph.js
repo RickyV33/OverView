@@ -18,7 +18,12 @@ document.addEventListener('DOMContentLoaded', () => {
     if (document.querySelector('#hierarchy').classList.contains('hidden')) {
       toggle(document.querySelector('#d3Container'));
       toggle(document.querySelector('#hierarchy'));
+      // Clear selected item and reset to default (shows entire project)
       hierarchy.setSelectedHierarchyItem(null);
+      let selectedItem = document.querySelector('#itemHierarchyList a.selected-item');
+      if (selectedItem) {
+        selectedItem.classList.remove('selected-item');
+      }
     } else {
       toggle(document.querySelector('#projects'));
       toggle(document.querySelector('#hierarchy'));

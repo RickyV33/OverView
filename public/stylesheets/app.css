@@ -52,20 +52,39 @@ ul > li {
     float: right;
 }
 
-#hierarchy,
-#projects {
+#projects,
+#hierarchy {
     flex: 1;
 }
 
+#projects,
 #hierarchy {
     display: flex;
     flex-direction: column;
 }
 
+#projects > ul,
 #hierarchy > ul {
     flex: 1;
     overflow-y: scroll;
     margin-bottom: 1.5rem;
+}
+
+.item-hierarchy-set {
+    font-family: "Gill Sans", Helvetica, Arial, sans-serif;
+    text-transform: uppercase;
+}
+
+.selected-item {
+    color: #FFF;
+    background-color: #4696B9;
+    text-shadow: 0 1px 0 #293B49;
+    padding: 0.2rem 0.4rem;
+    border-radius: 0.2rem;
+}
+
+.selected-item:hover {
+    text-decoration: none;
 }
 
 #d3GraphOptions {
@@ -93,7 +112,7 @@ input[type=radio] {
 }
 
 #optionLabel {
-    font-family: "Gill Sans", "Lucida Grande", Helvetica, Arial, sans-serif;
+    font-family: "Gill Sans", Helvetica, Arial, sans-serif;
     text-transform: uppercase;
     margin-right: -3rem;
 }
