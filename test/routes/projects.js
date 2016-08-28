@@ -1,41 +1,83 @@
 /* eslint-env mocha */
+
 'use strict';
 
 let chai = require('chai');
 let expect = chai.expect;
 let chaiHttp = require('chai-http');
-let server = require('../../app');
-
 let ejs = require('ejs');
 let read = require('fs').readFileSync;
 let join = require('path').join;
+let proxyquire = require('proxyquire');
 
 chai.use(chaiHttp);
 
+let app;
+let data;
+let path;
+let renderedView;
+
+let sessionMock = {
+  username: 'foo',
+  password: 'bar',
+  teamName: 'baz'
+};
+
+let sqliteStub = () => class SqliteStub {
+  constructor () { this.foo = 'bar'; }
+};
+
 describe('projects', function () {
-  describe.skip('get request', function () {
-    // Test #1: verify projects list view is rendered successfully as is documented in views/projects.ejs
-    it('should render successfully with status 200', function (done) {
-      let path, data, renderedView;
-      chai.request(server)
-            .post('/')
-            .send({teamName: 'sevensource', username: 'dummy', password: 'password'})
-            .end(function (err, res) {
-              if (err) {
-                console.log(err);
-              }
-              expect(res).to.have.status(200);
-              expect(res).to.redirect();
-              expect(res).to.have.property('text');
-              path = join(__dirname, '../../views/projects.ejs');
-              // TODO need to test with actual data once "Gather projects" story is completed
-              data = {title: 'Projects', projects: null};
-              renderedView = ejs.compile(read(path, 'utf8'), {filename: path})(data);
-              expect(res.text).to.equal(renderedView);
-              expect(res.text).contains('Projects');
-              expect(res.text).contains('Click on a project below to view it\'s traceability graph:');
-              done();
-            });
+  describe('get request', function () {
+    it('should render projects view with no projects when session.projects is null', function () {
+      data = {title: 'Projects', projects: []};
+      path = join(__dirname, '../../views/partials/projects.ejs');
+      renderedView = ejs.compile(read(path, 'utf8'), {filename: path})(data);
+      app = proxyquire('../../app', {
+        'express-session': () => (req, res, next) => {
+          req.session = sessionMock;
+          next();
+        },
+        'connect-sqlite3': sqliteStub
+      });
+      // app = require('../../app');
+      chai.request(app)
+        .get('/projects')
+        .end((err, res) => {
+          if (err) {
+            throw (err);
+          }
+          expect(res).to.have.status(200);
+          expect(res).to.have.property('text');
+          expect(res.text).to.equal(renderedView);
+        });
+    });
+    it('should render projects view with projects when session.projects is not null', function () {
+      data = {title: 'Projects', projects: [{id: 1, name: 'Project 1'}, {id: 2, name: 'Project 2'}]};
+      path = join(__dirname, '../../views/partials/projects.ejs');
+      renderedView = ejs.compile(read(path, 'utf8'), {filename: path})(data);
+     // app = require('../../app');
+      app = proxyquire('../../app', {
+        'express-session': () => (req, res, next) => {
+          req.session = sessionMock;
+          next();
+        },
+        'connect-sqlite3': sqliteStub
+      });
+      app.use((req, res, next) => {
+        req.session.projects = [{id: 1, name: 'Project 1'}, {id: 2, name: 'Project 2'}];
+        next();
+      });
+      chai.request(app)
+        .get('/projects')
+        .end((err, res) => {
+          if (err) {
+            throw (err);
+          }
+          expect(res).to.have.status(200);
+          expect(res).to.have.property('text');
+          expect(res.text).to.equal(renderedView);
+        });
     });
   });
 });
