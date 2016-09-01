@@ -2,14 +2,14 @@
 
 ## About
 
-JamaTrace is a project between Seven Source, a Portland State University computer science senior capstone team, and
+OverView for Jama is a project between Seven Source, a Portland State University computer science senior capstone team, and
 [Jama Software](https://github.com/JamaSoftware). The team consists of seven members:
 [Iman Bilal](https://github.com/ibilal), [Mike Hansen](https://github.com/HansenML),
 [Ruben Piatnitsky](https://github.com/ruv-prog-so), [Chance Snow](https://github.com/chances),
 [Kathleen Tran](https://github.com/kathtran), [Ricardo Valencia](https://github.com/RickyV33) (Team Lead), and
 [Marcus Week](https://github.com/Marc-Week).
 
-JamaTrace allows customers of Jama Software to view the downstream relationships between their project items via a
+OverView for Jama allows customers of Jama Software to view the downstream relationships between their project items via a
 graph that supports traceability. All data is retrieved from Jama's REST API.
 
 ## Usage
