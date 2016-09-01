@@ -31,7 +31,7 @@ router.get('/', function (req, res, next) {
     }
   } else {
     res.render('graph', {
-      title: 'JamaTrace',
+      title: 'OverView',
       subtitle: 'Graph',
       projects: req.session.projects ? req.session.projects : null,
       itemHierarchy: null

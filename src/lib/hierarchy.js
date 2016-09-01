@@ -52,12 +52,14 @@ export function getHierarchy (projectId) {
 export function renderHierarchy (hierarchyPayload) {
   let itemHierarchyList = document.getElementById('itemHierarchyList');
   destroyHierarchy(); // Refresh the list every time renderHierarchy is called
-  if (hierarchyPayload) {
+  if (hierarchyPayload.items.length) {
     hierarchyPayload.items.forEach(item => {
       itemHierarchyList.appendChild(createHierarchyItemWithChildren(item));
     });
   } else {
-    itemHierarchyList.appendChild(document.createTextNode('Sorry, this project has no items to display.'));
+    let listItem = document.createElement('li');
+    listItem.appendChild(document.createTextNode('Sorry, this project has no items to display.'));
+    itemHierarchyList.appendChild(listItem);
   }
 }
 
