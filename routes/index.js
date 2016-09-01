@@ -5,7 +5,7 @@ let router = express.Router();
 
 /* GET home page. */
 router.get('/', (req, res, next) => {
-  res.render('index', {title: 'JamaTrace'});
+  res.render('index', {title: 'OverView'});
 });
 
 router.post('/', (req, res, next) => {
@@ -19,17 +19,17 @@ router.post('/', (req, res, next) => {
       req.session.save(err => {
         if (err) {
           // TODO Session save Error message
-          res.render('index', { title: 'JamaTrace', error: true });
+          res.render('index', { title: 'OverView', error: true });
         }
         res.redirect('/graph');
       });
     }, () => {
       res.status(401);
-      res.render('index', { title: 'JamaTrace', error: true });
+      res.render('index', { title: 'OverView', error: true });
     });
   } else {
     res.status(401);
-    res.render('index', { title: 'JamaTrace', error: true });
+    res.render('index', { title: 'OverView', error: true });
   }
 });
 
