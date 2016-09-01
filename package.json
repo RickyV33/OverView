@@ -1,10 +1,10 @@
 {
-  "name": "OverView for Jama",
+  "name": "OverView",
   "version": "0.0.0",
   "private": true,
   "scripts": {
     "start": "node --harmony ./bin/www",
-    "debug": "DEBUG=OverView for Jama:* npm start",
+    "debug": "DEBUG=OverView:* npm start",
     "test": "semistandard | snazzy && mocha --check-leaks --recursive",
     "cover": "istanbul cover _mocha -- --recursive",
     "coveralls": "istanbul cover _mocha --report lcovonly -- --recursive && cat ./coverage/lcov.info | coveralls",
