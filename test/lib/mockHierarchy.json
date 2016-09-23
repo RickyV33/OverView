@@ -299,7 +299,7 @@
       "documentKey": "JCP1-REQ-2",
       "globalId": "GID-17701",
       "name": "Input a Username",
-      "description": "<p><span style=\"background-color:transparent; color:#000000; font-family:arial; font-size:14.666666666666666px; font-style:normal; font-variant:normal; font-weight:400; text-decoration:none; vertical-align:baseline\">JamaTrace shall provide a form field for users to input their username. </span></p>\n",
+      "description": "<p><span style=\"background-color:transparent; color:#000000; font-family:arial; font-size:14.666666666666666px; font-style:normal; font-variant:normal; font-weight:400; text-decoration:none; vertical-align:baseline\">OverView shall provide a form field for users to input their username. </span></p>\n",
       "prio$24": 302
     },
     "resources": {
@@ -340,7 +340,7 @@
       "documentKey": "JCP1-REQ-3",
       "globalId": "GID-17702",
       "name": "Input a Password",
-      "description": "<p><span id=\"docs-internal-guid-1e429063-c232-57b7-e8e1-42a437ed94c8\"><span style=\"background-color:transparent; font-family:arial; font-size:14.666666666666666px; font-variant-alternates:normal; font-variant-east-asian:normal; font-variant-ligatures:normal; font-variant-numeric:normal; font-variant-position:normal; vertical-align:baseline; white-space:pre-wrap\">JamaTrace shall provide a form field for users to input their password.</span></span></p>\n",
+      "description": "<p><span id=\"docs-internal-guid-1e429063-c232-57b7-e8e1-42a437ed94c8\"><span style=\"background-color:transparent; font-family:arial; font-size:14.666666666666666px; font-variant-alternates:normal; font-variant-east-asian:normal; font-variant-ligatures:normal; font-variant-numeric:normal; font-variant-position:normal; vertical-align:baseline; white-space:pre-wrap\">OverView shall provide a form field for users to input their password.</span></span></p>\n",
       "prio$24": 302
     },
     "resources": {
@@ -381,7 +381,7 @@
       "documentKey": "JCP1-REQ-24",
       "globalId": "GID-26204",
       "name": "Add team name input",
-      "description": "<p><span style=\"color:rgb(0, 0, 0); font-family:arial; font-size:15px; white-space:pre-wrap\">JamaTrace shall provide a form field for users to input their team name</span></p>\n",
+      "description": "<p><span style=\"color:rgb(0, 0, 0); font-family:arial; font-size:15px; white-space:pre-wrap\">OverView shall provide a form field for users to input their team name</span></p>\n",
       "prio$24": 447
     },
     "resources": {
@@ -422,7 +422,7 @@
       "documentKey": "JCP1-REQ-14",
       "globalId": "GID-19516",
       "name": "Submit username and password",
-      "description": "<p><span style=\"background-color:transparent; color:#000000; font-family:arial; font-size:14.666666666666666px; font-style:normal; font-variant:normal; font-weight:400; text-decoration:none; vertical-align:baseline\">JamaTrace shall provide a submit button for users to click to access their account</span></p>\n",
+      "description": "<p><span style=\"background-color:transparent; color:#000000; font-family:arial; font-size:14.666666666666666px; font-style:normal; font-variant:normal; font-weight:400; text-decoration:none; vertical-align:baseline\">OverView shall provide a submit button for users to click to access their account</span></p>\n",
       "prio$24": 302
     },
     "resources": {
@@ -504,7 +504,7 @@
       "documentKey": "JCP1-REQ-17",
       "globalId": "GID-19536",
       "name": "Display a Project's Item Hierarchy",
-      "description": "<p>JamaTrace shall provide a tree view of a project&#39;s item hierarchy within the user&#39;s selected project</p>\n",
+      "description": "<p>OverView shall provide a tree view of a project&#39;s item hierarchy within the user&#39;s selected project</p>\n",
       "prio$24": 302
     },
     "resources": {
@@ -545,7 +545,7 @@
       "documentKey": "JCP1-REQ-11",
       "globalId": "GID-18201",
       "name": "Relationship Graph JSON Specification",
-      "description": "<p><span style=\"background-color:transparent; font-family:arial; font-size:14.6667px; font-style:normal; font-variant:normal; font-weight:400; text-decoration:none; vertical-align:baseline\">JamaTrace shall provide a common JSON format to model item relationship graphs.</span></p>\n",
+      "description": "<p><span style=\"background-color:transparent; font-family:arial; font-size:14.6667px; font-style:normal; font-variant:normal; font-weight:400; text-decoration:none; vertical-align:baseline\">OverView shall provide a common JSON format to model item relationship graphs.</span></p>\n",
       "prio$24": 302
     },
     "resources": {
@@ -586,7 +586,7 @@
       "documentKey": "JCP1-REQ-18",
       "globalId": "GID-19552",
       "name": "Capture User's Selected Root Item",
-      "description": "<p><span id=\"docs-internal-guid-6fc112a2-eb90-721f-9f60-8bb7c0bc7a6b\"><span style=\"background-color:transparent; font-family:arial; font-size:14.666666666666666px; font-variant-alternates:normal; font-variant-east-asian:normal; font-variant-ligatures:normal; font-variant-numeric:normal; font-variant-position:normal; vertical-align:baseline; white-space:pre-wrap\">JamaTrace shall capture the user&#39;s selected root item from which to display a relationship graph.</span></span></p>\n",
+      "description": "<p><span id=\"docs-internal-guid-6fc112a2-eb90-721f-9f60-8bb7c0bc7a6b\"><span style=\"background-color:transparent; font-family:arial; font-size:14.666666666666666px; font-variant-alternates:normal; font-variant-east-asian:normal; font-variant-ligatures:normal; font-variant-numeric:normal; font-variant-position:normal; vertical-align:baseline; white-space:pre-wrap\">OverView shall capture the user&#39;s selected root item from which to display a relationship graph.</span></span></p>\n",
       "prio$24": 302
     },
     "resources": {
@@ -627,7 +627,7 @@
       "documentKey": "JCP1-REQ-19",
       "globalId": "GID-19553",
       "name": "Gather a Project's Item Hierarchy from jama",
-      "description": "<p><span><span style=\"background-color:transparent; font-family:arial; font-size:14.666666666666666px; font-variant-alternates:normal; font-variant-east-asian:normal; font-variant-ligatures:normal; font-variant-numeric:normal; font-variant-position:normal; vertical-align:baseline; white-space:pre-wrap\">JamaTrace shall retrieve item hierarchy of user&#39;s selected project as JSON from jama</span></span></p>\n\n<p>&nbsp;</p>\n",
+      "description": "<p><span><span style=\"background-color:transparent; font-family:arial; font-size:14.666666666666666px; font-variant-alternates:normal; font-variant-east-asian:normal; font-variant-ligatures:normal; font-variant-numeric:normal; font-variant-position:normal; vertical-align:baseline; white-space:pre-wrap\">OverView shall retrieve item hierarchy of user&#39;s selected project as JSON from jama</span></span></p>\n\n<p>&nbsp;</p>\n",
       "prio$24": 302
     },
     "resources": {
@@ -668,7 +668,7 @@
       "documentKey": "JCP1-REQ-22",
       "globalId": "GID-22002",
       "name": "Item Hierarchy Tree JSON Specification",
-      "description": "<p><span style=\"background-color:transparent; font-family:arial; font-size:14.6667px; font-style:normal; font-variant:normal; font-weight:400; text-decoration:none; vertical-align:baseline\">JamaTrace shall provide a common JSON format to model item relationship graphs.</span></p>\n",
+      "description": "<p><span style=\"background-color:transparent; font-family:arial; font-size:14.6667px; font-style:normal; font-variant:normal; font-weight:400; text-decoration:none; vertical-align:baseline\">OverView shall provide a common JSON format to model item relationship graphs.</span></p>\n",
       "prio$24": 302
     },
     "resources": {
@@ -749,7 +749,7 @@
       "documentKey": "JCP1-REQ-4",
       "globalId": "GID-17704",
       "name": "Gather User's List of Projects",
-      "description": "<p><span id=\"docs-internal-guid-1e429063-c234-8bf6-6c43-4be3f65242cc\"><span style=\"background-color:transparent; font-family:arial; font-size:14.666666666666666px; font-variant-alternates:normal; font-variant-east-asian:normal; font-variant-ligatures:normal; font-variant-numeric:normal; font-variant-position:normal; vertical-align:baseline; white-space:pre-wrap\">JamaTrace shall collect all user projects from jama </span></span></p>\n",
+      "description": "<p><span id=\"docs-internal-guid-1e429063-c234-8bf6-6c43-4be3f65242cc\"><span style=\"background-color:transparent; font-family:arial; font-size:14.666666666666666px; font-variant-alternates:normal; font-variant-east-asian:normal; font-variant-ligatures:normal; font-variant-numeric:normal; font-variant-position:normal; vertical-align:baseline; white-space:pre-wrap\">OverView shall collect all user projects from jama </span></span></p>\n",
       "prio$24": 302
     },
     "resources": {
@@ -790,7 +790,7 @@
       "documentKey": "JCP1-REQ-16",
       "globalId": "GID-19533",
       "name": "Display User's List of Projects",
-      "description": "<p><span id=\"docs-internal-guid-6fc112a2-eb85-cca7-8691-0dec90bb66a7\"><span style=\"background-color:transparent; font-family:arial; font-size:14.666666666666666px; font-variant-alternates:normal; font-variant-east-asian:normal; font-variant-ligatures:normal; font-variant-numeric:normal; font-variant-position:normal; vertical-align:baseline; white-space:pre-wrap\">JamaTrace shall display all available projects to the user in list select from</span></span></p>\n",
+      "description": "<p><span id=\"docs-internal-guid-6fc112a2-eb85-cca7-8691-0dec90bb66a7\"><span style=\"background-color:transparent; font-family:arial; font-size:14.666666666666666px; font-variant-alternates:normal; font-variant-east-asian:normal; font-variant-ligatures:normal; font-variant-numeric:normal; font-variant-position:normal; vertical-align:baseline; white-space:pre-wrap\">OverView shall display all available projects to the user in list select from</span></span></p>\n",
       "prio$24": 302
     },
     "resources": {

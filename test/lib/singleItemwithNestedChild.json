@@ -137,7 +137,7 @@
       "documentKey": "JCP1-REQ-4",
       "globalId": "GID-17704",
       "name": "Gather User's List of Projects",
-      "description": "<p><span id=\"docs-internal-guid-1e429063-c234-8bf6-6c43-4be3f65242cc\"><span style=\"background-color:transparent; font-family:arial; font-size:14.666666666666666px; font-variant-alternates:normal; font-variant-east-asian:normal; font-variant-ligatures:normal; font-variant-numeric:normal; font-variant-position:normal; vertical-align:baseline; white-space:pre-wrap\">JamaTrace shall collect all user projects from jama </span></span></p>\n",
+      "description": "<p><span id=\"docs-internal-guid-1e429063-c234-8bf6-6c43-4be3f65242cc\"><span style=\"background-color:transparent; font-family:arial; font-size:14.666666666666666px; font-variant-alternates:normal; font-variant-east-asian:normal; font-variant-ligatures:normal; font-variant-numeric:normal; font-variant-position:normal; vertical-align:baseline; white-space:pre-wrap\">OverView shall collect all user projects from jama </span></span></p>\n",
       "prio$24": 302
     },
     "resources": {
