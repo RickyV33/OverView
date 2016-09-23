@@ -18,12 +18,15 @@
         "id": { "type": "integer" },
         "name": { "type": "string" },
         "type": { "type": "integer" },
+        "docKey": { "type": "string" },
+        "parent": { "type": "integer" },
+        "isSet": { "type": "boolean" },
         "children": {
           "type": "array",
           "items": { "$ref": "item" }
         }
       },
-      "required": [ "id", "name", "type", "children" ]
+      "required": [ "id", "name", "type", "docKey", "parent", "isSet", "children" ]
     }
   }
 }

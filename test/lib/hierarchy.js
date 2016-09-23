@@ -51,13 +51,14 @@ let pushChildrenStub = () => {
 
 describe('Hierarchy Module', () => {
   describe('getAllItems function', () => {
-    it('should return a rejected promise when the login credentials are invalid', () => {
+    it('should return a rejected promise when the login credentials are invalid', (done) => {
       projectId = 99;
       data = 'Invalid login credentials';
       hierarchy = proxyquire('../../lib/hierarchy', {'./pagination': rejectedPromise});
       return (expect(hierarchy.getAllItems(username, password, teamName, projectId))
         .to.eventually.be.rejected()).then(item => {
           expect(item).to.equal(data);
+          done();
         });
     });
     it('should return a rejected promise when the login credentials are valid, but projectId is invalid', () => {
@@ -69,23 +70,25 @@ describe('Hierarchy Module', () => {
           expect(item).to.equal(data);
         });
     });
-    it('should return an empty JSON blob when login credentials and projectId are valid', () => {
+    it('should return an empty JSON blob when login credentials and projectId are valid', (done) => {
       projectId = 33;
       data = {};
       hierarchy = proxyquire('../../lib/hierarchy', {'./pagination': resolvedPromise});
       return (expect(hierarchy.getAllItems(username, password, teamName, projectId))
         .to.eventually.be.fulfilled()).then(item => {
           expect(item).to.equal(data);
+          done();
         });
     });
     it('should return a valid JSON blob with one item and one sub item ' +
-      'when login credentials and projectId are valid, and the project contains one item and one sub item', () => {
+      'when login credentials and projectId are valid, and the project contains one item and one sub item', (done) => {
       projectId = 33;
-      data = {'name': 'first item', 'children': {'name': 'sub item of first item', 'children': {}}};
+      data = {name: 'first item', children: {name: 'sub item of first item', children: {}}};
       hierarchy = proxyquire('../../lib/hierarchy', {'./pagination': resolvedPromise});
       return (expect(hierarchy.getAllItems(username, password, teamName, projectId))
         .to.eventually.be.fulfilled()).then(item => {
           expect(item).to.equal(data);
+          done();
         });
     });
   });
@@ -98,7 +101,7 @@ describe('Hierarchy Module', () => {
         hierarchy.__set__('mergeChildren', () => mergeChildrenStub());
         hierarchy.__set__('pushChildrenToRoots', () => pushChildrenStub());
         results = hierarchy.parseItemHierarchy(data);
-        expect(results).to.deep.equal(data);
+        expect(results.items).to.deep.equal(data);
         expect(hierarchy.__get__('rootItems')).to.deep.equal(data);
         expect(hierarchy.__get__('children')).to.deep.equal(data);
       });
@@ -107,13 +110,14 @@ describe('Hierarchy Module', () => {
       'with no children', () => {
       let results;
       data = require('./singleItemHierarchy.json');
-      roots = [{'id': 2140, 'type': 24, 'name': 'Input a Username', 'parent': 33, 'children': []}];
+      roots = [{id: 2140, type: 24, docKey: 'JCP1-REQ-2', name: 'Input a Username', parent: 33, isSet: false,
+        children: []}];
       mergedChildren = [];
       hierarchy = rewire('../../lib/hierarchy');
       hierarchy.__set__('mergeChildren', () => mergeChildrenStub());
       hierarchy.__set__('pushChildrenToRoots', () => pushChildrenStub());
       results = hierarchy.parseItemHierarchy(data);
-      expect(results).to.deep.equal(roots);
+      expect(results.items).to.deep.equal(roots);
       expect(hierarchy.__get__('rootItems')).to.deep.equal(roots);
       expect(hierarchy.__get__('children')).to.deep.equal(mergedChildren);
     });
@@ -121,28 +125,35 @@ describe('Hierarchy Module', () => {
       'blob argument contains a single root item with one child and one nested child', () => {
       let results;
       data = require('./singleItemwithNestedChild.json');
-      roots = [{'id': 2104, 'type': 24, 'name': 'Input a Username', 'parent': 33, 'children': [
-        {'id': 2119, 'type': 99, 'name': 'User Login Home Page', 'parent': 2104, 'children': []},
-        {'id': 2142, 'type': 99, 'name': 'Collect and Display Project Item Hierarchy from Jama',
-          'parent': 2104, 'children': []},
-        {'id': 2317, 'type': 99, 'name': 'Collect and Display User Projects from Jama',
-          'parent': 2104, 'children': [
-          {'id': 2143, 'type': 99, 'name': 'Gather User\'s List of Projects', 'parent': 2317, 'children': []}
+      roots = [{id: 2104, type: 24, docKey: 'document key', name: 'Input a Username', parent: 33, isSet: true,
+        children: [
+        {id: 2119, type: 99, docKey: 'document key', name: 'User Login Home Page', parent: 2104, isSet: false,
+          children: []},
+        {id: 2142, type: 99, docKey: 'document key', name: 'Collect and Display Project Item Hierarchy from Jama',
+          parent: 2104, isSet: false, children: []},
+        {id: 2317, type: 99, docKey: 'document key', name: 'Collect and Display User Projects from Jama',
+          parent: 2104, isSet: true, children: [
+          {id: 2143, type: 99, docKey: 'document key', name: 'Gather User\'s List of Projects', parent: 2317,
+            isSet: false, children: []}
           ]}
-      ]}];
-      mergedChildren = [{'id': 2104, 'type': 24, 'name': 'Input a Username', 'parent': 33, 'children': [
-        {'id': 2119, 'type': 99, 'name': 'User Login Home Page', 'parent': 2104, 'children': []},
-        {'id': 2142, 'type': 99, 'name': 'Collect and Display Project Item Hierarchy from Jama',
-          'parent': 2104, 'children': []},
-        {'id': 2317, 'type': 99, 'name': 'Collect and Display User Projects from Jama',
-          'parent': 2104, 'children': []}
-      ]},
-        {'id': 2119, 'type': 99, 'name': 'User Login Home Page', 'parent': 2104, 'children': []},
-        {'id': 2142, 'type': 99, 'name': 'Collect and Display Project Item Hierarchy from Jama',
-          'parent': 2104, 'children': []},
-        {'id': 2143, 'type': 99, 'name': 'Gather User\'s List of Projects', 'parent': 2317, 'children': []},
-        {'id': 2317, 'type': 99, 'name': 'Collect and Display User Projects from Jama',
-          'parent': 2104, 'children': []}];
+        ]}];
+      mergedChildren = [{id: 2104, type: 24, docKey: 'document key', name: 'Input a Username', parent: 33,
+        isSet: true, children: [
+        {id: 2119, type: 99, docKey: 'document key', name: 'User Login Home Page', parent: 2104, isSet: true,
+          children: []},
+        {id: 2142, type: 99, docKey: 'document key', name: 'Collect and Display Project Item Hierarchy from Jama',
+          parent: 2104, isSet: false, children: []},
+        {id: 2317, type: 99, docKey: 'document key', name: 'Collect and Display User Projects from Jama',
+          parent: 2104, isSet: true, children: []}
+        ]},
+        {id: 2119, type: 99, docKey: 'document key', name: 'User Login Home Page', parent: 2104, isSet: true,
+          children: []},
+        {id: 2142, type: 99, docKey: 'document key', name: 'Collect and Display Project Item Hierarchy from Jama',
+          parent: 2104, isSet: false, children: []},
+        {id: 2143, type: 99, docKey: 'document key', name: 'Gather User\'s List of Projects', parent: 2317,
+          isSet: false, children: []},
+        {id: 2317, type: 99, docKey: 'document key', name: 'Collect and Display User Projects from Jama',
+          parent: 2104, isSet: false, children: []}];
       hierarchy = rewire('../../lib/hierarchy');
       hierarchy.__set__('mergeChildren', () => {
         hierarchy.__set__('children', mergedChildren);
@@ -151,7 +162,7 @@ describe('Hierarchy Module', () => {
         hierarchy.__set__('rootItems', roots);
       });
       results = hierarchy.parseItemHierarchy(data);
-      expect(results).to.deep.equal(roots);
+      expect(results.items).to.deep.equal(roots);
       expect(hierarchy.__get__('rootItems')).to.deep.equal(roots);
       expect(hierarchy.__get__('children')).to.deep.equal(mergedChildren);
     });
@@ -182,18 +193,22 @@ describe('Hierarchy Module', () => {
       'in the children array', () => {
       data = [
         {
-          'id': 2115,
-          'type': 31,
-          'name': 'Parent: requirements',
-          'parent': 33,
-          'children': []
+          id: 2115,
+          type: 31,
+          docKey: 'document key',
+          name: 'Parent: requirements',
+          parent: 33,
+          isSet: true,
+          children: []
         },
         {
-          'id': 2117,
-          'type': 35,
-          'name': 'Parent: epics',
-          'parent': 33,
-          'children': []
+          id: 2117,
+          type: 35,
+          docKey: 'document key',
+          name: 'Parent: epics',
+          parent: 33,
+          isSet: true,
+          children: []
         }
       ];
       mergedChildren = data;
@@ -203,75 +218,95 @@ describe('Hierarchy Module', () => {
       expect(hierarchy.__get__('children')).to.deep.equal(mergedChildren);
     });
     it('should result in children array having all children items in the children array into ' +
-      'their parents arrya of children', () => {
+      'their parents array of children', () => {
       data = [{
-        'id': 2115,
-        'type': 31,
-        'name': 'Parent: requirements',
-        'parent': 33,
-        'children': []
+        id: 2115,
+        type: 31,
+        docKey: 'document key',
+        name: 'Parent: requirements',
+        parent: 33,
+        isSet: true,
+        children: []
       },
       {
-        'id': 2116,
-        'type': 34,
-        'name': 'child of requirements',
-        'parent': 2115,
-        'children': []
+        id: 2116,
+        type: 34,
+        docKey: 'document key',
+        name: 'child of requirements',
+        parent: 2115,
+        isSet: false,
+        children: []
       },
       {
-        'id': 2117,
-        'type': 35,
-        'name': 'Parent: epics',
-        'parent': 33,
-        'children': []
+        id: 2117,
+        type: 35,
+        docKey: 'document key',
+        name: 'Parent: epics',
+        parent: 33,
+        isSet: true,
+        children: []
       },
       {
-        'id': 2118,
-        'type': 39,
-        'name': 'child of epics',
-        'parent': 2117,
-        'children': []
+        id: 2118,
+        type: 39,
+        docKey: 'document key',
+        name: 'child of epics',
+        parent: 2117,
+        isSet: false,
+        children: []
       }
       ];
       mergedChildren = [
-        {'id': 2115,
-          'type': 31,
-          'name': 'Parent: requirements',
-          'parent': 33,
-          'children': [
-            {'id': 2116,
-              'type': 34,
-              'name': 'child of requirements',
-              'parent': 2115,
-              'children': []}
+        {id: 2115,
+          type: 31,
+          docKey: 'document key',
+          name: 'Parent: requirements',
+          parent: 33,
+          isSet: true,
+          children: [
+            {id: 2116,
+              type: 34,
+              docKey: 'document key',
+              name: 'child of requirements',
+              parent: 2115,
+              isSet: false,
+              children: []}
           ]
         },
         {
-          'id': 2116,
-          'type': 34,
-          'name': 'child of requirements',
-          'parent': 2115,
-          'children': []
+          id: 2116,
+          type: 34,
+          docKey: 'document key',
+          name: 'child of requirements',
+          parent: 2115,
+          isSet: false,
+          children: []
         },
         {
-          'id': 2117,
-          'type': 35,
-          'name': 'Parent: epics',
-          'parent': 33,
-          'children': [
-            {'id': 2118,
-              'type': 39,
-              'name': 'child of epics',
-              'parent': 2117,
-              'children': []}
+          id: 2117,
+          type: 35,
+          docKey: 'document key',
+          name: 'Parent: epics',
+          parent: 33,
+          isSet: true,
+          children: [
+            {id: 2118,
+              type: 39,
+              docKey: 'document key',
+              name: 'child of epics',
+              parent: 2117,
+              isSet: false,
+              children: []}
           ]
         },
         {
-          'id': 2118,
-          'type': 39,
-          'name': 'child of epics',
-          'parent': 2117,
-          'children': []
+          id: 2118,
+          type: 39,
+          docKey: 'document key',
+          name: 'child of epics',
+          parent: 2117,
+          isSet: false,
+          children: []
         }
       ];
       hierarchy = rewire('../../lib/hierarchy');
@@ -294,18 +329,22 @@ describe('Hierarchy Module', () => {
       'in the children array', () => {
       roots = [
         {
-          'id': 2115,
-          'type': 31,
-          'name': 'Parent: requirements',
-          'parent': 33,
-          'children': []
+          id: 2115,
+          type: 31,
+          docKey: 'document key',
+          name: 'Parent: requirements',
+          parent: 33,
+          isSet: true,
+          children: []
         },
         {
-          'id': 2117,
-          'type': 35,
-          'name': 'Parent: epics',
-          'parent': 33,
-          'children': []
+          id: 2117,
+          type: 35,
+          docKey: 'document key',
+          name: 'Parent: epics',
+          parent: 33,
+          isSet: true,
+          children: []
         }
       ];
       hierarchy = rewire('../../lib/hierarchy');
@@ -316,73 +355,93 @@ describe('Hierarchy Module', () => {
     it('should result in rootsItem array having all children items in their children array ', () => {
       roots = [
         {
-          'id': 2115,
-          'type': 31,
-          'name': 'Parent: requirements',
-          'parent': 33,
-          'children': []
+          id: 2115,
+          type: 31,
+          docKey: 'document key',
+          name: 'Parent: requirements',
+          parent: 33,
+          isSet: true,
+          children: []
         },
         {
-          'id': 2117,
-          'type': 35,
-          'name': 'Parent: epics',
-          'parent': 33,
-          'children': []
+          id: 2117,
+          type: 35,
+          docKey: 'document key',
+          name: 'Parent: epics',
+          parent: 33,
+          isSet: true,
+          children: []
         }
       ];
       data = [{
-        'id': 2115,
-        'type': 31,
-        'name': 'Parent: requirements',
-        'parent': 33,
-        'children': []
+        id: 2115,
+        type: 31,
+        docKey: 'document key',
+        name: 'Parent: requirements',
+        parent: 33,
+        isSet: true,
+        children: []
       },
       {
-        'id': 2116,
-        'type': 34,
-        'name': 'child of requirements',
-        'parent': 2115,
-        'children': []
+        id: 2116,
+        type: 34,
+        docKey: 'document key',
+        name: 'child of requirements',
+        parent: 2115,
+        isSet: false,
+        children: []
       },
       {
-        'id': 2117,
-        'type': 35,
-        'name': 'Parent: epics',
-        'parent': 33,
-        'children': []
+        id: 2117,
+        type: 35,
+        docKey: 'document key',
+        name: 'Parent: epics',
+        parent: 33,
+        isSet: true,
+        children: []
       },
       {
-        'id': 2118,
-        'type': 39,
-        'name': 'child of epics',
-        'parent': 2117,
-        'children': []
+        id: 2118,
+        type: 39,
+        docKey: 'document key',
+        name: 'child of epics',
+        parent: 2117,
+        isSet: false,
+        children: []
       }
       ];
       mergedChildren = [
-        {'id': 2115,
-          'type': 31,
-          'name': 'Parent: requirements',
-          'parent': 33,
-          'children': [
-            {'id': 2116,
-              'type': 34,
-              'name': 'child of requirements',
-              'parent': 2115,
-              'children': []}
+        {id: 2115,
+          type: 31,
+          docKey: 'document key',
+          name: 'Parent: requirements',
+          parent: 33,
+          isSet: true,
+          children: [
+            {id: 2116,
+              type: 34,
+              docKey: 'document key',
+              name: 'child of requirements',
+              parent: 2115,
+              isSet: false,
+              children: []}
           ]
         },
         {
-          'id': 2117,
-          'type': 35,
-          'name': 'Parent: epics',
-          'parent': 33,
-          'children': [
-            {'id': 2118,
-              'type': 39,
-              'name': 'child of epics',
-              'parent': 2117,
-              'children': []}
+          id: 2117,
+          type: 35,
+          docKey: 'document key',
+          name: 'Parent: epics',
+          parent: 33,
+          isSet: true,
+          children: [
+            {id: 2118,
+              type: 39,
+              docKey: 'document key',
+              name: 'child of epics',
+              parent: 2117,
+              isSet: false,
+              children: []}
           ]
         }
       ];

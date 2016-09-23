@@ -1,10 +1,10 @@
 {
-  "name": "JamaTrace",
+  "name": "OverView",
   "version": "0.0.0",
   "private": true,
   "scripts": {
     "start": "node --harmony ./bin/www",
-    "debug": "DEBUG=JamaTrace:* npm start",
+    "debug": "DEBUG=OverView:* npm start",
     "test": "semistandard | snazzy && mocha --check-leaks --recursive",
     "cover": "istanbul cover _mocha -- --recursive",
     "coveralls": "istanbul cover _mocha --report lcovonly -- --recursive && cat ./coverage/lcov.info | coveralls",
@@ -26,6 +26,7 @@
     "express-session": "^1.13.0",
     "morgan": "~1.6.1",
     "request": "^2.72.0",
+    "sanitize-html": "^1.13.0",
     "serve-favicon": "~2.3.0"
   },
   "devDependencies": {
@@ -44,7 +45,6 @@
     "rewire": "^2.5.2",
     "semistandard": "^8.0.0",
     "snazzy": "^4.0.0",
-    "supertest": "^2.0.0",
     "watchify": "^3.7.0"
   }
 }
