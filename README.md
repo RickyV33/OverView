@@ -63,7 +63,7 @@ team members.
 ## Testing
 
 The [Mocha](https://mochajs.org) framework was used with [Chai](http://chaijs.com), an assertion library, to conduct all
-tests on JamaTrace.
+tests on OverView.
 
 ## Copyright and license
 

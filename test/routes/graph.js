@@ -24,7 +24,7 @@ let graphViewTestFixtures = [
   {
     caseTitle: 'should render the graph view with no projects',
     data: {
-      title: 'JamaTrace',
+      title: 'OverView',
       subtitle: 'Graph',
       projects: null
     }
@@ -32,7 +32,7 @@ let graphViewTestFixtures = [
   {
     caseTitle: 'should render the graph view with one project',
     data: {
-      title: 'JamaTrace',
+      title: 'OverView',
       subtitle: 'Graph',
       projects: [ mockProjects[0] ]
     }
@@ -40,7 +40,7 @@ let graphViewTestFixtures = [
   {
     caseTitle: 'should render the graph view with many projects',
     data: {
-      title: 'JamaTrace',
+      title: 'OverView',
       subtitle: 'Graph',
       projects: mockProjects
     }

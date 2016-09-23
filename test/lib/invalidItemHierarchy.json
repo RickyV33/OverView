@@ -14,7 +14,7 @@
       "documentKey": "JCP1-REQ-2",
       "globalId": "GID-17701",
       "name": "Input a Username",
-      "description": "<p><span style=\"background-color:transparent; color:#000000; font-family:arial; font-size:14.666666666666666px; font-style:normal; font-variant:normal; font-weight:400; text-decoration:none; vertical-align:baseline\">JamaTrace shall provide a form field for users to input their username. </span></p>\n",
+      "description": "<p><span style=\"background-color:transparent; color:#000000; font-family:arial; font-size:14.666666666666666px; font-style:normal; font-variant:normal; font-weight:400; text-decoration:none; vertical-align:baseline\">OverView shall provide a form field for users to input their username. </span></p>\n",
       "prio$24": 302
     },
     "resources": {

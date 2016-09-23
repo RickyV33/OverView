@@ -23,7 +23,7 @@ router.get('/', function (req, res, next) {
         status: 401,
         // TODO: Refactor WWW-Authenticate header to app-level middleware, augmenting 401 responses
         headers: {
-          'WWW-Authenticate': 'Forms realm="JamaTrace"'
+          'WWW-Authenticate': 'Forms realm="OverView"'
         },
         message: 'You are unauthorized to perform this operation. Please login.'
       };
