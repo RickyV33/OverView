@@ -1,6 +1,5 @@
 ![Alt text](/public/img/logo.png)
-[![Coverage Status](https://coveralls.io/repos/github/RickyV33/OverView/badge.svg?branch=master)](https://coveralls.io/github/RickyV33/OverView?branch=master)
-[![Build Status](https://travis-ci.org/RickyV33/OverView.svg?branch=master)](https://travis-ci.org/RickyV33/OverView)
+[![Coverage Status](https://coveralls.io/repos/github/RickyV33/OverView/badge.svg?branch=master)](https://coveralls.io/github/RickyV33/OverView?branch=master) [![Build Status](https://travis-ci.org/RickyV33/OverView.svg?branch=master)](https://travis-ci.org/RickyV33/OverView)
 ## About
 
 OverView for Jama is a project between Seven Source, a Portland State University computer science senior capstone team, and
